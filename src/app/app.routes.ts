@@ -5,23 +5,23 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { AdminGuard } from './guards/admin.guard';
 import { UsuarioGuard } from './guards/usuario.guard';
 
-import { AdminDashboardComponent } from './admin/admin-dashboard.component';
-import { StockComponent } from './shared/stock.component';
-import { VentasReportComponent } from './shared/ventas-report.component';
+import { StockComponent } from './shared/stock/stock.component';
+import { VentasReportComponent } from './shared/ventas-report/ventas-report.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
+
   {
     path: 'admin',
     component: AdminComponent,
     canActivate: [AdminGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: '', redirectTo: 'stock', pathMatch: 'full' },
       { path: 'stock', component: StockComponent },
       { path: 'ventas', component: VentasReportComponent }
     ]
   },
+
   {
     path: 'usuario',
     component: UsuarioComponent,
@@ -31,5 +31,8 @@ export const routes: Routes = [
       { path: 'stock', component: StockComponent },
       { path: 'ventas', component: VentasReportComponent }
     ]
-  }
+  },
+
+  // Manejo de rutas no válidas
+  { path: '**', redirectTo: '' }
 ];

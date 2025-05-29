@@ -10,8 +10,8 @@ export class UsuarioGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    const role = this.auth.getRole();
-    if (role === 'usuario' || role === 'admin') {
+    const rol = this.auth.getRol();
+    if (rol === 'usuario' || rol === 'admin') {
       return true;  // Admin también puede ver rutas de usuario
     }
     this.router.navigate(['']);

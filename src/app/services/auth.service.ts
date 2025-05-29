@@ -1,36 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private role: 'admin' | 'usuario' | null = null;
-
   constructor(private router: Router) {}
 
   login(username: string, password: string): boolean {
     if (username === 'admin' && password === '1234') {
-      this.role = 'admin';
+      localStorage.setItem('rol', 'admin');
+      this.router.navigate(['/admin']);
       return true;
     } else if (username === 'user' && password === '1234') {
-      this.role = 'usuario';
+      localStorage.setItem('rol', 'usuario');
+      this.router.navigate(['/usuario']);
       return true;
     }
     return false;
   }
 
-  getRole(): 'admin' | 'usuario' | null {
-    return this.role;
+  getRol(): 'admin' | 'usuario' | null {
+    const rol = localStorage.getItem('rol');
+    if (rol === 'admin' || rol === 'usuario') {
+      return rol;
+    }
+    return null;
   }
 
   isLoggedIn(): boolean {
-    return this.role !== null;
+    return this.getRol() !== null;
   }
 
   logout(): void {
-    this.role = null;
+    localStorage.removeItem('rol');
     this.router.navigate(['/']); // Redirige al login
   }
 }

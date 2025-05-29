@@ -1,66 +1,29 @@
-body {
-  margin: 0;
-  background-color: #F2F1EC; /* Fondo beige claro como la imagen */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.logo img {
-  max-width: 200px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-.container {
-  max-width: 600px;
-  margin: 80px auto;
-  padding: 40px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-h1 {
-  font-size: 36px;
-  color: #4A3F35; /* Color café elegante */
-  margin-bottom: 20px;
-}
-
-p {
-  font-size: 20px;
-  color: #6C5E4E;
-  margin-bottom: 30px;
-}
-
-.buttons {
+.menu {
+  margin: 20px 0;
   display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
 }
 
-.btn {
-  font-size: 20px;
-  font-weight: bold;
-  padding: 20px 40px;
-  margin: 10px;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  width: 200px;
-}
-
-.btn:hover {
-  transform: scale(1.05);
-}
-
-.btn.normal {
-  background-color: #70C18D; /* Verde suave */
+.menu button {
+  padding: 10px 20px;
+  background-color: #70c18d;
   color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.btn.admin {
-  background-color: #FFEB77; /* Amarillo pastel */
-  color: #4A3F35; /* Café oscuro */
+.menu button:hover {
+  background-color: #5da074;
+}
+
+.contenido {
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

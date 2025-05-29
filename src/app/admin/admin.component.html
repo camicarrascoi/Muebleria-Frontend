@@ -1,25 +1,29 @@
 <h2>Bienvenido a la vista ADMIN</h2>
 
-<!-- Secciones solo visibles para admin -->
+<!-- Solo visible para Admin -->
 <div *ngIf="rol === 'admin'">
-  <h1>Bienvenido Admin</h1>
-<nav>
-  <a routerLink="dashboard">Dashboard</a> |
-  <a routerLink="stock">Stock</a> |
-  <a routerLink="ventas">Ventas</a>
-</nav>
-<hr>
-<router-outlet></router-outlet>
+  <h3>Panel de Administración</h3>
 
+  <!-- Panel de navegación solo para ADMIN -->
+  <div class="menu">
+    <button (click)="vistaSeleccionada = 'stock'">Stock</button>
+    <button (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</button>
+    <button (click)="vistaSeleccionada = 'materiales'">Materiales</button>
+    <button (click)="vistaSeleccionada = 'proveedoresCrud'">Proveedores (CRUD)</button>
+    <button (click)="vistaSeleccionada = 'reportes'">Reportes de Venta</button>
+  </div>
 </div>
 
-<!-- Secciones comunes -->
-<a routerLink="stock">Ver Stock</a>
-<a routerLink="reportes">Ver Reportes</a>
+<!-- Contenido visible para ambos roles -->
+<div class="contenido">
+  <app-stock *ngIf="vistaSeleccionada === 'stock'"></app-stock>
+  <app-muebles-crud *ngIf="vistaSeleccionada === 'agregarMueble'"></app-muebles-crud>
+  <app-materiales-crud *ngIf="vistaSeleccionada === 'materiales'"></app-materiales-crud>
+  <app-proveedores-crud *ngIf="vistaSeleccionada === 'proveedoresCrud'"></app-proveedores-crud>
+  <app-ventas-report *ngIf="vistaSeleccionada === 'reportes'"></app-ventas-report>
+</div>
 
-<router-outlet></router-outlet>
-
-  <div class="footer">
-    © 2025 Mueblería. Todos los derechos reservados.
-  </div>
+<!-- Footer -->
+<div class="footer">
+  © 2025 Mueblería. Todos los derechos reservados.
 </div>
