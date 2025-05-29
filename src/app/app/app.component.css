@@ -1,0 +1,15 @@
+/* app.component.css */
+
+/* Estilos básicos para que el body no tenga margen */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F2F1EC;
+}
+
+/* El contenedor raíz puede ocupar todo el alto */
+:host {
+  display: block;
+  min-height: 100vh;
+}
