@@ -4,17 +4,51 @@
 <nav class="navbar" *ngIf="rol === 'admin'">
   <div class="navbar-logo">🪑 Mueblería Don Pepe</div>
 
- <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
-    ☰
-  </button>
-
-  <ul class="navbar-links" [class.open]="menuAbierto">
-    <li class="stock"><a (click)="vistaSeleccionada = 'stock'">Stock</a></li>
-    <li class="mueble"><a (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</a></li>
-    <li class="materiales"><a (click)="vistaSeleccionada = 'materiales'">Materiales</a></li>
-    <li class="proveedores"><a (click)="vistaSeleccionada = 'proveedoresCrud'">Proveedores</a></li>
-    <li class="reportes"><a (click)="vistaSeleccionada = 'reportes'">Reportes</a></li>
-    <li class="cerrar"><a (click)="cerrarSesion()">Cerrar Sesión</a></li>
+ <button class="menu-toggle" (click)="toggleMenu()">☰</button>
+  <ul class="navbar-links" [ngClass]="{ 'open': menuAbierto }">
+    <li class="stock">
+      <a href="#">Inventario de Muebles</a>
+      <ul class="submenu">
+        <li><a (click)="vistaSeleccionada = 'stock'">Ver todos los muebles</a></li>
+        <li><a (click)="vistaSeleccionada = 'agregarMueble'">Agregar nuevo mueble</a></li>
+        <li><a href="#">Editar mueble</a></li>
+        <li><a href="#">Eliminar mueble</a></li>
+      </ul>
+    </li>
+    <li class="materiales">
+      <a href="#">Categorías</a>
+      <ul class="submenu">
+        <li><a href="#">Ver categorías</a></li>
+        <li><a href="#">Agregar categoría</a></li>
+        <li><a href="#">Editar/eliminar categoría</a></li>
+      </ul>
+    </li>
+    <li class="reportes">
+      <a href="#">Reportes</a>
+      <ul class="submenu">
+        <li><a (click)="vistaSeleccionada = 'reportes'">Inventario actual</a></li>
+        <li><a href="#">Muebles dados de baja</a></li>
+        <li><a href="#">Exportar a PDF / Excel</a></li>
+      </ul>
+    </li>
+    <li class="proveedores">
+      <a href="#">Usuarios</a>
+      <ul class="submenu">
+        <li><a href="#">Gestionar usuarios</a></li>
+        <li><a href="#">Roles y permisos</a></li>
+      </ul>
+    </li>
+    <li class="mueble">
+      <a href="#">Configuración</a>
+      <ul class="submenu">
+        <li><a href="#">Preferencias del sistema</a></li>
+        <li><a href="#">Cambiar tema</a></li>
+        <li><a href="#">Ajustes generales</a></li>
+      </ul>
+    </li>
+    <li class="cerrar">
+      <a (click)="cerrarSesion()">🔒 Cerrar sesión</a>
+    </li>
   </ul>
 </nav>
 

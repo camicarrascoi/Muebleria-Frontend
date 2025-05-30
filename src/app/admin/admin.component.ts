@@ -37,10 +37,13 @@ export class AdminComponent implements OnInit {
     }
   }
   menuAbierto = false;
-  cerrarSesion(): void {
-    // Aquí puedes limpiar el localStorage o cualquier token si lo usas
-    localStorage.clear();
-    this.router.navigate(['/login']); // Ajusta el path según tu ruta real
-  }
+ toggleMenu() {
+  this.menuAbierto = !this.menuAbierto;
+}
+
+cerrarSesion() {
+  // Aquí puedes hacer logout y redirigir al login
+  this.router.navigate(['/login']);
+}
 }
 

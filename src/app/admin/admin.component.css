@@ -75,6 +75,54 @@ h2 {
 .navbar-links li.reportes { background-color: #8e24aa; }
 .navbar-links li.cerrar { background-color: #d32f2f; }
 
+/* Submenús desplegables */
+.navbar-links li {
+  position: relative;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  list-style: none; 
+  padding: 0;
+  margin: 0;
+  top: 100%;
+  left: 0;
+  background-color: #fff9f1;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+  z-index: 1000;
+  padding: 0;
+}
+
+.submenu li {
+  border-bottom: 1px solid #eee;
+}
+
+.submenu li:last-child {
+  border-bottom: none;
+}
+
+.submenu li a {
+  padding: 10px 15px;
+  display: block;
+  text-align: left;
+  color: #4b3621;
+  text-decoration: none;
+  font-size: 0.9rem;
+  background-color: transparent;
+}
+
+.submenu li a:hover {
+  background-color: #f0e6d6;
+}
+
+/* Mostrar submenu al pasar el mouse */
+.navbar-links li:hover .submenu {
+  display: block;
+}
+
 /* Contenido */
 .contenido {
   max-width: 1200px;
@@ -104,6 +152,16 @@ h2 {
     width: 100%;
     display: none;
     margin-top: 10px;
+  }
+
+    .submenu {
+    position: static;
+    box-shadow: none;
+    background-color: transparent;
+  }
+
+  .submenu li a {
+    padding-left: 25px;
   }
 
   .navbar-links.open {
