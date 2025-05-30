@@ -1,15 +1,16 @@
-<h2>Bienvenido a la vista ADMIN</h2>
+<h2>Bienvenido a la sección Administración Mueblería</h2>
 
 <!-- Solo visible para Admin -->
 <div *ngIf="rol === 'admin'">
   <h3>Panel de Administración</h3>
+  <h4>¿Que deseas hacer?</h4>
 
   <!-- Panel de navegación solo para ADMIN -->
   <div class="menu">
     <button (click)="vistaSeleccionada = 'stock'">Stock</button>
     <button (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</button>
     <button (click)="vistaSeleccionada = 'materiales'">Materiales</button>
-    <button (click)="vistaSeleccionada = 'proveedoresCrud'">Proveedores (CRUD)</button>
+    <button (click)="vistaSeleccionada = 'proveedoresCrud'">Proveedores</button>
     <button (click)="vistaSeleccionada = 'reportes'">Reportes de Venta</button>
   </div>
 </div>
@@ -19,9 +20,11 @@
   <app-stock *ngIf="vistaSeleccionada === 'stock'"></app-stock>
   <app-muebles-crud *ngIf="vistaSeleccionada === 'agregarMueble'"></app-muebles-crud>
   <app-materiales-crud *ngIf="vistaSeleccionada === 'materiales'"></app-materiales-crud>
-  <app-proveedores-crud *ngIf="vistaSeleccionada === 'proveedoresCrud'"></app-proveedores-crud>
+  <app-proveedores *ngIf="vistaSeleccionada === 'proveedores'"></app-proveedores>
   <app-ventas-report *ngIf="vistaSeleccionada === 'reportes'"></app-ventas-report>
 </div>
+
+
 
 <!-- Footer -->
 <div class="footer">

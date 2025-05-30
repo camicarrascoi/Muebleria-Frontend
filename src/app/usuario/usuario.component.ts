@@ -1,15 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+
+import { StockComponent } from '../shared/stock/stock.component';
+import { MueblesCrudComponent } from '../shared/muebles-crud/muebles-crud.component';
+import { ProveedoresComponent } from '../shared/proveedores/proveedores.component';
+import { VentasReportComponent } from '../shared/ventas-report/ventas-report.component';
 
 @Component({
   selector: 'app-usuario',
-  template: `
-    <h2>Vista de Usuario</h2>
-    <p>Bienvenido, usuario.</p>
-  `
+  standalone: true,
+  imports: [
+    CommonModule,
+    StockComponent,
+    MueblesCrudComponent,
+    ProveedoresComponent,
+    VentasReportComponent
+  ],
+  templateUrl: './usuario.component.html',
+  styleUrls: ['./usuario.component.css']
 })
 export class UsuarioComponent implements OnInit {
   rol: string | null = null;
+  vistaSeleccionada: string = 'stock';
 
   constructor(private router: Router) {}
 

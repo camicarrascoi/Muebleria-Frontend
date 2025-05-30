@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { StockComponent } from '../shared/stock/stock.component';
-import { MueblesCrudComponent } from './muebles-crud/muebles-crud.component';
-import { MaterialesCrudComponent } from './materiales-crud/materiales-crud.component';
-import { ProveedoresCrudComponent } from './proveedores-crud/proveedores-crud.component';
+import { MueblesCrudComponent } from '../shared/muebles-crud/muebles-crud.component';
+import { MaterialesCrudComponent } from '../shared/materiales-crud/materiales-crud.component';
+import { ProveedoresComponent } from '../shared/proveedores/proveedores.component';
 import { VentasReportComponent } from '../shared/ventas-report/ventas-report.component';
 
 @Component({
@@ -16,7 +16,7 @@ import { VentasReportComponent } from '../shared/ventas-report/ventas-report.com
     StockComponent,
     MueblesCrudComponent,
     MaterialesCrudComponent,
-    ProveedoresCrudComponent,
+    ProveedoresComponent,
     VentasReportComponent
   ],
   templateUrl: './admin.component.html',

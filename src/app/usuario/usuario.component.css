@@ -1,66 +1,75 @@
-body {
-  margin: 0;
-  background-color: #F2F1EC; /* Fondo beige claro como la imagen */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.logo img {
-  max-width: 200px;
-  height: auto;
+:host {
   display: block;
-  margin: 0 auto;
+  background-color: #fdf8ed; /* Fondo beige claro */
+  padding: 30px;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.container {
-  max-width: 600px;
-  margin: 80px auto;
-  padding: 40px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+/* Título principal */
+h2 {
   text-align: center;
-}
-
-h1 {
-  font-size: 36px;
-  color: #4A3F35; /* Color café elegante */
-  margin-bottom: 20px;
-}
-
-p {
-  font-size: 20px;
-  color: #6C5E4E;
+  color: #4b3621; /* Marrón oscuro */
   margin-bottom: 30px;
 }
 
-.buttons {
+/* Subtítulo (Panel de usuario) */
+h3 {
+  text-align: center;
+  color: #6e4c2b;
+  margin-bottom: 20px;
+}
+
+/* SubSubtítulo (Panel de usuario) */
+h4 {
+  text-align: center;
+  color: #6e4c2b;
+  margin-bottom: 20px;
+}
+
+/* Botones de menú */
+.menu {
   display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
-.btn {
-  font-size: 20px;
+.menu button {
+  padding: 12px 20px;
   font-weight: bold;
-  padding: 20px 40px;
-  margin: 10px;
   border: none;
-  border-radius: 15px;
+  border-radius: 8px;
   cursor: pointer;
+  min-width: 180px;
+  font-size: 1rem;
+  color: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease;
-  width: 200px;
 }
 
-.btn:hover {
+.menu button:hover {
   transform: scale(1.05);
 }
 
-.btn.normal {
-  background-color: #70C18D; /* Verde suave */
-  color: white;
+/* Colores por botón */
+.menu button:nth-child(1) { background-color: #3b5998; }   /* Ver Stock (azul profundo) */
+.menu button:nth-child(2) { background-color: #4caf50; }   /* Agregar Mueble (verde) */
+.menu button:nth-child(3) { background-color: #f4b400; }   /* Ver Proveedores (dorado) */
+.menu button:nth-child(4) { background-color: #8e24aa; }   /* Reportes (morado) */
+
+/* Contenido */
+.contenido {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.btn.admin {
-  background-color: #FFEB77; /* Amarillo pastel */
-  color: #4A3F35; /* Café oscuro */
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 0.9rem;
+  color: #999;
 }
