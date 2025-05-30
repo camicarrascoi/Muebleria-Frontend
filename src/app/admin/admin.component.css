@@ -1,19 +1,19 @@
 :host {
   display: block;
-  background-color: #fdf8ed; /* Fondo beige suave */
+  background-color: #fdf8ed;
   padding: 30px;
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Título principal */
+/* Título */
 h2 {
   text-align: center;
-  color: #4b3621; /* Marrón oscuro */
+  color: #4b3621;
   margin-bottom: 30px;
 }
 
-/* Botón de hamburguesa (oculto por defecto) */
+/* Botón hamburguesa */
 .menu-toggle {
   background: none;
   border: none;
@@ -23,9 +23,9 @@ h2 {
   display: none;
 }
 
-/* NAVBAR superior */
+/* NAVBAR */
 .navbar {
-  background-color: #4b3621; /* Fondo marrón oscuro */
+  background-color: #4b3621;
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
@@ -52,6 +52,7 @@ h2 {
 .navbar-links li {
   border-radius: 8px;
   transition: transform 0.2s ease;
+  position: relative;
 }
 
 .navbar-links li:hover {
@@ -67,7 +68,7 @@ h2 {
   font-size: 0.95rem;
 }
 
-/* Colores por categoría */
+/* Colores por menú */
 .navbar-links li.stock { background-color: #3b5998; }
 .navbar-links li.mueble { background-color: #4caf50; }
 .navbar-links li.materiales { background-color: #f4b400; }
@@ -75,25 +76,19 @@ h2 {
 .navbar-links li.reportes { background-color: #8e24aa; }
 .navbar-links li.cerrar { background-color: #d32f2f; }
 
-/* Submenús desplegables */
-.navbar-links li {
-  position: relative;
-}
-
+/* Submenús */
 .submenu {
   display: none;
   position: absolute;
-  list-style: none; 
-  padding: 0;
-  margin: 0;
+  list-style: none;
   top: 100%;
   left: 0;
   background-color: #fff9f1;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-width: 200px;
-  z-index: 1000;
   padding: 0;
+  z-index: 1000;
 }
 
 .submenu li {
@@ -137,7 +132,8 @@ h2 {
   font-size: 0.9rem;
   color: #999;
 }
-/* Responsive: para pantallas menores a 768px */
+
+/* Responsive */
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
@@ -154,16 +150,6 @@ h2 {
     margin-top: 10px;
   }
 
-    .submenu {
-    position: static;
-    box-shadow: none;
-    background-color: transparent;
-  }
-
-  .submenu li a {
-    padding-left: 25px;
-  }
-
   .navbar-links.open {
     display: flex;
   }
@@ -175,5 +161,15 @@ h2 {
 
   .navbar-links a {
     padding: 12px;
+  }
+
+  .submenu {
+    position: static;
+    box-shadow: none;
+    background-color: transparent;
+  }
+
+  .submenu li a {
+    padding-left: 25px;
   }
 }

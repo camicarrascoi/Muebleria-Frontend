@@ -36,7 +36,7 @@ export class AdminComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
-  menuAbierto = false;
+  menuAbierto = true;
  toggleMenu() {
   this.menuAbierto = !this.menuAbierto;
 }
