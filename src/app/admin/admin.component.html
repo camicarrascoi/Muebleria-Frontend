@@ -1,30 +1,34 @@
+<!-- vita administrador -->
+
+<!-- Barra superior -->
+<nav class="navbar" *ngIf="rol === 'admin'">
+  <div class="navbar-logo">🪑 Mueblería Don Pepe</div>
+
+ <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
+    ☰
+  </button>
+
+  <ul class="navbar-links" [class.open]="menuAbierto">
+    <li class="stock"><a (click)="vistaSeleccionada = 'stock'">Stock</a></li>
+    <li class="mueble"><a (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</a></li>
+    <li class="materiales"><a (click)="vistaSeleccionada = 'materiales'">Materiales</a></li>
+    <li class="proveedores"><a (click)="vistaSeleccionada = 'proveedoresCrud'">Proveedores</a></li>
+    <li class="reportes"><a (click)="vistaSeleccionada = 'reportes'">Reportes</a></li>
+    <li class="cerrar"><a (click)="cerrarSesion()">Cerrar Sesión</a></li>
+  </ul>
+</nav>
+
+<!-- TÍTULO -->
 <h2>Bienvenido a la sección Administración Mueblería</h2>
 
-<!-- Solo visible para Admin -->
-<div *ngIf="rol === 'admin'">
-  <h3>Panel de Administración</h3>
-  <h4>¿Que deseas hacer?</h4>
-
-  <!-- Panel de navegación solo para ADMIN -->
-  <div class="menu">
-    <button (click)="vistaSeleccionada = 'stock'">Stock</button>
-    <button (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</button>
-    <button (click)="vistaSeleccionada = 'materiales'">Materiales</button>
-    <button (click)="vistaSeleccionada = 'proveedoresCrud'">Proveedores</button>
-    <button (click)="vistaSeleccionada = 'reportes'">Reportes de Venta</button>
-  </div>
-</div>
-
-<!-- Contenido visible para ambos roles -->
+<!-- contenidos -->
 <div class="contenido">
   <app-stock *ngIf="vistaSeleccionada === 'stock'"></app-stock>
   <app-muebles-crud *ngIf="vistaSeleccionada === 'agregarMueble'"></app-muebles-crud>
   <app-materiales-crud *ngIf="vistaSeleccionada === 'materiales'"></app-materiales-crud>
-  <app-proveedores *ngIf="vistaSeleccionada === 'proveedores'"></app-proveedores>
+  <app-proveedores *ngIf="vistaSeleccionada === 'proveedoresCrud'"></app-proveedores>
   <app-ventas-report *ngIf="vistaSeleccionada === 'reportes'"></app-ventas-report>
 </div>
-
-
 
 <!-- Footer -->
 <div class="footer">

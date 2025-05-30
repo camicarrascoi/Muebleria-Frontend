@@ -21,6 +21,7 @@ import { VentasReportComponent } from '../shared/ventas-report/ventas-report.com
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
+  
 })
 export class AdminComponent implements OnInit {
   vistaSeleccionada: string = 'stock';
@@ -35,4 +36,11 @@ export class AdminComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
+  menuAbierto = false;
+  cerrarSesion(): void {
+    // Aquí puedes limpiar el localStorage o cualquier token si lo usas
+    localStorage.clear();
+    this.router.navigate(['/login']); // Ajusta el path según tu ruta real
+  }
 }
+

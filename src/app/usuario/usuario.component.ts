@@ -33,4 +33,10 @@ export class UsuarioComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
+  menuAbierto = false;
+  cerrarSesion(): void {
+    // Aquí puedes limpiar el localStorage o cualquier token si lo usas
+    localStorage.clear();
+    this.router.navigate(['/login']); // Ajusta el path según tu ruta real
+  }
 }

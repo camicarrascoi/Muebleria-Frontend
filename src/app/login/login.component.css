@@ -1,8 +1,16 @@
+:host {
+  display: block;
+  background-color: #fdf8ed; /* Fondo beige suave */
+  padding: 30px;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 .login-container {
   max-width: 400px;
   margin: 40px auto;
   padding: 30px;
-  background-color: #ffffff;
+  background-color: #5d5a4d;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -10,7 +18,7 @@
 
 .login-container h2 {
   font-size: 28px;
-  color: #4a3f35;
+  color: #ffffff;
   margin-bottom: 25px;
   font-weight: bold;
 }
@@ -19,7 +27,7 @@
   width: 100%;
   padding: 15px 20px;
   margin-bottom: 20px;
-  border: 2px solid #70c18d;
+  border: 2px solid #f09431;
   border-radius: 15px;
   font-size: 18px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -37,7 +45,7 @@ button.btn.normal {
   font-size: 20px;
   font-weight: bold;
   padding: 15px 0;
-  background-color: #70c18d;
+  background-color: #f09431;
   color: white;
   border: none;
   border-radius: 15px;
@@ -46,6 +54,6 @@ button.btn.normal {
 }
 
 button.btn.normal:hover {
-  background-color: #5da074;
+  background-color: #f05a31;
   transform: scale(1.05);
 }

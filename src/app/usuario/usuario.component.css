@@ -1,6 +1,6 @@
 :host {
   display: block;
-  background-color: #fdf8ed; /* Fondo beige claro */
+  background-color: #fdf8ed; /* Fondo beige suave */
   padding: 30px;
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
@@ -13,51 +13,66 @@ h2 {
   margin-bottom: 30px;
 }
 
-/* Subtítulo (Panel de usuario) */
-h3 {
-  text-align: center;
-  color: #6e4c2b;
-  margin-bottom: 20px;
-}
-
-/* SubSubtítulo (Panel de usuario) */
-h4 {
-  text-align: center;
-  color: #6e4c2b;
-  margin-bottom: 20px;
-}
-
-/* Botones de menú */
-.menu {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 30px;
-}
-
-.menu button {
-  padding: 12px 20px;
-  font-weight: bold;
+/* Botón de hamburguesa (oculto por defecto) */
+.menu-toggle {
+  background: none;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  min-width: 180px;
-  font-size: 1rem;
   color: white;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: none;
+}
+
+/* NAVBAR superior */
+.navbar {
+  background-color: #4b3621; /* Fondo marrón oscuro */
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.navbar-logo {
+  color: white;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-links li {
+  border-radius: 8px;
   transition: transform 0.2s ease;
 }
 
-.menu button:hover {
+.navbar-links li:hover {
   transform: scale(1.05);
 }
 
+.navbar-links a {
+  display: block;
+  padding: 10px 16px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
 /* Colores por botón */
-.menu button:nth-child(1) { background-color: #3b5998; }   /* Ver Stock (azul profundo) */
-.menu button:nth-child(2) { background-color: #4caf50; }   /* Agregar Mueble (verde) */
-.menu button:nth-child(3) { background-color: #f4b400; }   /* Ver Proveedores (dorado) */
-.menu button:nth-child(4) { background-color: #8e24aa; }   /* Reportes (morado) */
+.navbar-links li.stock { background-color: #3b5998; }   
+.navbar-links li.agregarMueble { background-color: #4caf50; }   
+.navbar-links li.proveedores { background-color: #f4b400; }   
+.navbar-links li.reportes { background-color: #8e24aa; }   
+.navbar-links li.cerrar { background-color: #d32f2f; }
 
 /* Contenido */
 .contenido {
@@ -72,4 +87,34 @@ h4 {
   margin-top: 50px;
   font-size: 0.9rem;
   color: #999;
+}
+/* Responsive: para pantallas menores a 768px */
+@media (max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    width: 100%;
+    display: none;
+    margin-top: 10px;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  .navbar-links li {
+    width: 100%;
+    text-align: center;
+  }
+
+  .navbar-links a {
+    padding: 12px;
+  }
 }

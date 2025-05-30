@@ -1,17 +1,24 @@
+<!-- vita usuario -->
+
+<!-- Barra superior -->
+<nav class="navbar" *ngIf="rol === 'usuario'">
+  <div class="navbar-logo">🪑 Mueblería Don Pepe</div>
+
+ <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
+    ☰
+  </button>
+
+  <ul class="navbar-links" [class.open]="menuAbierto">
+    <li class="stock"><a (click)="vistaSeleccionada = 'stock'">Ver Stock</a></li>
+    <li class="agregarMueble"><a (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</a></li>
+    <li class="proveedores"><a (click)="vistaSeleccionada = 'proveedores'">Ver Proveedores</a></li>
+    <li class="reportes"><a (click)="vistaSeleccionada = 'reportes'">Generar Reporte</a></li>
+    <li class="cerrar"><a (click)="cerrarSesion()">Cerrar Sesión</a></li>
+    </ul>
+  </nav>
+
+  <!-- TÍTULO -->
 <h2>Bienvenido a la sección Usuario Mueblería</h2>
-
-<!-- Solo visible para Usuario -->
-<div *ngIf="rol === 'usuario'">
-  <h3>Panel de Usuario</h3>
-  <h4>Selecciona lo que deseas hacer</h4>
-
-  <div class="menu">
-    <button (click)="vistaSeleccionada = 'stock'">Ver Stock</button>
-    <button (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</button>
-    <button (click)="vistaSeleccionada = 'proveedores'">Ver Proveedores</button>
-    <button (click)="vistaSeleccionada = 'reportes'">Generar Reporte</button>
-  </div>
-</div>
 
 <!-- Contenido correspondiente a cada vista -->
 <div class="contenido">
