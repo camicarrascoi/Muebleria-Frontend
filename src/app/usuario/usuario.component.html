@@ -4,18 +4,62 @@
 <nav class="navbar" *ngIf="rol === 'usuario'">
   <div class="navbar-logo">🪑 Mueblería Don Pepe</div>
 
- <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
-    ☰
-  </button>
+ <button class="menu-toggle" (click)="toggleMenu()">☰</button>
+  <ul class="navbar-links" [ngClass]="{ 'open': menuAbierto }">
 
-  <ul class="navbar-links" [class.open]="menuAbierto">
-    <li class="stock"><a (click)="vistaSeleccionada = 'stock'">Ver Stock</a></li>
-    <li class="agregarMueble"><a (click)="vistaSeleccionada = 'agregarMueble'">Agregar Mueble</a></li>
-    <li class="proveedores"><a (click)="vistaSeleccionada = 'proveedores'">Ver Proveedores</a></li>
-    <li class="reportes"><a (click)="vistaSeleccionada = 'reportes'">Generar Reporte</a></li>
-    <li class="cerrar"><a (click)="cerrarSesion()">Cerrar Sesión</a></li>
-    </ul>
-  </nav>
+    <!--Stock -->
+    <li class="stock">
+      <a href = "#">Stock</a>
+      <ul class="submenu">
+        <li><a (click)="vistaSeleccionada = 'stock'">Ver Stock</a></li>
+      </ul>
+    </li>
+
+    <!-- Agregar Mueble -->
+
+    <li class="mueble">
+      <a href="#">Muebles</a>
+      <ul class="submenu">
+        <li><a (click)="vistaSeleccionada = 'agregarMueble'">Ver muebles</a></li>
+        <li><a href="#">Agregar mueble</a></li>
+      </ul>
+    </li>
+
+    <!--Materiales-->
+    <li class="materiales">
+      <a href="#">Materiales</a>
+      <ul class="submenu">
+        <li><a href="#">Ver materiales</a></li>
+        <li><a href="#">Agregar material</a></li>
+      </ul>
+    </li>
+
+    <!-- Proveedores -->
+    <li class="proveedores">
+      <a href="#">Proveedores</a>
+      <ul class="submenu">
+        <li><a (click)="vistaSeleccionada = 'proveedores'">Listado de proveedores</a></li>
+        <li><a href="#">Agregar proveedor</a></li>
+      </ul>
+    </li>
+
+    <!-- Reportes -->
+    <li class="reportes">
+      <a href="#">Reportes</a>
+      <ul class="submenu">
+        <li><a (click)="vistaSeleccionada = 'reportes'">Generar Reporte</a></li>
+        <li><a href="#">Descargar PDF</a></li>
+        <li><a href="#">Descargar Excel</a></li>
+      </ul>
+    </li>
+
+    <!-- Cerrar sesión -->
+    <li class="cerrar">
+      <a (click)="cerrarSesion()">🔒 Cerrar sesión</a>
+    </li>
+
+  </ul>
+</nav>
 
   <!-- TÍTULO -->
 <h2>Bienvenido a la sección Usuario Mueblería</h2>

@@ -69,7 +69,8 @@ h2 {
 
 /* Colores por botón */
 .navbar-links li.stock { background-color: #3b5998; }   
-.navbar-links li.mueble { background-color: #4caf50; }   
+.navbar-links li.mueble { background-color: #4caf50; }
+.navbar-links li.materiales { background-color: #e53935; }   
 .navbar-links li.proveedores { background-color: #f4b400; }   
 .navbar-links li.reportes { background-color: #8e24aa; }   
 .navbar-links li.cerrar { background-color: #d32f2f; }
@@ -107,14 +108,14 @@ h2 {
   padding: 10px 15px;
   display: block;
   text-align: left;
-  color: #4b3621;
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.9rem;
   background-color: transparent;
 }
 
 .submenu li a:hover {
-  background-color: #f0e6d6;
+  background-color: #565656;
 }
 
 /* Mostrar submenu al pasar el mouse */
