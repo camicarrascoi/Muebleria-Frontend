@@ -36,13 +36,12 @@ export class AdminComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
-  menuAbierto = true;
+  menuAbierto = false;
  toggleMenu() {
   this.menuAbierto = !this.menuAbierto;
 }
 
 cerrarSesion() {
-  // Aquí puedes hacer logout y redirigir al login
   this.router.navigate(['/login']);
 }
 }
