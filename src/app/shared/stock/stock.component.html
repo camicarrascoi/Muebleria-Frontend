@@ -1,1 +1,18 @@
-<p>stock works!</p>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Categoría</th>
+      <th>Stock</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let mueble of muebles">
+      <td>{{ mueble.id }}</td>
+      <td>{{ mueble.nombre }}</td>
+      <td>{{ mueble.categoria }}</td>
+      <td>{{ mueble.stock }}</td>
+    </tr>
+  </tbody>
+</table>
