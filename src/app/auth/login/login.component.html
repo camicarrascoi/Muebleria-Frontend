@@ -1,0 +1,11 @@
+<form (ngSubmit)="onLogin()">
+  <label>Email</label>
+  <input type="email" [(ngModel)]="correo" name="correo" required />
+  
+  <label>Clave</label>
+  <input type="password" [(ngModel)]="clave" name="clave" required />
+  
+  <button type="submit">Ingresar</button>
+
+  <p *ngIf="error" style="color:red">{{ error }}</p>
+</form>

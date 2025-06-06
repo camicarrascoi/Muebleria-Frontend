@@ -1,0 +1,16 @@
+<h2>Dashboard</h2>
+<p>Bienvenido al inventario mueblería</p>
+
+<button (click)="logout()">Cerrar sesión</button>
+
+<nav *ngIf="rol">
+  <ul>
+    <li><a routerLink="muebles">Muebles</a></li>
+    <li><a routerLink="materiales">Materiales</a></li>
+    <li><a routerLink="proveedores">Proveedores</a></li>
+    <li><a routerLink="ventas">Ventas</a></li>
+  </ul>
+</nav>
+
+<router-outlet></router-outlet>
+
