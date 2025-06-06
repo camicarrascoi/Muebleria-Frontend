@@ -1,16 +1,15 @@
-<h2>Dashboard</h2>
+<h2>MUEBLERIA DON PEPE</h2>
 <p>Bienvenido al inventario mueblería</p>
 
-<button (click)="logout()">Cerrar sesión</button>
+<button (click)="logout()" class="btn cerrar">Cerrar sesión</button>
 
-<nav *ngIf="rol">
-  <ul>
-    <li><a routerLink="muebles">Muebles</a></li>
-    <li><a routerLink="materiales">Materiales</a></li>
-    <li><a routerLink="proveedores">Proveedores</a></li>
-    <li><a routerLink="ventas">Ventas</a></li>
+<nav *ngIf="rol" class="navbar">
+  <ul class="navbar-links">
+    <li class="mueble"><a routerLink="muebles">Muebles</a></li>
+    <li class="materiales"><a routerLink="materiales">Materiales</a></li>
+    <li class="proveedores"><a routerLink="proveedores">Proveedores</a></li>
+    <li class="ventas"><a routerLink="ventas">Ventas</a></li>
   </ul>
 </nav>
 
 <router-outlet></router-outlet>
-
