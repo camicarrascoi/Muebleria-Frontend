@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';  // Importa CommonModule aquí
+  // Importa CommonModule aquí
 
 @Component({
   selector: 'app-stock',
   standalone: true, // indica que es standalone
-  imports: [CommonModule],  // importa CommonModule para *ngFor
+  imports: [],  // importa CommonModule para *ngFor
   templateUrl: './stock.component.html',
   styleUrls: ['./stock.component.css']
 })

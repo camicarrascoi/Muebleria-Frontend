@@ -8,11 +8,13 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let mueble of muebles">
-      <td>{{ mueble.id }}</td>
-      <td>{{ mueble.nombre }}</td>
-      <td>{{ mueble.categoria }}</td>
-      <td>{{ mueble.stock }}</td>
-    </tr>
+    @for (mueble of muebles; track mueble) {
+      <tr>
+        <td>{{ mueble.id }}</td>
+        <td>{{ mueble.nombre }}</td>
+        <td>{{ mueble.categoria }}</td>
+        <td>{{ mueble.stock }}</td>
+      </tr>
+    }
   </tbody>
 </table>
