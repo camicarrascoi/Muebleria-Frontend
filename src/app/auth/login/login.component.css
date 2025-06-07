@@ -6,16 +6,20 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-form {
+.login-container {
   max-width: 400px;
   margin: 40px auto;
   padding: 30px;
   background-color: #5d5a4d;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  text-align: center;
   color: white;
   box-sizing: border-box;
+  text-align: center;
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
 }
 
 form label {
@@ -26,8 +30,7 @@ form label {
   text-align: left;
 }
 
-form input[type="email"],
-form input[type="password"] {
+form input {
   width: 100%;
   padding: 15px 20px;
   margin-bottom: 20px;
@@ -39,8 +42,7 @@ form input[type="password"] {
   transition: border-color 0.3s ease;
 }
 
-form input[type="email"]:focus,
-form input[type="password"]:focus {
+form input:focus {
   border-color: #4a3f35;
   outline: none;
 }
@@ -63,7 +65,7 @@ form button:hover {
   transform: scale(1.05);
 }
 
-form p {
+form .error {
   margin-top: 15px;
   font-weight: bold;
   color: #ff4c4c; /* rojo para error */

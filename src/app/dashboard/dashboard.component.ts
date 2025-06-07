@@ -129,5 +129,14 @@ export class DashboardComponent {
     localStorage.removeItem('rol');
     this.router.navigate(['/login']);
   }
+  
+  canView(section: string): boolean {
+    if (this.rol === 'admin') return true;
+    if (this.rol === 'usuario') {
+      return section === 'muebles' || section === 'materiales';
+    }
+    return false;
+  }
+
 }
 

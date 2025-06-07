@@ -11,21 +11,21 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  correo = '';
+  usuario = '';
   clave = '';
   error = '';
 
   constructor(private router: Router) {}
 
   onLogin() {
-    if (this.correo === 'admin@admin.com' && this.clave === 'admin') {
+    if (this.usuario === 'admin' && this.clave === 'admin') {
       localStorage.setItem('rol', 'admin');
       this.router.navigate(['/dashboard']);
-    } else if (this.correo === 'usuario@usuario.com' && this.clave === 'usuario') {
+    } else if (this.usuario === 'usuario' && this.clave === 'usuario') {
       localStorage.setItem('rol', 'usuario');
       this.router.navigate(['/dashboard']);
     } else {
-      this.error = 'Credenciales inválidas';
+      this.error = 'Usuario o contraseña incorrectos.';
     }
   }
 }
