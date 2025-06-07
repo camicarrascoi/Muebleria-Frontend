@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CurrencyPipe, NgIf, NgForOf } from '@angular/common';
+import { AuthService } from '../../dashboard/services/auth.service'; 
 import { Mueble } from '../../models/mueble.model';
 import { MueblesService } from '../../dashboard/services/muebles.service';
 
@@ -15,9 +16,14 @@ export class MueblesComponent implements OnInit {
   muebles: Mueble[] = [];
   esAdmin = true;
 
-  constructor(private mueblesService: MueblesService) {}
+  constructor
+  (
+    private mueblesService: MueblesService,
+    private authService: AuthService // inyecta servicio de autenticación
+  ) {}
 
   ngOnInit(): void {
+    this.esAdmin = this.authService.isAdmin(); // suponiendo que devuelve boolean
     this.cargarMuebles();
   }
 
@@ -37,7 +43,17 @@ export class MueblesComponent implements OnInit {
     return mat.id;
   }
 
-  abrirFormularioNuevo() {}
-  editarMueble(mueble: Mueble) {}
-  eliminarMueble(id: number) {}
+  abrirFormularioNuevo() {
+    // lógica para abrir formulario de agregar mueble
+  }
+
+  editarMueble(mueble: Mueble) {
+    if (!this.esAdmin) return; // seguridad extra
+    // lógica para editar
+  }
+
+  eliminarMueble(id: number) {
+    if (!this.esAdmin) return; // seguridad extra
+    // lógica para eliminar
+  }
 }
