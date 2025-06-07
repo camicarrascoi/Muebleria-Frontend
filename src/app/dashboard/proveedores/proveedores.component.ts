@@ -28,7 +28,7 @@ export class ProveedoresComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarProveedores();
-    const rol = this.authService.obtenerRol();
+    const rol = this.authService.getRole();
     this.esAdmin = rol === 'admin';
     this.esUsuario = rol === 'usuario';
   }
