@@ -14,7 +14,7 @@ export interface MaterialMueble {
 }
 
 export interface Mueble {
-  id: number;
+  id?: number;  // id opcional para facilitar creación de nuevos muebles
   nombre: string;
   descripcion: string;
   precioVenta: number;

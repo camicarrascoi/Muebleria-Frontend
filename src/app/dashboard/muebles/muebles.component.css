@@ -10,22 +10,38 @@
 /* Títulos */
 h2 {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  font-weight: 700;
 }
 
-p {
-  text-align: center;
-  margin-bottom: 30px;
+/* Botón agregar */
+button {
+  background-color: #4b3621;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3a2f1b;
 }
 
 /* Tabla */
 table {
   width: 100%;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 0 auto 30px auto;
   border-collapse: separate;
   border-spacing: 0; /* sin espacio entre celdas */
   background-color: transparent;
+  box-shadow: 0 0 10px rgba(75, 54, 33, 0.15);
+  border-radius: 12px;
+  overflow: hidden; /* para que el border-radius funcione */
 }
 
 /* Encabezados */
@@ -35,7 +51,6 @@ thead th {
   font-weight: 600;
   padding: 12px 15px;
   text-align: left;
-  border-bottom: none;
   border-right: 2px solid white; /* línea blanca entre columnas */
   position: relative;
 }
@@ -70,6 +85,7 @@ tbody tr:last-child {
 tbody td {
   padding: 12px 15px;
   border-right: 2px solid white; /* línea blanca entre columnas */
+  vertical-align: top;
 }
 
 /* No borde derecho en la última celda */
@@ -88,24 +104,100 @@ tbody tr:last-child td:last-child {
 
 /* Lista dentro de Materiales */
 ul {
-  padding-left: 15px;
+  padding-left: 20px;
   margin: 0;
   list-style-type: disc;
+  font-size: 0.9rem;
+  color: #5b4b23;
 }
 
-/* Botones */
-button {
-  background-color: #4b3621;
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  margin-right: 5px;
-  border-radius: 5px;
-  cursor: pointer;
+/* Formulario */
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff9e8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(75, 54, 33, 0.15);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  color: #4b3621;
 }
 
-button:hover {
-  background-color: #3a2f1b;
+input[type="text"],
+input[type="number"],
+input[type="email"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border: 1.5px solid #c7b885;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  color: #4b3621;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus {
+  border-color: #4b3621;
+  outline: none;
+  background-color: #fefde7;
+}
+
+/* Botones en formulario */
+form button {
+  margin-top: 15px;
+  min-width: 100px;
+}
+
+/* Ajuste responsive */
+@media (max-width: 768px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead tr {
+    display: none;
+  }
+
+  tbody tr {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    background-color: #f7f3df;
+    box-shadow: 0 2px 5px rgba(75, 54, 33, 0.1);
+    padding: 15px;
+  }
+
+  tbody td {
+    border: none;
+    padding: 10px 0;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  tbody td::before {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: 600;
+    content: attr(data-label);
+    color: #4b3621;
+  }
+
+  tbody td:last-child {
+    padding-bottom: 10px;
+  }
 }

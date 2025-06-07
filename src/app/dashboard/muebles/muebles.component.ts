@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, NgIf, NgForOf } from '@angular/common';
 import { AuthService } from '../../dashboard/services/auth.service'; 
 import { Mueble } from '../../models/mueble.model';
@@ -8,13 +9,17 @@ import { MueblesService } from '../../dashboard/services/muebles.service';
 @Component({
   selector: 'app-muebles',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, NgIf, NgForOf],
+  imports: [CommonModule, CurrencyPipe, NgIf, NgForOf, FormsModule],
   templateUrl: './muebles.component.html',
   styleUrls: ['./muebles.component.css']
 })
 export class MueblesComponent implements OnInit {
   muebles: Mueble[] = [];
-  esAdmin = true;
+  muebleSeleccionado: Mueble | null = null;
+  mostrarFormulario = false;
+
+  esAdmin = false;
+  esUsuario = false;
 
   constructor
   (
@@ -23,37 +28,68 @@ export class MueblesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.esAdmin = this.authService.isAdmin(); // suponiendo que devuelve boolean
     this.cargarMuebles();
+    const rol = this.authService.getRole();
+    this.esAdmin = rol === 'admin';
+    this.esUsuario = rol === 'usuario';
   }
 
   cargarMuebles() {
-    this.mueblesService.obtenerMuebles()
-      .subscribe({
+    this.mueblesService.obtenerMuebles().subscribe({
         next: data => this.muebles = data,
         error: err => console.error(err)
       });
   }
 
-  trackByMuebleId(index: number, mueble: Mueble) {
-    return mueble.id;
-  }
-
-  trackByMatId(index: number, mat: any) {
-    return mat.id;
-  }
-
   abrirFormularioNuevo() {
-    // lógica para abrir formulario de agregar mueble
+    this.muebleSeleccionado = {
+      nombre: '',
+      descripcion: '',
+      precioVenta: 0,
+      stock: 0,
+      materialMuebles: []
+    };
+    this.mostrarFormulario = true;
+  }
+  editarMueble(mueble: Mueble) {
+    this.muebleSeleccionado = { ...mueble };
+    this.mostrarFormulario = true;
   }
 
-  editarMueble(mueble: Mueble) {
-    if (!this.esAdmin) return; // seguridad extra
-    // lógica para editar
+  guardarMueble() {
+    if (this.muebleSeleccionado?.id) {
+      // Editar
+      this.mueblesService.editarMueble(this.muebleSeleccionado).subscribe({
+        next: () => {
+          this.cargarMuebles();
+          this.mostrarFormulario = false;
+          this.muebleSeleccionado = null;
+        },
+        error: err => console.error(err)
+      });
+    } else {
+      // Crear nuevo
+      this.mueblesService.agregarMueble(this.muebleSeleccionado!).subscribe({
+        next: () => {
+          this.cargarMuebles();
+          this.mostrarFormulario = false;
+          this.muebleSeleccionado = null;
+        },
+        error: err => console.error(err)
+      });
+    }
   }
 
   eliminarMueble(id: number) {
-    if (!this.esAdmin) return; // seguridad extra
-    // lógica para eliminar
+    if (confirm('¿Estás seguro de eliminar este mueble?')) {
+      this.mueblesService.eliminarMueble(id).subscribe({
+        next: () => this.cargarMuebles(),
+        error: err => console.error(err)
+      });
+    }
+  }
+  cancelarFormulario() {
+    this.mostrarFormulario = false;
+    this.muebleSeleccionado = null;
   }
 }

@@ -1,1 +1,60 @@
-<p>proveedores works!</p>
+<div>
+  <h2>Listado de Proveedores</h2>
+
+  <!-- Botón Agregar (visible para ambos roles) -->
+  <button (click)="abrirFormularioNuevo()">Agregar proveedor</button>
+
+  <!-- Tabla de proveedores -->
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Dirección</th>
+        <th *ngIf="esAdmin">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let proveedor of proveedores">
+        <td>{{ proveedor.nombre }}</td>
+        <td>{{ proveedor.telefono }}</td>
+        <td>{{ proveedor.correo }}</td>
+        <td>{{ proveedor.direccion }}</td>
+        <td *ngIf="esAdmin">
+          <button (click)="editarProveedor(proveedor)">Editar</button>
+          <button (click)="eliminarProveedor(proveedor.id!)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Formulario de agregar/editar -->
+  <div *ngIf="mostrarFormulario">
+    <h3>{{ proveedorSeleccionado?.id ? 'Editar proveedor' : 'Agregar nuevo proveedor' }}</h3>
+    <form (ngSubmit)="guardarProveedor()">
+      <label>
+        Nombre:
+        <input type="text" [(ngModel)]="proveedorSeleccionado!.nombre" name="nombre" required />
+      </label>
+      <br />
+      <label>
+        Teléfono:
+        <input type="text" [(ngModel)]="proveedorSeleccionado!.telefono" name="telefono" required />
+      </label>
+      <br />
+      <label>
+        Correo:
+        <input type="email" [(ngModel)]="proveedorSeleccionado!.correo" name="correo" required />
+      </label>
+      <br />
+      <label>
+        Dirección:
+        <input type="text" [(ngModel)]="proveedorSeleccionado!.direccion" name="direccion" required />
+      </label>
+      <br />
+      <button type="submit">Guardar</button>
+      <button type="button" (click)="cancelarFormulario()">Cancelar</button>
+    </form>
+  </div>
+</div>

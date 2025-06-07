@@ -1,0 +1,111 @@
+:host {
+  display: block;
+  background-color: #fdf8ed; /* fondo crema */
+  padding: 30px;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  color: #4b3621; /* café para todo el texto */
+}
+
+/* Títulos */
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+p {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Tabla */
+table {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0; /* sin espacio entre celdas */
+  background-color: transparent;
+}
+
+/* Encabezados */
+thead th {
+  background-color: #4b3621; /* café oscuro */
+  color: white;
+  font-weight: 600;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: none;
+  border-right: 2px solid white; /* línea blanca entre columnas */
+  position: relative;
+}
+
+/* No poner borde derecho en el último th */
+thead th:last-child {
+  border-right: none;
+}
+
+/* Bordes redondeados solo en esquinas superiores */
+thead th:first-child {
+  border-top-left-radius: 12px;
+}
+
+thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+/* Filas */
+tbody tr {
+  background-color: #fdf8ed; /* fondo crema */
+  color: #4b3621; /* texto café */
+  border-bottom: 1px solid white;
+}
+
+/* Última fila no tiene borde inferior */
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Celdas */
+tbody td {
+  padding: 12px 15px;
+  border-right: 2px solid white; /* línea blanca entre columnas */
+}
+
+/* No borde derecho en la última celda */
+tbody td:last-child {
+  border-right: none;
+}
+
+/* Bordes redondeados solo en esquinas inferiores */
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+/* Lista dentro de Materiales (si algún día usas listas en proveedores) */
+ul {
+  padding-left: 15px;
+  margin: 0;
+  list-style-type: disc;
+}
+
+/* Botones */
+button {
+  background-color: #4b3621;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  margin-right: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3a2f1b;
+}

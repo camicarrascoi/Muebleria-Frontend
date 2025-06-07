@@ -1,35 +1,69 @@
-<div class="acciones" style="margin-bottom: 20px; text-align: right;">
-  <button (click)="abrirFormularioNuevo()" class="btn agregar">Agregar Mueble</button>
-</div>
+<div>
+  <h2>Listado de Muebles</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Descripción</th>
-      <th>Precio Venta</th>
-      <th>Stock</th>
-      <th>Materiales</th>
-      <th *ngIf="esAdmin">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let mueble of muebles; trackBy: trackByMuebleId">
-      <td>{{ mueble.nombre }}</td>
-      <td>{{ mueble.descripcion }}</td>
-      <td>{{ mueble.precioVenta | currency:'CLP' }}</td>
-      <td>{{ mueble.stock }}</td>
-      <td>
-        <ul>
-          <li *ngFor="let mat of mueble.materialMuebles; trackBy: trackByMatId">
-            {{ mat.cantidadUtilizada }} {{ mat.material.unidadDeMedida }} de {{ mat.material.nombre }}
-          </li>
-        </ul>
-      </td>
-      <td *ngIf="esAdmin">
-        <button (click)="editarMueble(mueble)">Editar</button>
-        <button (click)="eliminarMueble(mueble.id)">Eliminar</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <!-- Botón Agregar (visible para ambos roles) -->
+  <button (click)="abrirFormularioNuevo()">Agregar mueble</button>
+
+  <!-- Tabla de muebles -->
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio Venta</th>
+        <th>Stock</th>
+        <th>Materiales</th>
+        <th *ngIf="esAdmin">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mueble of muebles">
+        <td>{{ mueble.nombre }}</td>
+        <td>{{ mueble.descripcion }}</td>
+        <td>{{ mueble.precioVenta | currency:'CLP' }}</td>
+        <td>{{ mueble.stock }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let mat of mueble.materialMuebles">
+              {{ mat.cantidadUtilizada }} {{ mat.material.unidadDeMedida }} de {{ mat.material.nombre }}
+            </li>
+          </ul>
+        </td>
+        <td *ngIf="esAdmin">
+          <button (click)="editarMueble(mueble)">Editar</button>
+          <button (click)="eliminarMueble(mueble.id!)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Formulario de agregar/editar -->
+  <div *ngIf="mostrarFormulario">
+    <h3>{{ muebleSeleccionado?.id ? 'Editar mueble' : 'Agregar nuevo mueble' }}</h3>
+    <form (ngSubmit)="guardarMueble()">
+      <label>
+        Nombre:
+        <input type="text" [(ngModel)]="muebleSeleccionado!.nombre" name="nombre" required />
+      </label>
+      <br />
+      <label>
+        Descripción:
+        <input type="text" [(ngModel)]="muebleSeleccionado!.descripcion" name="descripcion" required />
+      </label>
+      <br />
+      <label>
+        Precio Venta:
+        <input type="number" [(ngModel)]="muebleSeleccionado!.precioVenta" name="precioVenta" required />
+      </label>
+      <br />
+      <label>
+        Stock:
+        <input type="number" [(ngModel)]="muebleSeleccionado!.stock" name="stock" required />
+      </label>
+      <br />
+      <!-- Puedes agregar aquí selección de materiales si lo deseas -->
+      <button type="submit">Guardar</button>
+      <button type="button" (click)="cancelarFormulario()">Cancelar</button>
+    </form>
+  </div>
+</div>
