@@ -11,7 +11,7 @@ export const dashboardRoutes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     children: [
-      { path: 'muebles', component: MueblesComponent },
+      { path: 'muebles', loadComponent: () => import('./muebles/muebles.component').then(m => m.MueblesComponent) },
       { path: 'materiales', component: MaterialesComponent },
       { path: 'proveedores', component: ProveedoresComponent },
       { path: 'ventas', component: VentasComponent },

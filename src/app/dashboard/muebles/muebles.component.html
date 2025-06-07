@@ -1,1 +1,35 @@
-<p>muebles works!</p>
+<div class="acciones" style="margin-bottom: 20px; text-align: right;">
+  <button (click)="abrirFormularioNuevo()" class="btn agregar">Agregar Mueble</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Descripción</th>
+      <th>Precio Venta</th>
+      <th>Stock</th>
+      <th>Materiales</th>
+      <th *ngIf="esAdmin">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let mueble of muebles; trackBy: trackByMuebleId">
+      <td>{{ mueble.nombre }}</td>
+      <td>{{ mueble.descripcion }}</td>
+      <td>{{ mueble.precioVenta | currency:'CLP' }}</td>
+      <td>{{ mueble.stock }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let mat of mueble.materialMuebles; trackBy: trackByMatId">
+            {{ mat.cantidadUtilizada }} {{ mat.material.unidadDeMedida }} de {{ mat.material.nombre }}
+          </li>
+        </ul>
+      </td>
+      <td *ngIf="esAdmin">
+        <button (click)="editarMueble(mueble)">Editar</button>
+        <button (click)="eliminarMueble(mueble.id)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
