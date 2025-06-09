@@ -15,6 +15,10 @@ export class MueblesService {
   obtenerMuebles(): Observable<Mueble[]> {
     return this.http.get<Mueble[]>(this.apiUrl);
   }
+  
+  obtenerMueblePorId(id: number): Observable<Mueble> {
+    return this.http.get<Mueble>(`${this.apiUrl}/${id}`);
+  }
 
   agregarMueble(mueble: Mueble): Observable<Mueble> {
     return this.http.post<Mueble>(this.apiUrl, mueble);

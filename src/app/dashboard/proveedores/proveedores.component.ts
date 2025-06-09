@@ -43,9 +43,11 @@ export class ProveedoresComponent implements OnInit {
   abrirFormularioNuevo() {
     this.proveedorSeleccionado = {
       nombre: '',
-      telefono: '',
+      rut: '',
+      direccion: '',
       correo: '',
-      direccion: ''
+      telefono: '',
+      materiales: []
     };
     this.mostrarFormulario = true;
   }

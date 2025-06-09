@@ -1,192 +1,174 @@
-:host {
-  display: block;
-  background-color: #fdf8ed; /* fondo crema */
-  padding: 30px;
-  min-height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
-  color: #4b3621; /* café para todo el texto */
+/* Contenedor principal */
+.proveedores-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Títulos */
-h2 {
+/* Título */
+.proveedores-container h2 {
   text-align: center;
+  color: #333;
   margin-bottom: 20px;
-  font-weight: 700;
 }
 
-/* Botones */
-button {
-  background-color: #4b3621;
-  border: none;
+/* Botón Agregar */
+.btn-agregar {
+  background-color: #4CAF50;
   color: white;
-  padding: 8px 16px;
-  margin-bottom: 20px;
+  border: none;
+  padding: 10px 18px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  font-weight: 600;
+  margin-bottom: 15px;
   transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #3a2f1b;
+.btn-agregar:hover {
+  background-color: #45a049;
 }
 
-/* Tabla */
-table {
+/* Tabla proveedores */
+.tabla-proveedores {
   width: 100%;
-  max-width: 1000px;
-  margin: 0 auto 30px auto;
-  border-collapse: separate;
-  border-spacing: 0; /* sin espacio entre celdas */
-  background-color: transparent;
-  box-shadow: 0 0 10px rgba(75, 54, 33, 0.15);
-  border-radius: 12px;
-  overflow: hidden; /* para que el border-radius funcione */
+  border-collapse: collapse;
+  margin-bottom: 25px;
 }
 
-/* Encabezados */
-thead th {
-  background-color: #4b3621; /* café oscuro */
-  color: white;
-  font-weight: 600;
+.tabla-proveedores th,
+.tabla-proveedores td {
   padding: 12px 15px;
   text-align: left;
-  border-right: 2px solid white; /* línea blanca entre columnas */
-  position: relative;
+  border-bottom: 1px solid #ddd;
+  color: #444;
 }
 
-/* No poner borde derecho en el último th */
-thead th:last-child {
-  border-right: none;
+.tabla-proveedores thead {
+  background-color: #fbc02d;
+  color: white;
+  font-weight: bold;
 }
 
-/* Bordes redondeados solo en esquinas superiores */
-thead th:first-child {
-  border-top-left-radius: 12px;
+.tabla-proveedores tbody tr:hover {
+  background-color: #f1f1f1;
 }
 
-thead th:last-child {
-  border-top-right-radius: 12px;
+/* Columnas acciones */
+.acciones button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* Filas */
-tbody tr {
-  background-color: #fdf8ed; /* fondo crema */
-  color: #4b3621; /* texto café */
-  border-bottom: 1px solid white;
+.btn-editar {
+  background-color: #ffc107; /* amarillo */
+  color: #333;
 }
 
-/* Última fila no tiene borde inferior */
-tbody tr:last-child {
-  border-bottom: none;
+.btn-editar:hover {
+  background-color: #e0a800;
 }
 
-/* Celdas */
-tbody td {
-  padding: 12px 15px;
-  border-right: 2px solid white; /* línea blanca entre columnas */
-  vertical-align: top;
+.btn-eliminar {
+  background-color: #dc3545; /* rojo */
+  color: white;
 }
 
-/* No borde derecho en la última celda */
-tbody td:last-child {
-  border-right: none;
-}
-
-/* Bordes redondeados solo en esquinas inferiores */
-tbody tr:last-child td:first-child {
-  border-bottom-left-radius: 12px;
-}
-
-tbody tr:last-child td:last-child {
-  border-bottom-right-radius: 12px;
-}
-
-/* Lista de proveedores */
-ul {
-  padding-left: 20px;
-  margin: 0;
-  list-style-type: disc;
-  font-size: 0.9rem;
-  color: #5b4b23;
+.btn-eliminar:hover {
+  background-color: #b02a37;
 }
 
 /* Formulario */
-form {
-  max-width: 600px;
-  margin: 0 auto;
-  background-color: #fff9e8;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(75, 54, 33, 0.15);
+.formulario-proveedor {
+  background-color: #ffffff;
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
+.formulario-proveedor h3 {
+  margin-top: 0;
+  color: #007BFF;
+  margin-bottom: 15px;
+}
+
+/* Labels e inputs */
 label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   font-weight: 600;
-  color: #4b3621;
+  color: #555;
 }
 
-form input {
+input[type="text"],
+input[type="email"] {
   width: 100%;
-  max-width: 400px;
-  padding: 8px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  color: #4b3621;
-  background-color: #fff;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
 }
 
-form button[type="submit"],
-form button[type="button"] {
-  margin-top: 15px;
+input[type="text"]:focus,
+input[type="email"]:focus {
+  border-color: #007BFF;
+  outline: none;
 }
 
-/* Ajuste responsive */
-@media (max-width: 768px) {
-  table,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
-    display: block;
-  }
+/* Mensajes de error */
+.error {
+  color: #dc3545;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
 
-  thead tr {
-    display: none;
-  }
+/* Botones del formulario */
+.botones-formulario {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
 
-  tbody tr {
-    margin-bottom: 20px;
-    border-radius: 12px;
-    background-color: #f7f3df;
-    box-shadow: 0 2px 5px rgba(75, 54, 33, 0.1);
-    padding: 15px;
-  }
+.botones-formulario button {
+  padding: 10px 20px;
+  font-size: 15px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-  tbody td {
-    border: none;
-    padding: 10px 0;
-    position: relative;
-    padding-left: 50%;
-  }
+.botones-formulario button[type="submit"] {
+  background-color: #007BFF;
+  color: white;
+}
 
-  tbody td::before {
-    position: absolute;
-    top: 10px;
-    left: 15px;
-    width: 45%;
-    white-space: nowrap;
-    font-weight: 600;
-    content: attr(data-label);
-    color: #4b3621;
-  }
+.botones-formulario button[type="submit"]:disabled {
+  background-color: #a1c4fd;
+  cursor: not-allowed;
+}
 
-  tbody td:last-child {
-    padding-bottom: 10px;
-  }
+.botones-formulario button[type="submit"]:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.botones-formulario button[type="button"] {
+  background-color: #6c757d;
+  color: white;
+}
+
+.botones-formulario button[type="button"]:hover {
+  background-color: #5a6268;
 }

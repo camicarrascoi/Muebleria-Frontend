@@ -1,7 +1,15 @@
 export interface Proveedor {
-  id?: number; // <- el signo ? lo vuelve opcional
+  id?: number;
   nombre: string;
-  telefono: string;
-  correo: string;
+  rut: string;
   direccion: string;
+  correo: string;
+  telefono: string;
+  materiales: MaterialSimpleProveedor[];
+}
+
+export interface MaterialSimpleProveedor {
+  id: number;
+  nombre: string;
+  tipo: string;
 }

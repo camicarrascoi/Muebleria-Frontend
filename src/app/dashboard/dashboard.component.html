@@ -1,15 +1,34 @@
-<h2>MUEBLERIA DON PEPE</h2>
-<p>Bienvenido al inventario mueblería</p>
 
-<button (click)="logout()" class="btn cerrar">Cerrar sesión</button>
+<div class="dashboard">
+  <h2>MUEBLERÍA DON PEPE</h2>
+  <p>Bienvenido al inventario mueblería</p>
 
-<nav *ngIf="rol" class="navbar">
-  <ul class="navbar-links">
-    <li class="muebles"><a routerLink="muebles">Muebles</a></li>
-    <li class="materiales"><a routerLink="materiales">Materiales</a></li>
-    <li class="proveedores"><a routerLink="proveedores">Proveedores</a></li>
-    <li class="ventas"><a routerLink="ventas">Ventas</a></li>
-  </ul>
+  <div class="resumen" *ngIf="mostrarResumen">
+    <div class="tarjeta-resumen muebles">
+      <span class="cantidad">{{ cantidadMuebles }}</span>
+      <h3>Muebles</h3>
+    </div>
+    <div class="tarjeta-resumen materiales">
+      <span class="cantidad">{{ cantidadMateriales }}</span>
+      <h3>Materiales</h3>
+    </div>
+    <div class="tarjeta-resumen proveedores">
+      <span class="cantidad">{{ cantidadProveedores }}</span>
+      <h3>Proveedores</h3>
+    </div>
+    <div class="tarjeta-resumen ventas">
+      <span class="cantidad">{{ cantidadVentas }}</span>
+      <h3>Ventas</h3>
+    </div>
+  </div>
+
+  <nav class="navbar">
+  <a routerLink="muebles" class="nav-link muebles">Muebles</a>
+  <a routerLink="materiales" class="nav-link materiales">Materiales</a>
+  <a routerLink="proveedores" class="nav-link proveedores">Proveedores</a>
+  <a routerLink="ventas" class="nav-link ventas">Ventas</a>
+  <a (click)="logout()" class="nav-link cerrar">Cerrar sesión</a>
 </nav>
 
-<router-outlet></router-outlet>
+  <router-outlet (activate)="mostrarResumen = false" (deactivate)="mostrarResumen = true"></router-outlet>
+</div>

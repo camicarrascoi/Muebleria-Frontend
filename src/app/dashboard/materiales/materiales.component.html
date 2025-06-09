@@ -1,1 +1,77 @@
-<p>materiales works!</p>
+<div>
+  <h2>Listado de Materiales</h2>
+
+  <!-- Botón Agregar (visible para ambos roles) -->
+  <button (click)="abrirFormularioNuevo()">Agregar material</button>
+
+  <!-- Tabla de materiales -->
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nombre</th> 
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>Unidad de Medida</th>
+        <th>Stock Actual</th>
+        <th>Proveedores</th>
+        <th *ngIf="esAdmin">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let material of materiales">
+        <td>{{ material.nombre }}Camila</td>
+        <td>{{ material.tipo }}</td>
+        <td>{{ material.descripcion }}</td>
+        <td>{{ material.unidadDeMedida }}</td>
+        <td>{{ material.stockActual }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let prov of material.proveedorMateriales">
+              {{ prov.nombre }}
+            </li>
+          </ul>
+        </td>
+        <td *ngIf="esAdmin">
+          <button (click)="editarMaterial(material)">Editar</button>
+          <button (click)="eliminarMaterial(material.id!)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Formulario de agregar/editar -->
+  <div *ngIf="mostrarFormulario">
+    <h3>{{ materialSeleccionado?.id ? 'Editar material' : 'Agregar nuevo material' }}</h3>
+    <form (ngSubmit)="guardarMaterial()">
+      <label>
+        Nombre:
+        <input type="text" [(ngModel)]="materialSeleccionado!.nombre" name="nombre" required />
+      </label>
+      <br />
+      <label>
+        Tipo:
+        <input type="text" [(ngModel)]="materialSeleccionado!.tipo" name="tipo" required />
+      </label>
+      <br />
+      <label>
+        Descripción:
+        <input type="text" [(ngModel)]="materialSeleccionado!.descripcion" name="descripcion" required />
+      </label>
+      <br />
+      <label>
+        Unidad de Medida:
+        <input type="text" [(ngModel)]="materialSeleccionado!.unidadDeMedida" name="unidadDeMedida" required />
+      </label>
+      <br />
+      <label>
+        Stock Actual:
+        <input type="number" [(ngModel)]="materialSeleccionado!.stockActual" name="stockActual" required />
+      </label>
+      <br />
+      <!-- Acá podrías agregar selección de proveedores si deseas -->
+      <button type="submit">Guardar</button>
+      <button type="button" (click)="cancelarFormulario()">Cancelar</button>
+    </form>
+  </div>
+</div>
+

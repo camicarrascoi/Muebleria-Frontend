@@ -16,22 +16,17 @@ import { MueblesService } from '../../dashboard/services/muebles.service';
 export class MueblesComponent implements OnInit {
   muebles: Mueble[] = [];
   muebleSeleccionado: Mueble | null = null;
-  mostrarFormulario = false;
+  mostrarFormulario: boolean = false;
+  esAdmin: boolean = false;
 
-  esAdmin = false;
-  esUsuario = false;
-
-  constructor
-  (
+  constructor(
     private mueblesService: MueblesService,
     private authService: AuthService // inyecta servicio de autenticación
   ) {}
 
   ngOnInit(): void {
     this.cargarMuebles();
-    const rol = this.authService.getRole();
-    this.esAdmin = rol === 'admin';
-    this.esUsuario = rol === 'usuario';
+    this.esAdmin = this.authService.isAdmin(); // verifica si el usuario es admin
   }
 
   cargarMuebles() {
@@ -51,6 +46,7 @@ export class MueblesComponent implements OnInit {
     };
     this.mostrarFormulario = true;
   }
+
   editarMueble(mueble: Mueble) {
     this.muebleSeleccionado = { ...mueble };
     this.mostrarFormulario = true;
