@@ -5,9 +5,8 @@ import { RouterModule } from '@angular/router';
   selector: 'app-root',
   standalone: true,
   imports: [RouterModule], // Importa RouterModule para <router-outlet>
-  template: `
-    <h1>Inventario Mueblería</h1>
-    <router-outlet></router-outlet>
-  `
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {}

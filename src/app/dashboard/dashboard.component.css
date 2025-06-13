@@ -1,98 +1,148 @@
-body {
-  background-color: #fdf8ed;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
 .dashboard {
+  max-width: 900px;
+  margin: 30px auto;
+  background-color: #f9f5ee; /* beige claro */
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #4a4a4a;
   text-align: center;
-  padding: 20px;
 }
 
-h2 {
-  color: #4e342e;
-  margin-bottom: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.dashboard h2 {
+  margin-bottom: 5px;
+  font-size: 2.2rem;
+  color: #5a3e1b; /* café oscuro */
 }
 
-p {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #6d4c41;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.dashboard p {
+  margin-bottom: 25px;
+  font-size: 1.15rem;
+  color: #7a6b4f; /* café claro */
 }
 
+/* Barra de navegación */
 .navbar {
-  background-color: #4e342e;
-  padding: 10px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #5a3e1b; /* café */
   display: flex;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
-.navbar a {
-  padding: 8px 16px;
+  gap: 20px;
+  padding: 12px 0;
   border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.nav-link {
   color: white;
+  font-weight: 600;
   text-decoration: none;
-  font-weight: bold;
-  transition: transform 0.2s ease;
+  font-size: 1.05rem;
+  padding: 6px 15px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
-.navbar a:hover {
-  transform: scale(1.05);
+.nav-link.muebles:hover {
+  background-color: #4285F4; /* Azul Google */
+  color: white;
 }
 
-.muebles {
-  background-color: #388e3c; /* verde */
+.nav-link.materiales:hover {
+  background-color: #DB4437; /* Rojo Google */
+  color: white;
 }
 
-.materiales {
-  background-color: #1976d2; /* azul */
+.nav-link.proveedores:hover {
+  background-color: #F4B400; /* Amarillo Google */
+  color: black; /* Para mejor contraste con amarillo */
 }
 
-.proveedores {
-  background-color: #fbc02d; /* amarillo */
-  color: #333;
+.nav-link.ventas:hover {
+  background-color: #0F9D58; /* Verde Google */
+  color: white;
 }
 
-.ventas {
-  background-color: #8e24aa; /* morado */
-}
-
-.cerrar {
-  background-color: #d32f2f; /* rojo */
-  color: white !important;
-}
-
+/* Resumen tarjetas */
 .resumen {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 18px;
   flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 
 .tarjeta-resumen {
-  background-color: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  width: 120px;
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  background-color: #fff;
+  border-radius: 10px;
+  width: 180px;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.1);
+  padding: 20px 15px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.tarjeta-resumen:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
 .tarjeta-resumen .cantidad {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 5px;
+  display: block;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #5a3e1b;
+}
+
+.tarjeta-resumen h3 {
+  font-weight: 600;
+  color: #7a6b4f;
+}
+
+/* Colores específicos (opcionales) */
+.tarjeta-resumen.muebles {
+  border-top: 5px solid #4285F4; /* Azul Google */
+}
+
+.tarjeta-resumen.materiales {
+  border-top: 5px solid #DB4437; /* Rojo Google */
+}
+
+.tarjeta-resumen.proveedores {
+  border-top: 5px solid #F4B400; /* Amarillo Google */
+}
+
+.tarjeta-resumen.ventas {
+  border-top: 5px solid #0F9D58; /* Verde Google */
+}
+
+
+/* Link cerrar sesión más separado a la derecha */
+.nav-link.cerrar {
+  margin-left: auto;
+  background-color: #d91111;
+  font-weight: 700;
+}
+
+.nav-link.cerrar:hover {
+  background-color: #af1010;
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .resumen {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tarjeta-resumen {
+    width: 80%;
+  }
 }

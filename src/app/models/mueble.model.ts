@@ -8,7 +8,7 @@ export interface Material {
 }
 
 export interface MaterialMueble {
-  id: number;
+  id?: number;
   cantidadUtilizada: number;
   material: Material;
 }

@@ -1,14 +1,16 @@
 <div>
   <h2>Listado de Materiales</h2>
 
-  <!-- Botón Agregar (visible para ambos roles) -->
-  <button (click)="abrirFormularioNuevo()">Agregar material</button>
+  <!-- Botón Agregar solo visible para admin -->
+  <div class="acciones">
+    <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar material</button>
+  </div>
 
   <!-- Tabla de materiales -->
-  <table border="1">
+  <table *ngIf="materiales.length > 0" border="1">
     <thead>
       <tr>
-        <th>Nombre</th> 
+        <th>Nombre</th>
         <th>Tipo</th>
         <th>Descripción</th>
         <th>Unidad de Medida</th>
@@ -19,7 +21,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let material of materiales">
-        <td>{{ material.nombre }}Camila</td>
+        <td>{{ material.nombre }}</td>
         <td>{{ material.tipo }}</td>
         <td>{{ material.descripcion }}</td>
         <td>{{ material.unidadDeMedida }}</td>
@@ -32,16 +34,16 @@
           </ul>
         </td>
         <td *ngIf="esAdmin">
-          <button (click)="editarMaterial(material)">Editar</button>
-          <button (click)="eliminarMaterial(material.id!)">Eliminar</button>
+          <button (click)="editarMaterial(material)">✏️ Editar</button>
+          <button (click)="eliminarMaterial(material.id!)">🗑️ Eliminar</button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- Formulario de agregar/editar -->
-  <div *ngIf="mostrarFormulario">
-    <h3>{{ materialSeleccionado?.id ? 'Editar material' : 'Agregar nuevo material' }}</h3>
+  <!-- Formulario para agregar/editar materiales -->
+  <div *ngIf="mostrarFormulario" class="formulario-material">
+    <h3>{{ materialSeleccionado?.id ? 'Editar Material' : 'Agregar Material' }}</h3>
     <form (ngSubmit)="guardarMaterial()">
       <label>
         Nombre:
@@ -68,10 +70,15 @@
         <input type="number" [(ngModel)]="materialSeleccionado!.stockActual" name="stockActual" required />
       </label>
       <br />
-      <!-- Acá podrías agregar selección de proveedores si deseas -->
-      <button type="submit">Guardar</button>
-      <button type="button" (click)="cancelarFormulario()">Cancelar</button>
+      <!-- Ejemplo simple de selección de proveedores -->
+      <label>
+        Proveedores (IDs separados por coma):
+        <input type="text" [(ngModel)]="proveedoresSeleccionados" name="proveedores" placeholder="1,3,5" />
+      </label>
+      <br />
+
+      <button type="submit">💾 Guardar</button>
+      <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
     </form>
   </div>
 </div>
-

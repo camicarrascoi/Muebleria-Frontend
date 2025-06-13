@@ -21,7 +21,7 @@ export const dashboardRoutes: Routes = [
       },
       {
         path: 'ventas',
-        loadComponent: () => import('./ventas/ventas.component').then(m => m.VentasComponent)
+        loadComponent: () => import('./venta/venta.component').then(m => m.VentasComponent)
       },
       
     ]

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MaterialesService } from '../dashboard/services/materiales.service';
-import { MueblesService } from '../dashboard/services/muebles.service';
+import { MueblesService } from './services/muebles.service';
 import { ProveedoresService } from '../dashboard/services/proveedores.service';
 import { AuthService } from '../dashboard/services/auth.service';
 

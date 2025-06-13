@@ -1,7 +1,14 @@
-
 <div class="dashboard">
   <h2>MUEBLERÍA DON PEPE</h2>
   <p>Bienvenido al inventario mueblería</p>
+
+  <nav class="navbar">
+    <a routerLink="muebles" class="nav-link muebles">Muebles</a>
+    <a routerLink="materiales" class="nav-link materiales">Materiales</a>
+    <a routerLink="proveedores" class="nav-link proveedores">Proveedores</a>
+    <a routerLink="ventas" class="nav-link ventas">Ventas</a>
+    <a (click)="logout()" class="nav-link cerrar">Cerrar sesión</a>
+  </nav>
 
   <div class="resumen" *ngIf="mostrarResumen">
     <div class="tarjeta-resumen muebles">
@@ -21,14 +28,6 @@
       <h3>Ventas</h3>
     </div>
   </div>
-
-  <nav class="navbar">
-  <a routerLink="muebles" class="nav-link muebles">Muebles</a>
-  <a routerLink="materiales" class="nav-link materiales">Materiales</a>
-  <a routerLink="proveedores" class="nav-link proveedores">Proveedores</a>
-  <a routerLink="ventas" class="nav-link ventas">Ventas</a>
-  <a (click)="logout()" class="nav-link cerrar">Cerrar sesión</a>
-</nav>
 
   <router-outlet (activate)="mostrarResumen = false" (deactivate)="mostrarResumen = true"></router-outlet>
 </div>
