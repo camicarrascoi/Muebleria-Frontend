@@ -8,6 +8,16 @@ import { AuthService } from '../services/auth.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
+interface VentaMueblePayload {
+  muebles: { id: number };
+  cantidad: number;
+}
+interface VentaPayload {
+  id?: number | null;
+  fecha: Date;
+  ventaMuebles: VentaMueblePayload[];
+}
+
 @Component({
   selector: 'app-venta',
   standalone: true,
@@ -16,59 +26,50 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./venta.component.css']
 })
 export class VentaComponent implements OnInit {
-
   ventas: Venta[] = [];
   ventaSeleccionada: Venta | null = null;
-  ventaMueblesSeleccionados: string = '';
+  ventaMueblesSeleccionados = '';  // formato "1:2,3:1,5:4" o solo "1,2,3" si siempre cantidad=1
   mostrarFormulario = false;
   esAdmin = true;
 
-  constructor(private ventaService: VentaService, private authService: AuthService) {}
+  constructor(
+    private ventaService: VentaService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.esAdmin = this.authService.isAdmin();
     this.cargarVentas();
   }
 
-  cargarVentas() {
+  private cargarVentas() {
     this.ventaService.obtenerVentas().subscribe({
-      next: (data) => {
-        this.ventas = data;
-      },
-      error: (err) => {
-        console.error('Error al cargar ventas:', err);
-      }
+      next: data => this.ventas = data,
+      error: err => console.error('Error al cargar ventas:', err)
     });
   }
 
   abrirFormularioNuevo() {
-    this.ventaSeleccionada = {
-      id: null,
-      fecha: new Date(),
-      total: 0,
-      ventaMuebles: []
-    };
+    this.ventaSeleccionada = { id: null, fecha: new Date(), total: 0, ventaMuebles: [] };
     this.ventaMueblesSeleccionados = '';
     this.mostrarFormulario = true;
   }
 
   editarVenta(venta: Venta) {
-    this.ventaSeleccionada = {
-      id: venta.id,
-      fecha: venta.fecha,
-      total: venta.total,
-      ventaMuebles: [...venta.ventaMuebles]
-    };
-    this.ventaMueblesSeleccionados = venta.ventaMuebles.map(vm => vm.muebleId).join(',');
+    this.ventaSeleccionada = { ...venta, ventaMuebles: [...venta.ventaMuebles] };
+    // Reconstruir string "id:cantidad,..." para el input
+    this.ventaMueblesSeleccionados = venta.ventaMuebles
+      .map(vm => `${vm.muebleId}:${vm.cantidad}`)
+      .join(',');
     this.mostrarFormulario = true;
   }
 
   eliminarVenta(id: number) {
-    if (confirm('¿Seguro que deseas eliminar esta venta?')) {
-      this.ventaService.eliminarVenta(id).subscribe({
-        next: () => this.cargarVentas(),
-        error: err => console.error('Error al eliminar:', err)
-      });
-    }
+    if (!confirm('¿Seguro que deseas eliminar esta venta?')) return;
+    this.ventaService.eliminarVenta(id).subscribe({
+      next: () => this.cargarVentas(),
+      error: err => console.error('Error al eliminar:', err)
+    });
   }
 
   cancelarFormulario() {
@@ -77,51 +78,55 @@ export class VentaComponent implements OnInit {
   }
 
   guardarVenta() {
-  if (!this.ventaSeleccionada) return;
+    if (!this.ventaSeleccionada) return;
 
-  const ids = this.ventaMueblesSeleccionados
-    .split(',')
-    .map(id => Number(id.trim()))
-    .filter(id => !isNaN(id));
+    // Parseo de "1:2,3:1,5:4" → [{muebles:{id:1},cantidad:2},...]
+    const payloadItems: VentaMueblePayload[] = this.ventaMueblesSeleccionados
+      .split(',')
+      .map(seg => seg.trim())
+      .filter(seg => seg)
+      .map(seg => {
+        const [idStr, qtyStr] = seg.split(':').map(x => x.trim());
+        const id = Number(idStr);
+        const cantidad = qtyStr != null ? Number(qtyStr) : 1;
+        if (isNaN(id) || isNaN(cantidad)) {
+          throw new Error('Formato inválido en muebles vendidos.');
+        }
+        return { muebles: { id }, cantidad };
+      });
 
-  const muebles: VentaMueble[] = ids.map(id => ({
-    id: 0,          // id temporal para nuevos muebles en venta
-    muebleId: id,
-    nombre: '',     // vacío, o podrías buscar el nombre si tienes acceso al catálogo
-    cantidad: 1
-  }));
+    const ventaParaEnviar: VentaPayload = {
+      id: this.ventaSeleccionada.id,
+      fecha: this.ventaSeleccionada.fecha,
+      ventaMuebles: payloadItems
+    };
 
-  this.ventaSeleccionada.ventaMuebles = muebles;
+    const peticion = (!ventaParaEnviar.id)
+      ? this.ventaService.crearVenta(ventaParaEnviar)
+      : this.ventaService.editarVenta(ventaParaEnviar);
 
-  const esNueva = !this.ventaSeleccionada.id;
-
-  const peticion = esNueva
-    ? this.ventaService.crearVenta(this.ventaSeleccionada)
-    : this.ventaService.editarVenta(this.ventaSeleccionada);
-
-  peticion.subscribe({
-    next: () => {
-      this.cargarVentas();
-      this.cancelarFormulario();
-    },
-    error: err => console.error('Error al guardar venta:', err)
-  });
-}
+    peticion.subscribe({
+      next: () => {
+        this.cargarVentas();
+        this.cancelarFormulario();
+      },
+      error: err => console.error('Error al guardar venta:', err)
+    });
+  }
 
   exportarVentasExcel(): void {
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
       this.ventas.map(v => ({
         Fecha: v.fecha,
         Total: v.total,
-        MueblesVendidos: v.ventaMuebles.map(m => `${m.nombre} (x${m.cantidad})`).join(', ')
+        MueblesVendidos: v.ventaMuebles
+          .map(m => `${m.nombre} (x${m.cantidad})`)
+          .join(', ')
       }))
     );
-
-    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ventas');
-
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const data: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(data, 'ventas.xlsx');
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
+    const buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([buf], { type: 'application/octet-stream' }), 'ventas.xlsx');
   }
 }

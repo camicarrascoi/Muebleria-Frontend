@@ -6,7 +6,10 @@
   <!-- Botón Agregar solo para admin -->
   <div class="acciones">
     <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar venta</button>
-  </div>
+
+    <!-- Botón para exportar -->
+  <button (click)="exportarVentasExcel()">📥 Exportar a Excel</button>
+</div>
 
   <!-- Tabla de ventas -->
   <table *ngIf="ventas.length > 0" border="1">
@@ -41,45 +44,31 @@
   <div *ngIf="mostrarFormulario" class="formulario-venta">
     <h3>{{ ventaSeleccionada?.id ? 'Editar Venta' : 'Agregar Venta' }}</h3>
     <form (ngSubmit)="guardarVenta()" #formVenta="ngForm" novalidate>
-      <label for="fecha">Fecha:</label>
-      <input
-        id="fecha"
-        name="fecha"
-        type="date"
-        [(ngModel)]="ventaSeleccionada!.fecha"
-        required
-        #fecha="ngModel"
-      />
-      <div *ngIf="fecha.invalid && fecha.touched" class="error">
-        La fecha es obligatoria.
-      </div>
+  <label for="fecha">Fecha:</label>
+  <input
+    id="fecha"
+    name="fecha"
+    type="date"
+    [(ngModel)]="ventaSeleccionada!.fecha"
+    required
+    #fecha="ngModel"
+  />
+  <div *ngIf="fecha.invalid && fecha.touched" class="error">
+    La fecha es obligatoria.
+  </div>
 
-      <label for="total">Total (CLP):</label>
-      <input
-        id="total"
-        name="total"
-        type="number"
-        [(ngModel)]="ventaSeleccionada!.total"
-        required
-        min="0"
-        #total="ngModel"
-      />
-      <div *ngIf="total.invalid && total.touched" class="error">
-        El total es obligatorio y debe ser positivo.
-      </div>
+  <label for="ventaMuebles">Muebles vendidos (formato: id:cantidad, id:cantidad):</label>
+  <input
+    id="ventaMuebles"
+    name="ventaMuebles"
+    type="text"
+    [(ngModel)]="ventaMueblesSeleccionados"
+    placeholder="1:2,3:1,5:4"
+  />
 
-      <label for="ventaMuebles">Muebles vendidos (IDs separados por coma):</label>
-      <input
-        id="ventaMuebles"
-        name="ventaMuebles"
-        type="text"
-        [(ngModel)]="ventaMueblesSeleccionados"
-        placeholder="1,3,5"
-      />
-
-      <div class="botones-formulario">
-        <button type="submit" [disabled]="formVenta.invalid">Guardar</button>
-        <button type="button" (click)="cancelarFormulario()">Cancelar</button>
-      </div>
-    </form>
+  <div class="botones-formulario">
+    <button type="submit" [disabled]="formVenta.invalid">Guardar</button>
+    <button type="button" (click)="cancelarFormulario()">Cancelar</button>
+  </div>
+</form>
   </div>
