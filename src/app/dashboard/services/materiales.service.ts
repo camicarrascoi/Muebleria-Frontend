@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Material } from '../../models/material.model';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MaterialesService {
-  private apiUrl = 'http://localhost:8080/api/materiales'; // Ajusta la URL según tu backend
+  private apiUrl = 'http://localhost:8080/api/v1/materiales'; // Ajusta la URL según tu backend
 
   constructor(private http: HttpClient) {}
 
   obtenerMateriales(): Observable<Material[]> {
-    return this.http.get<Material[]>(this.apiUrl);
+    return this.http.get<Material[]>(this.apiUrl).pipe(
+      tap(data => console.log('Materiales recibidos:', data)) // Aquí logueamos los datos
+    );
   }
 
   obtenerMaterialPorId(id: number): Observable<Material> {

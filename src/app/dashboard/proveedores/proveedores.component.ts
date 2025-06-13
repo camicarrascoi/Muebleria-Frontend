@@ -35,8 +35,11 @@ export class ProveedoresComponent implements OnInit {
 
   cargarProveedores() {
     this.proveedoresService.obtenerProveedores().subscribe({
-      next: data => this.proveedores = data,
-      error: err => console.error(err)
+      next: data => {
+        console.log('Proveedores recibidos:', data);
+        this.proveedores = data;
+      },
+      error: err => console.error('Error al obtener proveedores', err)
     });
   }
 
@@ -60,23 +63,32 @@ export class ProveedoresComponent implements OnInit {
   guardarProveedor() {
     if (this.proveedorSeleccionado?.id) {
       // Editar
-      this.proveedoresService.editarProveedor(this.proveedorSeleccionado).subscribe(() => {
-        this.cargarProveedores();
-        this.mostrarFormulario = false;
+      this.proveedoresService.editarProveedor(this.proveedorSeleccionado).subscribe({
+        next: () => {
+          this.cargarProveedores();
+          this.mostrarFormulario = false;
+          this.proveedorSeleccionado = null;
+        },
+        error: err => console.error('Error al editar proveedor', err)
       });
     } else {
       // Agregar
-      this.proveedoresService.agregarProveedor(this.proveedorSeleccionado!).subscribe(() => {
-        this.cargarProveedores();
-        this.mostrarFormulario = false;
+      this.proveedoresService.agregarProveedor(this.proveedorSeleccionado!).subscribe({
+        next: () => {
+          this.cargarProveedores();
+          this.mostrarFormulario = false;
+          this.proveedorSeleccionado = null;
+        },
+        error: err => console.error('Error al agregar proveedor', err)
       });
     }
   }
 
   eliminarProveedor(id: number) {
     if (confirm('¿Estás seguro de eliminar este proveedor?')) {
-      this.proveedoresService.eliminarProveedor(id).subscribe(() => {
-        this.cargarProveedores();
+      this.proveedoresService.eliminarProveedor(id).subscribe({
+        next: () => this.cargarProveedores(),
+        error: err => console.error('Error al eliminar proveedor', err)
       });
     }
   }

@@ -13,7 +13,6 @@ import { AuthService } from '../../dashboard/services/auth.service';
   templateUrl: './materiales.component.html',
   styleUrls: ['./materiales.component.css'],
 })
-
 export class MaterialesComponent implements OnInit {
   materiales: Material[] = [];
   materialSeleccionado: Material | null = null;
@@ -32,9 +31,12 @@ export class MaterialesComponent implements OnInit {
 
   cargarMateriales() {
     this.materialesService.obtenerMateriales().subscribe({
-      next: data => this.materiales = data,
+      next: data => {
+        console.log('Materiales recibidos:', data);
+        this.materiales = data;
+      },
       error: err => console.error('Error al cargar materiales', err)
-      });
+    });
   }
 
   abrirFormularioNuevo(): void {
@@ -57,26 +59,26 @@ export class MaterialesComponent implements OnInit {
   }
 
   guardarMaterial() { 
-  if (this.materialSeleccionado?.id) {
-    // Editar
-    this.materialesService.editarMaterial(this.materialSeleccionado.id, this.materialSeleccionado).subscribe({
-      next: () => {
-        this.cargarMateriales();
-        this.mostrarFormulario = false;
-        this.materialSeleccionado = null;
-      },
-      error: err => console.error('Error al actualizar material', err)
-    });
-  } else {
-    // Crear nuevo
-    this.materialesService.agregarMaterial(this.materialSeleccionado!).subscribe({
-      next: () => {
-        this.cargarMateriales();
-        this.mostrarFormulario = false;
-        this.materialSeleccionado = null;
-      },
-      error: err => console.error('Error al crear material', err)
-    });
+    if (this.materialSeleccionado?.id) {
+      // Editar
+      this.materialesService.editarMaterial(this.materialSeleccionado.id, this.materialSeleccionado).subscribe({
+        next: () => {
+          this.cargarMateriales();
+          this.mostrarFormulario = false;
+          this.materialSeleccionado = null;
+        },
+        error: err => console.error('Error al actualizar material', err)
+      });
+    } else {
+      // Crear nuevo
+      this.materialesService.agregarMaterial(this.materialSeleccionado!).subscribe({
+        next: () => {
+          this.cargarMateriales();
+          this.mostrarFormulario = false;
+          this.materialSeleccionado = null;
+        },
+        error: err => console.error('Error al crear material', err)
+      });
     }
   }
   
@@ -88,9 +90,9 @@ export class MaterialesComponent implements OnInit {
       });
     }
   }
+  
   cancelarFormulario() {
     this.mostrarFormulario = false;
     this.materialSeleccionado = null;
   }
-    
 }

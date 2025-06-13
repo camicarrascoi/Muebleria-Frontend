@@ -1,6 +1,6 @@
-import { CommonModule, CurrencyPipe, NgIf, NgForOf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MaterialesService } from '../dashboard/services/materiales.service';
 import { MueblesService } from '../dashboard/services/muebles.service';
@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
   cantidadMuebles: number = 0;
   cantidadMateriales: number = 0;
   cantidadProveedores: number = 0;
-  cantidadVentas: number = 0; // Si se implementa ventas en el futuro
+  cantidadVentas: number = 0;
   esAdmin: boolean = false;
 
   constructor(
@@ -27,11 +27,14 @@ export class DashboardComponent implements OnInit {
     private mueblesService: MueblesService,
     private proveedoresService: ProveedoresService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.esAdmin = this.authService.isAdmin();
+    this.cdr.detectChanges(); // Fuerza que Angular se entere del cambio antes de seguir
+
     this.cargarResumen();
   }
 
@@ -51,10 +54,9 @@ export class DashboardComponent implements OnInit {
       error: err => console.error('Error al obtener proveedores', err)
     });
   }
-  
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']); // Redirige a login
+    this.router.navigate(['/login']);
   }
 }

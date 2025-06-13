@@ -31,9 +31,12 @@ export class MueblesComponent implements OnInit {
 
   cargarMuebles() {
     this.mueblesService.obtenerMuebles().subscribe({
-        next: data => this.muebles = data,
-        error: err => console.error(err)
-      });
+      next: data => {
+        console.log('Muebles recibidos:', data);
+        this.muebles = data;
+      },
+      error: err => console.error('Error al obtener muebles', err)
+    });
   }
 
   abrirFormularioNuevo() {
@@ -84,6 +87,7 @@ export class MueblesComponent implements OnInit {
       });
     }
   }
+
   cancelarFormulario() {
     this.mostrarFormulario = false;
     this.muebleSeleccionado = null;

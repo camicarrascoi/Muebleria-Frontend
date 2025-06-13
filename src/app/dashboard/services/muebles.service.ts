@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Mueble } from '../../models/mueble.model';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MueblesService {
 
-  private apiUrl = 'http://tu-backend-api.com/api/muebles'; // Cambia a la URL real
+  private apiUrl = 'http://localhost:8080/api/v1/mueble';
 
   constructor(private http: HttpClient) { }
 
   obtenerMuebles(): Observable<Mueble[]> {
-    return this.http.get<Mueble[]>(this.apiUrl);
+    return this.http.get<Mueble[]>(this.apiUrl).pipe(
+      tap(data => console.log('Muebles recibidos:', data))
+    );
   }
   
   obtenerMueblePorId(id: number): Observable<Mueble> {
@@ -32,5 +34,3 @@ export class MueblesService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
-
-  
