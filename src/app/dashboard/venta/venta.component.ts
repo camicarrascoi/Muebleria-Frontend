@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { VentaService } from '../services/venta.service';
 import { Venta, VentaMueble } from '../../models/venta.model';
-
+import { AuthService } from '../services/auth.service';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-venta',
@@ -13,17 +15,15 @@ import { Venta, VentaMueble } from '../../models/venta.model';
   templateUrl: './venta.component.html',
   styleUrls: ['./venta.component.css']
 })
-
 export class VentaComponent implements OnInit {
 
   ventas: Venta[] = [];
   ventaSeleccionada: Venta | null = null;
   ventaMueblesSeleccionados: string = '';
   mostrarFormulario = false;
-
   esAdmin = true;
 
-  constructor(private ventaService: VentaService) {}
+  constructor(private ventaService: VentaService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.cargarVentas();
@@ -85,7 +85,7 @@ export class VentaComponent implements OnInit {
 
     const muebles: VentaMueble[] = ids.map(id => ({
       id,
-      nombre: '', // Ojo: nombre no es necesario para guardar, solo el ID
+      nombre: '',
       cantidad: 1
     }));
 
@@ -104,5 +104,22 @@ export class VentaComponent implements OnInit {
       },
       error: err => console.error('Error al guardar venta:', err)
     });
+  }
+
+  exportarVentasExcel(): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
+      this.ventas.map(v => ({
+        Fecha: v.fecha,
+        Total: v.total,
+        MueblesVendidos: v.ventaMuebles.map(m => `${m.nombre} (x${m.cantidad})`).join(', ')
+      }))
+    );
+
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ventas');
+
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, 'ventas.xlsx');
   }
 }
