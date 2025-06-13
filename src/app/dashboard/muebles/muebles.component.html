@@ -68,15 +68,20 @@
 
     <!-- Ajustar materiales -->
     <fieldset>
-      <legend>Materiales del mueble</legend>
-      <div *ngFor="let mat of materialesDisponibles; let i = index">
-        <label>
-          {{ mat.nombre }} ({{ mat.unidadDeMedida }}):
-          <input type="number" [ngModel]="muebleSeleccionado.materialMuebles[i].cantidadUtilizada"
-       (ngModelChange)="actualizarMaterial(muebleSeleccionado.materialMuebles[i].material.id, $event)" />
-        </label>
-      </div>
-    </fieldset>
+  <legend>Materiales del mueble</legend>
+  <div *ngFor="let mm of muebleSeleccionado.materialMuebles; let i = index">
+    <label>
+      {{ mm.material.nombre }} ({{ mm.material.unidadDeMedida }}):
+      <input
+        type="number"
+        [(ngModel)]="mm.cantidadUtilizada"
+        name="cantidadUtilizada{{ i }}"
+        min="0"
+        required
+      />
+    </label>
+  </div>
+</fieldset>
 
     <button type="submit">💾 Guardar</button>
     <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>

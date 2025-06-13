@@ -45,39 +45,44 @@
 
   <!-- Formulario para agregar/editar materiales -->
   <div *ngIf="mostrarFormulario" class="formulario-material">
-    <h3>{{ materialSeleccionado?.id ? 'Editar Material' : 'Agregar Material' }}</h3>
-    <form (ngSubmit)="guardarMaterial()">
-      <label>
-        Nombre:
-        <input type="text" [(ngModel)]="materialSeleccionado!.nombre" name="nombre" required />
-      </label>
-      <br />
-      <label>
-        Tipo:
-        <input type="text" [(ngModel)]="materialSeleccionado!.tipo" name="tipo" required />
-      </label>
-      <br />
-      <label>
-        Descripción:
-        <input type="text" [(ngModel)]="materialSeleccionado!.descripcion" name="descripcion" required />
-      </label>
-      <br />
-      <label>
-        Unidad de Medida:
-        <input type="text" [(ngModel)]="materialSeleccionado!.unidadDeMedida" name="unidadDeMedida" required />
-      </label>
-      <br />
-      <label>
-        Stock Actual:
-        <input type="number" [(ngModel)]="materialSeleccionado!.stockActual" name="stockActual" required />
-      </label>
-      <br />
-      <!-- Ejemplo simple de selección de proveedores -->
-      <label>
-        Proveedores (IDs separados por coma):
-        <input type="text" [(ngModel)]="proveedoresSeleccionados" name="proveedores" placeholder="1,3,5" />
-      </label>
-      <br />
+  <h3>{{ materialSeleccionado?.id ? 'Editar Material' : 'Agregar Material' }}</h3>
+  <form (ngSubmit)="guardarMaterial()">
+    <label>
+      Nombre:
+      <input type="text" [(ngModel)]="materialSeleccionado!.nombre" name="nombre" required />
+    </label>
+    <br />
+    <label>
+      Tipo:
+      <input type="text" [(ngModel)]="materialSeleccionado!.tipo" name="tipo" required />
+    </label>
+    <br />
+    <label>
+      Descripción:
+      <input type="text" [(ngModel)]="materialSeleccionado!.descripcion" name="descripcion" required />
+    </label>
+    <br />
+    <label>
+      Unidad de Medida:
+      <input type="text" [(ngModel)]="materialSeleccionado!.unidadDeMedida" name="unidadDeMedida" required />
+    </label>
+    <br />
+    <label>
+      Stock Actual:
+      <input type="number" [(ngModel)]="materialSeleccionado!.stockActual" name="stockActual" required />
+    </label>
+    <br />
+
+    <!-- Select múltiple para proveedores -->
+    <label>
+      Proveedores:
+      <select multiple [(ngModel)]="proveedoresSeleccionados" name="proveedoresSeleccionados" size="5">
+        <option *ngFor="let proveedor of proveedores" [ngValue]="proveedor">
+          {{ proveedor.nombre }}
+        </option>
+      </select>
+    </label>
+    <br />
 
       <button type="submit">💾 Guardar</button>
       <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>

@@ -42,7 +42,8 @@ export class VentaComponent implements OnInit {
 
   abrirFormularioNuevo() {
     this.ventaSeleccionada = {
-      fecha: '',
+      id: null,
+      fecha: new Date(),
       total: 0,
       ventaMuebles: []
     };
@@ -57,7 +58,7 @@ export class VentaComponent implements OnInit {
       total: venta.total,
       ventaMuebles: [...venta.ventaMuebles]
     };
-    this.ventaMueblesSeleccionados = venta.ventaMuebles.map(vm => vm.id).join(',');
+    this.ventaMueblesSeleccionados = venta.ventaMuebles.map(vm => vm.muebleId).join(',');
     this.mostrarFormulario = true;
   }
 
@@ -76,35 +77,36 @@ export class VentaComponent implements OnInit {
   }
 
   guardarVenta() {
-    if (!this.ventaSeleccionada) return;
+  if (!this.ventaSeleccionada) return;
 
-    const ids = this.ventaMueblesSeleccionados
-      .split(',')
-      .map(id => Number(id.trim()))
-      .filter(id => !isNaN(id));
+  const ids = this.ventaMueblesSeleccionados
+    .split(',')
+    .map(id => Number(id.trim()))
+    .filter(id => !isNaN(id));
 
-    const muebles: VentaMueble[] = ids.map(id => ({
-      id,
-      nombre: '',
-      cantidad: 1
-    }));
+  const muebles: VentaMueble[] = ids.map(id => ({
+    id: 0,          // id temporal para nuevos muebles en venta
+    muebleId: id,
+    nombre: '',     // vacío, o podrías buscar el nombre si tienes acceso al catálogo
+    cantidad: 1
+  }));
 
-    this.ventaSeleccionada.ventaMuebles = muebles;
+  this.ventaSeleccionada.ventaMuebles = muebles;
 
-    const esNueva = !this.ventaSeleccionada.id;
+  const esNueva = !this.ventaSeleccionada.id;
 
-    const peticion = esNueva
-      ? this.ventaService.crearVenta(this.ventaSeleccionada)
-      : this.ventaService.editarVenta(this.ventaSeleccionada);
+  const peticion = esNueva
+    ? this.ventaService.crearVenta(this.ventaSeleccionada)
+    : this.ventaService.editarVenta(this.ventaSeleccionada);
 
-    peticion.subscribe({
-      next: () => {
-        this.cargarVentas();
-        this.cancelarFormulario();
-      },
-      error: err => console.error('Error al guardar venta:', err)
-    });
-  }
+  peticion.subscribe({
+    next: () => {
+      this.cargarVentas();
+      this.cancelarFormulario();
+    },
+    error: err => console.error('Error al guardar venta:', err)
+  });
+}
 
   exportarVentasExcel(): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(

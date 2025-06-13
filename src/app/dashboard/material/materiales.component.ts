@@ -2,9 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgForOf } from '@angular/common';
-import { Material } from '../../models/material.model';
+import { Material, ProveedorSimple } from '../../models/material.model';
 import { MaterialesService } from '../services/materiales.service';
 import { AuthService } from '../services/auth.service';
+import { ProveedoresService } from '../services/proveedores.service';
+import { Proveedor } from '../../models/proveedores.model';
+
+
 
 @Component({
   selector: 'app-materiales',
@@ -13,34 +17,53 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './materiales.component.html',
   styleUrls: ['./materiales.component.css'],
 })
+
 export class MaterialesComponent implements OnInit {
   materiales: Material[] = [];
+  proveedores: Proveedor[] = [];  // <-- lista completa de proveedores para el select
+  proveedoresSeleccionados: Proveedor[] = []; // <-- seleccionados en el select múltiple
   materialSeleccionado: Material | null = null;
-  proveedoresSeleccionados: string = '';
   mostrarFormulario: boolean = false;
   esAdmin: boolean = false;
 
   constructor(
     private materialesService: MaterialesService,
-    private authService: AuthService
-  ) {}
+    private proveedoresService: ProveedoresService,  // <-- inyectar servicio
+    private authService: AuthService) {}
 
   ngOnInit(): void {
     this.cargarMateriales();
-    this.esAdmin = this.authService.isAdmin(); // Ajustar según método real
+    this.cargarProveedores(); // <-- cargar proveedores
+    this.esAdmin = this.authService.isAdmin();
   }
 
-  cargarMateriales() {
-    this.materialesService.obtenerMateriales().subscribe({
-      next: (data) => {
-        this.materiales = data;
+  cargarProveedores() {
+    this.proveedoresService.obtenerProveedores().subscribe({
+      next: (provData) => {
+        this.proveedores = provData;
+        this.cargarMateriales();
       },
-      error: (err) => console.error('Error al cargar materiales', err),
+      error: (err) => console.error('Error al cargar proveedores', err),
     });
   }
 
+  cargarMateriales() {
+  this.materialesService.obtenerMateriales().subscribe({
+    next: (data) => {
+      // Mapear cada material para que proveedorMateriales tenga solo id y nombre, y que id sea number (no undefined)
+      this.materiales = data.map(material => ({
+        ...material,
+        proveedorMateriales: material.proveedorMateriales.map(prov => ({
+          id: prov.id ?? 0,  // O un valor por defecto que consideres válido, pero ideal que no sea undefined
+          nombre: prov.nombre
+        }))
+      }));
+    },
+    error: (err) => console.error('Error al cargar materiales', err),
+  });
+}
+
   abrirFormularioNuevo(): void {
-    // Inicializa con valores vacíos y arreglo vacío para proveedores y materialMuebles
     this.materialSeleccionado = {
       id: null,
       nombre: '',
@@ -51,20 +74,29 @@ export class MaterialesComponent implements OnInit {
       proveedorMateriales: [],
       materialMuebles: []
     };
+    this.proveedoresSeleccionados = [];
     this.mostrarFormulario = true;
   }
 
   editarMaterial(material: Material) {
-    // Clonamos el objeto para evitar mutaciones directas
     this.materialSeleccionado = { ...material };
+    // Mapear los proveedores para que aparezcan seleccionados en el select
+    this.proveedoresSeleccionados = this.materialSeleccionado.proveedorMateriales.map(pm => {
+      return this.proveedores.find(p => p.id === pm.id)!;
+    }).filter(p => p !== undefined);
     this.mostrarFormulario = true;
   }
 
   guardarMaterial() {
     if (!this.materialSeleccionado) return;
 
+    // Actualizar la lista de proveedores del material con los seleccionados
+    this.materialSeleccionado.proveedorMateriales = this.proveedoresSeleccionados.map(p => ({
+      id: p.id!,
+      nombre: p.nombre
+    }));
+
     if (this.materialSeleccionado.id) {
-      // Editar material existente
       this.materialesService.editarMaterial(this.materialSeleccionado.id, this.materialSeleccionado).subscribe({
         next: () => {
           this.cargarMateriales();
@@ -73,7 +105,6 @@ export class MaterialesComponent implements OnInit {
         error: (err) => console.error('Error al actualizar material', err),
       });
     } else {
-      // Crear material nuevo
       this.materialesService.agregarMaterial(this.materialSeleccionado).subscribe({
         next: () => {
           this.cargarMateriales();
