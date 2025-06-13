@@ -13,15 +13,15 @@ export const dashboardRoutes: Routes = [
       },
       {
         path: 'materiales',
-        loadComponent: () => import('./materiales/materiales.component').then(m => m.MaterialesComponent)
+        loadComponent: () => import('./material/materiales.component').then(m => m.MaterialesComponent)
       },
       {
         path: 'proveedores',
         loadComponent: () => import('./proveedores/proveedores.component').then(m => m.ProveedoresComponent)
       },
       {
-        path: 'ventas',
-        loadComponent: () => import('./venta/venta.component').then(m => m.VentasComponent)
+        path: 'venta',
+        loadComponent: () => import('./venta/venta.component').then(m => m.VentaComponent)
       },
       
     ]

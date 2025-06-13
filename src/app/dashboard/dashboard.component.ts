@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MaterialesService } from '../dashboard/services/materiales.service';
 import { MueblesService } from './services/muebles.service';
 import { ProveedoresService } from '../dashboard/services/proveedores.service';
+import { VentaService } from '../dashboard/services/venta.service';
 import { AuthService } from '../dashboard/services/auth.service';
 
 @Component({
@@ -26,6 +27,7 @@ export class DashboardComponent implements OnInit {
     private materialesService: MaterialesService,
     private mueblesService: MueblesService,
     private proveedoresService: ProveedoresService,
+    private ventaService: VentaService,
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -53,6 +55,11 @@ export class DashboardComponent implements OnInit {
       next: proveedores => this.cantidadProveedores = proveedores.length,
       error: err => console.error('Error al obtener proveedores', err)
     });
+
+    this.ventaService.obtenerVentas().subscribe({
+      next: ventas => this.cantidadVentas = ventas.length,
+      error: err => console.error('Error al obtener ventas', err)
+      });
   }
 
   logout() {
