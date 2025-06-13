@@ -50,18 +50,22 @@ export class MaterialesComponent implements OnInit {
   cargarMateriales() {
   this.materialesService.obtenerMateriales().subscribe({
     next: (data) => {
-      // Mapear cada material para que proveedorMateriales tenga solo id y nombre, y que id sea number (no undefined)
       this.materiales = data.map(material => ({
         ...material,
+        // 1) Mapear proveedores
         proveedorMateriales: material.proveedorMateriales.map(prov => ({
-          id: prov.id ?? 0,  // O un valor por defecto que consideres válido, pero ideal que no sea undefined
+          id: prov.id ?? 0,
           nombre: prov.nombre
-        }))
+        })),
+        // 2) Filtrar muebles con cantidadUtilizada > 0
+        materialMuebles: material.materialMuebles
+          .filter(mm => mm.cantidadUtilizada > 0)
+          .map(mm => ({ ...mm }))
       }));
     },
     error: (err) => console.error('Error al cargar materiales', err),
   });
-}
+  }
 
   abrirFormularioNuevo(): void {
     this.materialSeleccionado = {

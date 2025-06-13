@@ -28,6 +28,7 @@
   font-size: 18px;
   border-radius: 6px;
   cursor: pointer;
+  margin-right: 10px;
   margin-bottom: 20px;
 }
 
@@ -51,11 +52,23 @@ thead {
 td, th {
   border: 1px solid #ddd;
   padding: 12px;
+  vertical-align: top;
   text-align: left;
 }
 
 tr:nth-child(even) {
   background-color: #fff8ee;
+}
+
+/* Listas dentro de celdas */
+td ul {
+  list-style: disc inside;
+  padding-left: 0;
+  margin: 0;
+}
+
+td ul li {
+  margin-bottom: 4px;
 }
 
 /* Botones de editar/eliminar */
@@ -75,24 +88,34 @@ td button:hover {
 }
 
 /* Formulario */
-form {
+.formulario-material {
   background-color: #fff4e6;
   padding: 20px;
   border-radius: 8px;
   max-width: 600px;
-  margin: 20px auto; /* CENTRADO horizontal */
+  margin: 20px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Título del formulario */
+.formulario-material h3 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #8b5e3c;
+  text-align: center;
+}
+
+/* Etiquetas e inputs */
 form label {
   display: block;
   margin-bottom: 15px;
   font-weight: bold;
 }
 
-form input {
+form input,
+form select {
   width: 100%;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   padding: 10px;
   font-size: 16px;
   margin-top: 5px;
@@ -100,6 +123,13 @@ form input {
   border: 1px solid #ccc;
 }
 
+/* Select múltiple */
+form select[multiple] {
+  height: auto;
+  min-height: 100px;
+}
+
+/* Botones del formulario */
 form button {
   background-color: #4caf50;
   color: white;
@@ -113,4 +143,11 @@ form button {
 
 form button:hover {
   background-color: #45a049;
+}
+
+/* Mensajes de error */
+.error {
+  color: #d8000c;
+  font-size: 14px;
+  margin-top: 5px;
 }

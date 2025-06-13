@@ -1,0 +1,104 @@
+<!-- Barra de navegación simple -->
+<nav class="navbar">
+  <span>Lista Materiales</span>
+</nav>
+
+<!-- Botón Agregar solo visible para admin -->
+<div class="acciones">
+  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar material</button>
+</div>
+
+<!-- Tabla de materiales -->
+<table *ngIf="materiales.length > 0" border="1">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Tipo</th>
+      <th>Descripción</th>
+      <th>Unidad de Medida</th>
+      <th>Stock Actual</th>
+      <th>Proveedores</th>
+      <th>Muebles</th>             <!-- Nueva columna -->
+      <th *ngIf="esAdmin">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let material of materiales">
+      <td>{{ material.nombre }}</td>
+      <td>{{ material.tipo }}</td>
+      <td>{{ material.descripcion }}</td>
+      <td>{{ material.unidadDeMedida }}</td>
+      <td>{{ material.stockActual }}</td>
+
+      <!-- Proveedores -->
+      <td>
+        <ul>
+          <li *ngFor="let prov of material.proveedorMateriales">
+            {{ prov.nombre }}
+          </li>
+        </ul>
+      </td>
+
+      <!-- Muebles filtrados en el TS -->
+      <td>
+        <ul>
+          <li *ngFor="let mm of material.materialMuebles">
+            {{ mm.muebleNombre }}: {{ mm.cantidadUtilizada }}
+          </li>
+        </ul>
+      </td>
+
+      <!-- Acciones -->
+      <td *ngIf="esAdmin">
+        <button (click)="editarMaterial(material)">✏️ Editar</button>
+        <button (click)="eliminarMaterial(material.id!)">🗑️ Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Formulario para agregar/editar materiales -->
+<div *ngIf="mostrarFormulario" class="formulario-material">
+  <h3>{{ materialSeleccionado?.id ? 'Editar Material' : 'Agregar Material' }}</h3>
+  <form (ngSubmit)="guardarMaterial()">
+    <label>
+      Nombre:
+      <input type="text" [(ngModel)]="materialSeleccionado!.nombre" name="nombre" required />
+    </label>
+    <br />
+    <label>
+      Tipo:
+      <input type="text" [(ngModel)]="materialSeleccionado!.tipo" name="tipo" required />
+    </label>
+    <br />
+    <label>
+      Descripción:
+      <input type="text" [(ngModel)]="materialSeleccionado!.descripcion" name="descripcion" required />
+    </label>
+    <br />
+    <label>
+      Unidad de Medida:
+      <input type="text" [(ngModel)]="materialSeleccionado!.unidadDeMedida" name="unidadDeMedida" required />
+    </label>
+    <br />
+    <label>
+      Stock Actual:
+      <input type="number" [(ngModel)]="materialSeleccionado!.stockActual" name="stockActual" required />
+    </label>
+    <br />
+
+    <!-- Select múltiple para proveedores -->
+    <label>
+      Proveedores:
+      <select multiple [(ngModel)]="proveedoresSeleccionados" name="proveedoresSeleccionados" size="5">
+        <option *ngFor="let proveedor of proveedores" [ngValue]="proveedor">
+          {{ proveedor.nombre }}
+        </option>
+      </select>
+    </label>
+    <br />
+
+    <button type="submit">💾 Guardar</button>
+    <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
+  </form>
+</div>
