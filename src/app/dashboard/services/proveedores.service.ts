@@ -7,7 +7,7 @@ import { Proveedor } from '../../models/proveedores.model';
   providedIn: 'root'
 })
 export class ProveedoresService {
-  private apiUrl = 'http://localhost:8080/api/v1/proveedores'; // Ajusta tu endpoint real
+  private apiUrl = 'http://localhost:8080/api/v1/proveedor'; // Ajusta tu endpoint real
 
   constructor(private http: HttpClient) {}
 
