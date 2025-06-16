@@ -1,18 +1,19 @@
-<!-- Barra de navegación simple -->
+<!-- venta.component.html -->
+
+<!-- Barra de navegación -->
 <nav class="navbar">
   <span>Lista Ventas</span>
 </nav>
 
-  <!-- Botón Agregar solo para admin -->
-  <div class="acciones">
-    <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar venta</button>
-
-    <!-- Botón para exportar -->
+<!-- Acciones: agregar y exportar -->
+<div *ngIf="!mostrarFormulario" class="acciones">
+  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar venta</button>
   <button (click)="exportarVentasExcel()">📥 Exportar a Excel</button>
 </div>
 
-  <!-- Tabla de ventas -->
-  <table *ngIf="ventas.length > 0" border="1">
+<!-- Tabla de ventas -->
+<div *ngIf="!mostrarFormulario && ventas.length > 0">
+  <table border="1" class="tabla-ventas">
     <thead>
       <tr>
         <th>Fecha</th>
@@ -22,53 +23,84 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let venta of ventas">
-        <td>{{ venta.fecha | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ venta.total | currency:'CLP':'symbol' }}</td>
+      <tr *ngFor="let v of ventas">
+        <td>{{ v.fecha | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ v.total | currency:'CLP':'symbol' }}</td>
         <td>
           <ul>
-            <li *ngFor="let mueble of venta.ventaMuebles">
-              {{ mueble.nombre }} (Cantidad: {{ mueble.cantidad }})
+            <li *ngFor="let m of v.ventaMuebles">
+              {{ m.nombre }} (x{{ m.cantidad }})
             </li>
           </ul>
         </td>
         <td *ngIf="esAdmin">
-          <button (click)="editarVenta(venta)">✏️ Editar</button>
-          <button (click)="eliminarVenta(venta.id!)">🗑️ Eliminar</button>
+          <button (click)="editarVenta(v)">✏️</button>
+          <button (click)="eliminarVenta(v.id!)">🗑️</button>
         </td>
       </tr>
     </tbody>
   </table>
+</div>
 
-  <!-- Formulario para agregar/editar venta -->
-  <div *ngIf="mostrarFormulario" class="formulario-venta">
-    <h3>{{ ventaSeleccionada?.id ? 'Editar Venta' : 'Agregar Venta' }}</h3>
-    <form (ngSubmit)="guardarVenta()" #formVenta="ngForm" novalidate>
-  <label for="fecha">Fecha:</label>
-  <input
-    id="fecha"
-    name="fecha"
-    type="date"
-    [(ngModel)]="ventaSeleccionada!.fecha"
-    required
-    #fecha="ngModel"
-  />
-  <div *ngIf="fecha.invalid && fecha.touched" class="error">
-    La fecha es obligatoria.
-  </div>
+<!-- Formulario para agregar/editar venta -->
+<div *ngIf="mostrarFormulario && ventaSeleccionada" class="formulario-venta">
+  <h3>{{ ventaSeleccionada.id ? 'Editar Venta' : 'Agregar Venta' }}</h3>
+  <form #formVenta="ngForm" (ngSubmit)="guardarVenta()" novalidate>
 
-  <label for="ventaMuebles">Muebles vendidos (formato: id:cantidad, id:cantidad):</label>
-  <input
-    id="ventaMuebles"
-    name="ventaMuebles"
-    type="text"
-    [(ngModel)]="ventaMueblesSeleccionados"
-    placeholder="1:2,3:1,5:4"
-  />
+    <!-- Campo Fecha -->
+    <label for="fecha">Fecha:</label>
+    <input
+      id="fecha"
+      name="fecha"
+      type="date"
+      [ngModel]="ventaSeleccionada.fecha ? (ventaSeleccionada.fecha | date:'yyyy-MM-dd') : fechaPorDefecto"
+      (ngModelChange)="onFechaChange($event)"
+      required
+      #fecha="ngModel"
+    />
+    <div *ngIf="fecha.invalid && fecha.touched" class="error">
+      La fecha es obligatoria.
+    </div>
 
-  <div class="botones-formulario">
-    <button type="submit" [disabled]="formVenta.invalid">Guardar</button>
-    <button type="button" (click)="cancelarFormulario()">Cancelar</button>
-  </div>
-</form>
-  </div>
+    <!-- Selección de Mueble -->
+    <label for="mueble">Mueble:</label>
+    <select
+      id="mueble"
+      name="muebleSeleccionadoId"
+      [(ngModel)]="muebleSeleccionadoId"
+      required
+      #mSel="ngModel"
+    >
+      <option value="" disabled>-- Selecciona un mueble --</option>
+      <option *ngFor="let m of mueblesDisponibles" [value]="m.id">
+        {{ m.nombre }} (stock: {{ m.stock }})
+      </option>
+    </select>
+    <div *ngIf="mSel.invalid && mSel.touched" class="error">
+      Debes elegir un mueble.
+    </div>
+
+    <!-- Cantidad -->
+    <label for="cantidad">Cantidad:</label>
+    <input
+      id="cantidad"
+      name="cantidadSeleccionada"
+      type="number"
+      [(ngModel)]="cantidadSeleccionada"
+      [min]="1"
+      [max]="stockSeleccionado"
+      required
+      #cant="ngModel"
+    />
+    <div *ngIf="cant.invalid && cant.touched" class="error">
+      Cantidad inválida.
+    </div>
+
+    <!-- Botones -->
+    <div class="botones-formulario">
+      <button type="submit" [disabled]="formVenta.invalid">Guardar</button>
+      <button type="button" (click)="cancelarFormulario()">Cancelar</button>
+    </div>
+
+  </form>
+</div>

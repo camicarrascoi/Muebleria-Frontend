@@ -1,27 +1,25 @@
-// Modelo para uso interno / visualización en el frontend
 export interface VentaMueble {
-  id: number;           // PK de la relación en BD, puede ser 0 en nuevos
-  muebleId: number;     // FK al mueble
-  nombre: string;       // Nombre del mueble
-  cantidad: number;     // Cantidad vendida
+  id: number | null;      // PK relación en BD (puede ser null si es nuevo)
+  muebleId: number;       // FK al mueble
+  nombre: string;         // Nombre para mostrar
+  cantidad: number;       // Cantidad vendida
 }
 
 export interface Venta {
   id: number | null;
-  fecha: Date;
-  total: number;         // Calculado por el backend
+  fecha: Date | null;     // Date o null para manejo flexible
+  total: number;
   ventaMuebles: VentaMueble[];
 }
 
-
-// Tipos para enviar al backend
+// Payload para backend
 export interface VentaMueblePayload {
-  muebles: { id: number };
+  mueble: { id: number };
   cantidad: number;
 }
 
 export interface VentaPayload {
   id?: number | null;
-  fecha: Date;
+  fecha: string;  // YYYY-MM-DD
   ventaMuebles: VentaMueblePayload[];
 }

@@ -7,7 +7,7 @@ import { Observable, tap } from 'rxjs';
   providedIn: 'root'
 })
 export class MaterialesService {
-  private apiUrl = 'http://localhost:8080/api/v1/materiales'; // Ajusta la URL según tu backend
+  private apiUrl = 'http://localhost:8080/api/v1/materiales'; 
 
   constructor(private http: HttpClient) {}
 

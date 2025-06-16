@@ -1,45 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrencyPipe, NgIf, NgForOf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { VentaService } from '../services/venta.service';
-import { Venta, VentaMueble } from '../../models/venta.model';
+import { MueblesService } from '../services/muebles.service';
+import { Venta, VentaMueble, VentaPayload, VentaMueblePayload } from '../../models/venta.model';
+import { Mueble } from '../../models/mueble.model';
 import { AuthService } from '../services/auth.service';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-
-interface VentaMueblePayload {
-  muebles: { id: number };
-  cantidad: number;
-}
-interface VentaPayload {
-  id?: number | null;
-  fecha: Date;
-  ventaMuebles: VentaMueblePayload[];
-}
 
 @Component({
   selector: 'app-venta',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, NgIf, NgForOf, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './venta.component.html',
   styleUrls: ['./venta.component.css']
 })
 export class VentaComponent implements OnInit {
   ventas: Venta[] = [];
+  mueblesDisponibles: Mueble[] = [];
   ventaSeleccionada: Venta | null = null;
-  ventaMueblesSeleccionados = '';  // formato "1:2,3:1,5:4" o solo "1,2,3" si siempre cantidad=1
+
+  // Para el formulario
+  muebleSeleccionadoId: number | null = null;
+  cantidadSeleccionada = 1;
+
   mostrarFormulario = false;
-  esAdmin = true;
+  esAdmin = false;
 
   constructor(
     private ventaService: VentaService,
+    private mueblesService: MueblesService,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.esAdmin = this.authService.isAdmin();
     this.cargarVentas();
+    this.cargarMuebles();
   }
 
   private cargarVentas() {
@@ -49,27 +45,37 @@ export class VentaComponent implements OnInit {
     });
   }
 
-  abrirFormularioNuevo() {
-    this.ventaSeleccionada = { id: null, fecha: new Date(), total: 0, ventaMuebles: [] };
-    this.ventaMueblesSeleccionados = '';
-    this.mostrarFormulario = true;
-  }
-
-  editarVenta(venta: Venta) {
-    this.ventaSeleccionada = { ...venta, ventaMuebles: [...venta.ventaMuebles] };
-    // Reconstruir string "id:cantidad,..." para el input
-    this.ventaMueblesSeleccionados = venta.ventaMuebles
-      .map(vm => `${vm.muebleId}:${vm.cantidad}`)
-      .join(',');
-    this.mostrarFormulario = true;
-  }
-
-  eliminarVenta(id: number) {
-    if (!confirm('¿Seguro que deseas eliminar esta venta?')) return;
-    this.ventaService.eliminarVenta(id).subscribe({
-      next: () => this.cargarVentas(),
-      error: err => console.error('Error al eliminar:', err)
+  private cargarMuebles() {
+    this.mueblesService.obtenerMuebles().subscribe({
+      next: list => this.mueblesDisponibles = list,
+      error: err => console.error('Error al cargar muebles:', err)
     });
+  }
+
+  abrirFormularioNuevo() {
+    this.ventaSeleccionada = {
+      id: null,
+      fecha: new Date(),
+      total: 0,
+      ventaMuebles: []
+    };
+    // reset form fields
+    this.muebleSeleccionadoId = null;
+    this.cantidadSeleccionada = 1;
+    this.mostrarFormulario = true;
+  }
+
+  editarVenta(v: Venta) {
+    // En esta UI manejamos solo un mueble por venta, tomamos el primero
+    this.ventaSeleccionada = { ...v, ventaMuebles: [...v.ventaMuebles] };
+    if (v.ventaMuebles.length > 0) {
+      this.muebleSeleccionadoId = v.ventaMuebles[0].muebleId;
+      this.cantidadSeleccionada = v.ventaMuebles[0].cantidad;
+    } else {
+      this.muebleSeleccionadoId = null;
+      this.cantidadSeleccionada = 1;
+    }
+    this.mostrarFormulario = true;
   }
 
   cancelarFormulario() {
@@ -77,56 +83,78 @@ export class VentaComponent implements OnInit {
     this.mostrarFormulario = false;
   }
 
+  onFechaChange(value: string) {
+    if (!this.ventaSeleccionada) return;
+    this.ventaSeleccionada.fecha = value ? new Date(value) : new Date();
+  }
+
   guardarVenta() {
     if (!this.ventaSeleccionada) return;
+    if (this.muebleSeleccionadoId == null) {
+      alert('Debes seleccionar un mueble');
+      return;
+    }
+    if (this.cantidadSeleccionada < 1) {
+      alert('La cantidad debe ser al menos 1');
+      return;
+    }
 
-    // Parseo de "1:2,3:1,5:4" → [{muebles:{id:1},cantidad:2},...]
-    const payloadItems: VentaMueblePayload[] = this.ventaMueblesSeleccionados
-      .split(',')
-      .map(seg => seg.trim())
-      .filter(seg => seg)
-      .map(seg => {
-        const [idStr, qtyStr] = seg.split(':').map(x => x.trim());
-        const id = Number(idStr);
-        const cantidad = qtyStr != null ? Number(qtyStr) : 1;
-        if (isNaN(id) || isNaN(cantidad)) {
-          throw new Error('Formato inválido en muebles vendidos.');
-        }
-        return { muebles: { id }, cantidad };
+    try {
+      // Construir payload con un solo detalle
+      const payloadItems: VentaMueblePayload[] = [{
+        mueble: { id: this.muebleSeleccionadoId },
+        cantidad: this.cantidadSeleccionada
+      }];
+
+      if (!this.ventaSeleccionada.fecha) {
+        throw new Error('La fecha es obligatoria');
+      }
+      const fechaStr = this.ventaSeleccionada.fecha.toISOString().substring(0, 10);
+
+      const payload: VentaPayload = {
+        id: this.ventaSeleccionada.id ?? undefined,
+        fecha: fechaStr,
+        ventaMuebles: payloadItems
+      };
+
+      const peticion = payload.id
+        ? this.ventaService.editarVenta(payload)
+        : this.ventaService.crearVenta(payload);
+
+      peticion.subscribe({
+        next: () => {
+          this.cargarVentas();
+          this.cancelarFormulario();
+        },
+        error: err => alert('Error al guardar venta: ' + (err.error?.message || err.message))
       });
 
-    const ventaParaEnviar: VentaPayload = {
-      id: this.ventaSeleccionada.id,
-      fecha: this.ventaSeleccionada.fecha,
-      ventaMuebles: payloadItems
-    };
+    } catch (e: any) {
+      alert(e.message);
+    }
+  }
 
-    const peticion = (!ventaParaEnviar.id)
-      ? this.ventaService.crearVenta(ventaParaEnviar)
-      : this.ventaService.editarVenta(ventaParaEnviar);
-
-    peticion.subscribe({
-      next: () => {
-        this.cargarVentas();
-        this.cancelarFormulario();
-      },
-      error: err => console.error('Error al guardar venta:', err)
+  eliminarVenta(id: number) {
+    if (!confirm('¿Seguro quieres eliminar esta venta?')) return;
+    this.ventaService.eliminarVenta(id).subscribe({
+      next: () => this.cargarVentas(),
+      error: err => alert('Error al eliminar venta: ' + (err.error?.message || err.message))
     });
   }
 
-  exportarVentasExcel(): void {
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
-      this.ventas.map(v => ({
-        Fecha: v.fecha,
-        Total: v.total,
-        MueblesVendidos: v.ventaMuebles
-          .map(m => `${m.nombre} (x${m.cantidad})`)
-          .join(', ')
-      }))
-    );
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
-    const buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    saveAs(new Blob([buf], { type: 'application/octet-stream' }), 'ventas.xlsx');
+  exportarVentasExcel() {
+    alert('Función exportar a Excel (implementar)');
   }
+
+  get fechaPorDefecto(): string {
+    return new Date().toISOString().substring(0, 10);
+  }
+
+  get stockSeleccionado(): number {
+  if (this.muebleSeleccionadoId == null) {
+    return 1;
+  }
+  const m = this.mueblesDisponibles.find(x => x.id === this.muebleSeleccionadoId);
+  return m ? m.stock : 1;
+}
 }

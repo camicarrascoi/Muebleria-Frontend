@@ -1,25 +1,32 @@
 /* Fondo general */
 :host {
   display: block;
-  background-color: #fdf6e3; /* Beige claro */
+  background-color: #fdf6e3;
   padding: 20px;
   font-family: Arial, sans-serif;
   font-size: 18px;
   color: #333;
+  min-height: 100vh;
 }
 
 /* Barra de navegación */
 .navbar {
-  background-color: #8b5e3c; /* Café oscuro */
+  background-color: #8b5e3c;
   color: white;
   padding: 15px 20px;
   font-size: 22px;
   font-weight: bold;
   border-radius: 8px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
-/* Botones de acciones */
+/* Botón de agregar */
+.acciones {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 .acciones button {
   background-color: #a86f4c;
   color: white;
@@ -28,8 +35,7 @@
   font-size: 18px;
   border-radius: 6px;
   cursor: pointer;
-  margin-right: 10px;
-  margin-bottom: 20px;
+  transition: background-color 0.3s;
 }
 
 .acciones button:hover {
@@ -41,6 +47,8 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  overflow-x: auto;
+  display: block;
 }
 
 thead {
@@ -54,6 +62,7 @@ td, th {
   padding: 12px;
   vertical-align: top;
   text-align: left;
+  min-width: 120px;
 }
 
 tr:nth-child(even) {
@@ -61,17 +70,27 @@ tr:nth-child(even) {
 }
 
 /* Listas dentro de celdas */
+/* Listas dentro de celdas con estilo "chip" */
 td ul {
-  list-style: disc inside;
+  list-style: none; /* quitamos viñetas */
   padding-left: 0;
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 td ul li {
-  margin-bottom: 4px;
+  background-color: #a86f4c;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-/* Botones de editar/eliminar */
+/* Botones de editar y eliminar */
 td button {
   background-color: #8b5e3c;
   color: white;
@@ -81,6 +100,7 @@ td button {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 td button:hover {
@@ -110,6 +130,7 @@ form label {
   display: block;
   margin-bottom: 15px;
   font-weight: bold;
+  color: #333;
 }
 
 form input,
@@ -121,6 +142,7 @@ form select {
   margin-top: 5px;
   border-radius: 4px;
   border: 1px solid #ccc;
+  background-color: #fff;
 }
 
 /* Select múltiple */
@@ -139,10 +161,19 @@ form button {
   border-radius: 6px;
   margin-right: 10px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 form button:hover {
   background-color: #45a049;
+}
+
+form button[type="button"] {
+  background-color: #f44336;
+}
+
+form button[type="button"]:hover {
+  background-color: #d32f2f;
 }
 
 /* Mensajes de error */
@@ -150,4 +181,46 @@ form button:hover {
   color: #d8000c;
   font-size: 14px;
   margin-top: 5px;
+}
+
+/* Responsividad básica */
+@media (max-width: 768px) {
+  .navbar {
+    font-size: 18px;
+    padding: 10px;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  tr {
+    margin-bottom: 15px;
+  }
+
+  th {
+    background-color: #f5deb3;
+    font-weight: bold;
+  }
+
+  td {
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td::before {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #555;
+    content: attr(data-label);
+  }
 }

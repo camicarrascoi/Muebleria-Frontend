@@ -5,7 +5,7 @@ import { Venta, VentaPayload } from '../../models/venta.model';
 
 @Injectable({ providedIn: 'root' })
 export class VentaService {
-  private apiUrl = 'http://localhost:8080/api/v1/ventas';
+  private apiUrl = 'http://localhost:8080/api/v1/venta';
 
   constructor(private http: HttpClient) {}
 
