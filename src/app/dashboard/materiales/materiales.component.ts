@@ -25,16 +25,19 @@ export class MaterialesComponent implements OnInit {
   materialSeleccionado: Material | null = null;
   mostrarFormulario: boolean = false;
   esAdmin: boolean = false;
-
+  tiposMaterial: string[] = [];
   constructor(
     private materialesService: MaterialesService,
     private proveedoresService: ProveedoresService,  // <-- inyectar servicio
     private authService: AuthService) {}
 
-  ngOnInit(): void {
+ngOnInit(): void {
     this.cargarMateriales();
-    this.cargarProveedores(); // <-- cargar proveedores
-    this.esAdmin = this.authService.isAdmin();
+    this.esAdmin = this.authService.isAdmin(); // Ajustar según método real
+    this.materialesService.getTiposMaterial().subscribe({
+  next: (tipos) => this.tiposMaterial = tipos,
+  error: (err) => console.error('Error al obtener tipos de material', err)
+});
   }
 
   cargarProveedores() {
@@ -50,22 +53,31 @@ export class MaterialesComponent implements OnInit {
   cargarMateriales() {
   this.materialesService.obtenerMateriales().subscribe({
     next: (data) => {
-      this.materiales = data.map(material => ({
-        ...material,
-        // 1) Mapear proveedores
-        proveedorMateriales: material.proveedorMateriales.map(prov => ({
-          id: prov.id ?? 0,
-          nombre: prov.nombre
+      this.materiales = data.map((material: any) => ({
+        id: material.id,
+        nombre: material.nombre,
+        tipo: material.tipo,
+        descripcion: material.descripcion,
+        unidadDeMedida: material.unidadDeMedida,
+        stockActual: material.stockActual,
+
+        // Mapeamos proveedores del backend a ProveedorSimple
+        proveedorMateriales: (material.proveedorMateriales || []).map((prov: any) => ({
+          id: prov.id,
+          nombre: prov.nombreProveedor,  // backend usa nombreProveedor, aquí lo renombramos a nombre
         })),
-        // 2) Filtrar muebles con cantidadUtilizada > 0
-        materialMuebles: material.materialMuebles
-          .filter(mm => mm.cantidadUtilizada > 0)
-          .map(mm => ({ ...mm }))
+
+        // Mapeamos materiales-muebles a MuebleMaterialSimple
+        materialMuebles: (material.materialMuebles || []).map((mm: any) => ({
+          id: mm.id,
+          cantidadUtilizada: mm.cantidadUtilizada,
+          muebleNombre: mm.nombreMueble, // backend usa nombreMueble, frontend nombre claro
+        })),
       }));
     },
     error: (err) => console.error('Error al cargar materiales', err),
   });
-  }
+}
 
   abrirFormularioNuevo(): void {
     this.materialSeleccionado = {

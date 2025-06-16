@@ -43,47 +43,62 @@ export class ProveedoresComponent implements OnInit {
     });
   }
 
-  abrirFormularioNuevo() {
-    this.proveedorSeleccionado = {
-      nombre: '',
-      rut: '',
-      direccion: '',
-      correo: '',
-      telefono: '',
-      materiales: []
-    };
-    this.mostrarFormulario = true;
-  }
+abrirFormularioNuevo() {
+  this.proveedorSeleccionado = {
+    nombre: '',
+    direccion: '',
+    correo: '',
+    telefono: '',
+    proveedorMateriales: [
+      {
+        material: { id: 0, nombre: '', tipo: '' },
+        costoUnitario: 0
+      }
+    ]
+  } as Proveedor;
+  this.mostrarFormulario = true;
+}
 
-  editarProveedor(proveedor: Proveedor) {
-    this.proveedorSeleccionado = { ...proveedor };
-    this.mostrarFormulario = true;
-  }
+editarProveedor(proveedor: Proveedor) {
+  this.proveedorSeleccionado = {
+    ...proveedor,
+    proveedorMateriales: proveedor.proveedorMateriales ?? []
+  };
+  this.mostrarFormulario = true;
+}
 
   guardarProveedor() {
-    if (this.proveedorSeleccionado?.id) {
-      // Editar
-      this.proveedoresService.editarProveedor(this.proveedorSeleccionado).subscribe({
-        next: () => {
-          this.cargarProveedores();
-          this.mostrarFormulario = false;
-          this.proveedorSeleccionado = null;
-        },
-        error: err => console.error('Error al editar proveedor', err)
-      });
-    } else {
-      // Agregar
-      this.proveedoresService.agregarProveedor(this.proveedorSeleccionado!).subscribe({
-        next: () => {
-          this.cargarProveedores();
-          this.mostrarFormulario = false;
-          this.proveedorSeleccionado = null;
-        },
-        error: err => console.error('Error al agregar proveedor', err)
-      });
-    }
-  }
+  if (!this.proveedorSeleccionado) return;
 
+  const body = {
+    nombre: this.proveedorSeleccionado.nombre,
+    telefono: this.proveedorSeleccionado.telefono,
+    correo: this.proveedorSeleccionado.correo,
+    direccion: this.proveedorSeleccionado.direccion,
+    proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => ({
+      // SI pm.id existe, lo incluimos para actualizar esa fila
+      ...(pm.id != null ? { id: pm.id } : {}),
+      material: { id: pm.material.id },
+      costoUnitario: pm.costoUnitario
+    }))
+  };
+
+  if (this.proveedorSeleccionado.id) {
+    this.proveedoresService
+      .editarProveedor(this.proveedorSeleccionado.id, body)
+      .subscribe(() => {
+        this.cargarProveedores();
+        this.cancelarFormulario();
+      });
+  } else {
+    this.proveedoresService
+      .agregarProveedor(body)
+      .subscribe(() => {
+        this.cargarProveedores();
+        this.cancelarFormulario();
+      });
+  }
+}
   eliminarProveedor(id: number) {
     if (confirm('¿Estás seguro de eliminar este proveedor?')) {
       this.proveedoresService.eliminarProveedor(id).subscribe({
@@ -97,4 +112,10 @@ export class ProveedoresComponent implements OnInit {
     this.mostrarFormulario = false;
     this.proveedorSeleccionado = null;
   }
+  eliminarMaterial(index: number) {
+    if (this.proveedorSeleccionado && this.proveedorSeleccionado.proveedorMateriales) {
+      this.proveedorSeleccionado.proveedorMateriales.splice(index, 1);
+    }
+  }
+  
 }

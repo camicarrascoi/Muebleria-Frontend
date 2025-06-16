@@ -3,26 +3,38 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Proveedor } from '../../models/proveedores.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ProveedoresService {
-  private apiUrl = 'http://localhost:8080/api/v1/proveedor'; // Ajusta tu endpoint real
+  private apiUrl = 'http://localhost:8080/api/v1/proveedor';
 
   constructor(private http: HttpClient) {}
 
   obtenerProveedores(): Observable<Proveedor[]> {
-    return this.http.get<Proveedor[]>(this.apiUrl).pipe(
-      tap(data => console.log('Proveedores recibidos:', data))
-    );
+    return this.http.get<Proveedor[]>(this.apiUrl);
   }
 
-  agregarProveedor(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.post<Proveedor>(this.apiUrl, proveedor);
+  // Cambiado a (id, body) para coincidir con tu PUT en el back
+  editarProveedor(
+    id: number,
+    body: {
+      nombre: string;
+      telefono: string;
+      correo: string;
+      direccion: string;
+      proveedorMateriales: { material: { id: number }; costoUnitario: number }[];
+    }
+  ): Observable<Proveedor> {
+    return this.http.put<Proveedor>(`${this.apiUrl}/${id}`, body);
   }
 
-  editarProveedor(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.id}`, proveedor);
+  agregarProveedor(body: {
+    nombre: string;
+    telefono: string;
+    correo: string;
+    direccion: string;
+    proveedorMateriales: { material: { id: number }; costoUnitario: number }[];
+  }): Observable<Proveedor> {
+    return this.http.post<Proveedor>(this.apiUrl, body);
   }
 
   eliminarProveedor(id: number): Observable<void> {

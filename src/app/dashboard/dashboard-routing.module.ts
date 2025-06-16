@@ -13,7 +13,7 @@ export const dashboardRoutes: Routes = [
       },
       {
         path: 'materiales',
-        loadComponent: () => import('./material/materiales.component').then(m => m.MaterialesComponent)
+        loadComponent: () => import('./materiales/materiales.component').then(m => m.MaterialesComponent)
       },
       {
         path: 'proveedores',
