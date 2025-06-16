@@ -59,22 +59,24 @@ export class VentaComponent implements OnInit {
       total: 0,
       ventaMuebles: []
     };
-    // reset form fields
     this.muebleSeleccionadoId = null;
     this.cantidadSeleccionada = 1;
     this.mostrarFormulario = true;
   }
 
   editarVenta(v: Venta) {
-    // En esta UI manejamos solo un mueble por venta, tomamos el primero
-    this.ventaSeleccionada = { ...v, ventaMuebles: [...v.ventaMuebles] };
+    this.ventaSeleccionada = { ...v, fecha: new Date(v.fecha), ventaMuebles: [...v.ventaMuebles] };
+
     if (v.ventaMuebles.length > 0) {
-      this.muebleSeleccionadoId = v.ventaMuebles[0].muebleId;
+      const nombre = v.ventaMuebles[0].nombreMueble;
+      const muebleEncontrado = this.mueblesDisponibles.find(m => m.nombre === nombre);
+      this.muebleSeleccionadoId = this.ventaSeleccionada.ventaMuebles[0].id ?? null;
       this.cantidadSeleccionada = v.ventaMuebles[0].cantidad;
     } else {
       this.muebleSeleccionadoId = null;
       this.cantidadSeleccionada = 1;
     }
+
     this.mostrarFormulario = true;
   }
 
@@ -100,7 +102,6 @@ export class VentaComponent implements OnInit {
     }
 
     try {
-      // Construir payload con un solo detalle
       const payloadItems: VentaMueblePayload[] = [{
         mueble: { id: this.muebleSeleccionadoId },
         cantidad: this.cantidadSeleccionada
@@ -109,11 +110,15 @@ export class VentaComponent implements OnInit {
       if (!this.ventaSeleccionada.fecha) {
         throw new Error('La fecha es obligatoria');
       }
-      const fechaStr = this.ventaSeleccionada.fecha.toISOString().substring(0, 10);
+
+      const fechaISO = (this.ventaSeleccionada.fecha instanceof Date
+        ? this.ventaSeleccionada.fecha
+       : new Date(this.ventaSeleccionada.fecha)
+        ).toISOString();
 
       const payload: VentaPayload = {
         id: this.ventaSeleccionada.id ?? undefined,
-        fecha: fechaStr,
+        fecha: fechaISO,
         ventaMuebles: payloadItems
       };
 
@@ -151,10 +156,10 @@ export class VentaComponent implements OnInit {
   }
 
   get stockSeleccionado(): number {
-  if (this.muebleSeleccionadoId == null) {
-    return 1;
+    if (this.muebleSeleccionadoId == null) {
+      return 1;
+    }
+    const m = this.mueblesDisponibles.find(x => x.id === this.muebleSeleccionadoId);
+    return m ? m.stock : 1;
   }
-  const m = this.mueblesDisponibles.find(x => x.id === this.muebleSeleccionadoId);
-  return m ? m.stock : 1;
-}
 }

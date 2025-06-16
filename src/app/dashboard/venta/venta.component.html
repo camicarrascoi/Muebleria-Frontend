@@ -16,6 +16,7 @@
   <table border="1" class="tabla-ventas">
     <thead>
       <tr>
+        <th>Nombre del Mueble</th>
         <th>Fecha</th>
         <th>Total</th>
         <th>Muebles Vendidos</th>
@@ -24,12 +25,13 @@
     </thead>
     <tbody>
       <tr *ngFor="let v of ventas">
+        <td>{{ v.ventaMuebles[0].nombreMueble }}</td> <!-- Usamos nombreMueble -->
         <td>{{ v.fecha | date: 'dd/MM/yyyy' }}</td>
         <td>{{ v.total | currency:'CLP':'symbol' }}</td>
         <td>
           <ul>
             <li *ngFor="let m of v.ventaMuebles">
-              {{ m.nombre }} (x{{ m.cantidad }})
+              {{ m.nombreMueble }} (x{{ m.cantidad }})
             </li>
           </ul>
         </td>

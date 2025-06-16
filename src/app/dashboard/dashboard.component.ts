@@ -76,7 +76,7 @@ export class DashboardComponent implements OnInit {
       ID: v.id,
       Fecha: v.fecha,
       Total: v.total,
-      MueblesVendidos: v.ventaMuebles.map(m => `${m.nombre} (x${m.cantidad})`).join(', ')
+      MueblesVendidos: v.ventaMuebles.map(m => `${m.nombreMueble} (x${m.cantidad})`).join(', ')
     })));
 
     const workbook: XLSX.WorkBook = XLSX.utils.book_new();
