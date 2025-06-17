@@ -16,10 +16,12 @@ export interface VentaMueble {
 export interface VentaPayload {
   id?: number;
   fecha: string;
+  total?: number; // El total puede ser calculado por el backend
   ventaMuebles: VentaMueblePayload[];
 }
 
 export interface VentaMueblePayload {
   mueble: { id: number };
   cantidad: number;
+  id: number;
 }

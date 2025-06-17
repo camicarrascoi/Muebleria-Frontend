@@ -20,7 +20,7 @@ export class VentaService {
 
   editarVenta(payload: VentaPayload): Observable<Venta> {
     // Asume que payload.id está definido para editar
-    return this.http.put<Venta>(`${this.apiUrl}/${payload.id}`, payload);
+    return this.http.post<Venta>(`${this.apiUrl}/${payload.id}`, payload);
   }
 
   eliminarVenta(id: number): Observable<void> {

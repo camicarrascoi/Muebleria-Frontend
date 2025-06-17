@@ -3,12 +3,12 @@
   <span>Lista Proveedores</span>
 </nav>
 
-  <!-- Botón Agregar solo visible para admin -->
-  <div class="acciones">
-    <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar proveedor</button>
-  </div>
+<!-- Botón Agregar solo visible para admin -->
+<div class="acciones">
+  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar proveedor</button>
+</div>
 
-  <!-- Tabla de proveedores -->
+<!-- Tabla de proveedores -->
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
     <tr>
@@ -16,8 +16,8 @@
       <th>Teléfono</th>
       <th>Correo</th>
       <th>Dirección</th>
-      <th>Material</th>
-      <th>Costo Unitario</th> <!-- Nueva columna -->
+      <th>Materiales</th>
+      <th>Costo Unitario</th>
       <th *ngIf="esAdmin">Acciones</th>
     </tr>
   </thead>
@@ -27,8 +27,6 @@
       <td>{{ proveedor.telefono }}</td>
       <td>{{ proveedor.correo }}</td>
       <td>{{ proveedor.direccion }}</td>
-
-      <!-- Aquí hacemos un td que contiene un listado de materiales -->
       <td>
         <ul>
           <li *ngFor="let pm of proveedor.proveedorMateriales">
@@ -36,8 +34,6 @@
           </li>
         </ul>
       </td>
-
-      <!-- Aquí otro td con los costos unitarios, mismos orden que los materiales -->
       <td>
         <ul>
           <li *ngFor="let pm of proveedor.proveedorMateriales">
@@ -45,7 +41,6 @@
           </li>
         </ul>
       </td>
-
       <td *ngIf="esAdmin">
         <button (click)="editarProveedor(proveedor)">✏️ Editar</button>
         <button (click)="eliminarProveedor(proveedor.id!)">🗑️ Eliminar</button>
@@ -54,93 +49,55 @@
   </tbody>
 </table>
 
- <!-- Formulario para agregar/editar proveedores -->
-<div *ngIf="mostrarFormulario" class="formulario-proveedor">
-  <h3>{{ proveedorSeleccionado?.id ? 'Editar Proveedor' : 'Agregar Proveedor' }}</h3>
+<!-- Formulario agregar/editar -->
+<div *ngIf="mostrarFormulario && proveedorSeleccionado">
+  <h3>{{ proveedorSeleccionado.id ? 'Editar Proveedor' : 'Agregar Proveedor' }}</h3>
   <form (ngSubmit)="guardarProveedor()" #formProveedor="ngForm" novalidate>
-    <!-- Campos básicos -->
+    <!-- Datos básicos -->
     <label>
       Nombre:
-      <input
-        type="text"
-        [(ngModel)]="proveedorSeleccionado!.nombre"
-        name="nombre"
-        required
-      />
-    </label>
-    <br />
+      <input type="text" [(ngModel)]="proveedorSeleccionado.nombre" name="nombre" required />
+    </label><br />
 
     <label>
       Teléfono:
-      <input
-        type="text"
-        [(ngModel)]="proveedorSeleccionado!.telefono"
-        name="telefono"
-        required
-      />
-    </label>
-    <br />
+      <input type="text" [(ngModel)]="proveedorSeleccionado.telefono" name="telefono" required />
+    </label><br />
 
     <label>
       Correo:
-      <input
-        type="email"
-        [(ngModel)]="proveedorSeleccionado!.correo"
-        name="correo"
-        required
-      />
-    </label>
-    <br />
+      <input type="email" [(ngModel)]="proveedorSeleccionado.correo" name="correo" required />
+    </label><br />
 
     <label>
       Dirección:
-      <input
-        type="text"
-        [(ngModel)]="proveedorSeleccionado!.direccion"
-        name="direccion"
-        required
-      />
-    </label>
-    <br />
+      <input type="text" [(ngModel)]="proveedorSeleccionado.direccion" name="direccion" required />
+    </label><br />
 
-    <!-- Materiales y costos -->
-    <div *ngIf="proveedorSeleccionado?.proveedorMateriales?.length">
-      <h4>Materiales y Costos</h4>
-      <div *ngFor="let pm of proveedorSeleccionado?.proveedorMateriales!; let i = index" style="margin-bottom:1em">
-        <!-- ID del material (no editable, pero incluido en el objeto) -->
-        <input
-          type="hidden"
-          [(ngModel)]="pm.material.id"
-          name="materialId{{i}}"
-        />
+    <!-- Materiales -->
+    <fieldset>
+      <legend>Materiales que provee</legend>
 
-        <!-- Nombre (solo lectura) -->
-        <label>
-          Material:
-          <input
-            type="text"
-            [value]="pm.material.nombre"
-            readonly
-          />
-        </label>
-        &nbsp;
+      <button type="button" (click)="agregarMaterial()">➕ Agregar material</button>
 
-        <!-- Costo -->
-        <label>
-          Costo Unitario:
-          <input
-            type="number"
-            [(ngModel)]="pm.costoUnitario"
-            [ngModelOptions]="{ standalone: true }"
-            name="costoUnitario{{i}}"
-            required
-            min="0"
-          />
-        </label>
+      <div *ngFor="let pm of proveedorSeleccionado.proveedorMateriales; let i = index" style="margin-bottom:1em">
+        <!-- Selección del material -->
+        <select [(ngModel)]="pm.material.id" (ngModelChange)="onMaterialChange(pm, $event)"
+                name="materialId{{i}}" required>
+          <option [ngValue]="undefined">-- Selecciona un material --</option>
+          <option *ngFor="let mat of materialesDisponibles" [ngValue]="mat.id">
+            {{ mat.nombre }}
+          </option>
+        </select>
+
+        <!-- Costo unitario -->
+        <input type="number" [(ngModel)]="pm.costoUnitario" name="costo{{i}}" [min]="0" required />
+
+        <!-- Botón para quitar -->
+        <button type="button" (click)="quitarMaterial(i)">🗑️</button>
       </div>
-    </div>
+    </fieldset>
 
-    <!-- Botones -->
     <button type="submit" [disabled]="formProveedor.invalid">💾 Guardar</button>
     <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
   </form>

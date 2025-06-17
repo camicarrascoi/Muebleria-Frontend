@@ -1,3 +1,5 @@
+import { Material } from './material.model';
+
 export interface Proveedor {
   id?: number;
   nombre: string;
@@ -10,9 +12,9 @@ export interface Proveedor {
 }
 
 export interface ProveedorMaterial {
-  id: number;
+  id?: number; // ← ahora es opcional
+  material: Material;
   costoUnitario: number;
-  material: MaterialSimpleProveedor;
 }
 
 export interface MaterialSimpleProveedor {

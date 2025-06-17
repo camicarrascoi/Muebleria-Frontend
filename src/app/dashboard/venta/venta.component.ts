@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VentaService } from '../services/venta.service';
 import { MueblesService } from '../services/muebles.service';
 import { Venta, VentaMueble, VentaPayload, VentaMueblePayload } from '../../models/venta.model';
 import { Mueble } from '../../models/mueble.model';
 import { AuthService } from '../services/auth.service';
-
+import { startWith } from 'rxjs/operators';
 @Component({
   selector: 'app-venta',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './venta.component.html',
   styleUrls: ['./venta.component.css']
 })
@@ -18,24 +18,52 @@ export class VentaComponent implements OnInit {
   ventas: Venta[] = [];
   mueblesDisponibles: Mueble[] = [];
   ventaSeleccionada: Venta | null = null;
-
-  // Para el formulario
-  muebleSeleccionadoId: number | null = null;
-  cantidadSeleccionada = 1;
+  fechaMinima = new Date().toISOString().split('T')[0];
 
   mostrarFormulario = false;
   esAdmin = false;
+  formVenta = new FormGroup({
+    fecha: new FormControl(this.fechaMinima, [Validators.required]),
+    muebleSeleccionadoId: new FormControl<number | null>(null, {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    cantidadSeleccionada: new FormControl<number>(1, {
+      nonNullable: true,
+      validators: [Validators.min(1), Validators.max(1)]
+    })
+  });
+  muebleSeleccionadoIdControl = this.formVenta.get('muebleSeleccionadoId') as FormControl<number | null>;
+  cantidadSeleccionadaControl = this.formVenta.get('cantidadSeleccionada') as FormControl<number>;
 
   constructor(
     private ventaService: VentaService,
     private mueblesService: MueblesService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.esAdmin = this.authService.isAdmin();
     this.cargarVentas();
     this.cargarMuebles();
+    this.formVenta.get('muebleSeleccionadoId')!.valueChanges.subscribe(rawId => {
+      const id = typeof rawId === 'string' ? +rawId : rawId as number;
+      const encontrado = this.mueblesDisponibles.find(x => x.id === id);
+      console.log('ID seleccionado:', id, 'Encontrado:', encontrado);
+
+      const stock = encontrado?.stock ?? 1;
+      this.cantidadSeleccionadaControl.setValidators([
+        Validators.min(1),
+        Validators.max(stock)
+      ]);
+
+      if (this.cantidadSeleccionadaControl.value! > stock) {
+        this.cantidadSeleccionadaControl.setValue(stock);
+      }
+
+      this.cantidadSeleccionadaControl.updateValueAndValidity({ onlySelf: true });
+    });
+   
   }
 
   private cargarVentas() {
@@ -59,8 +87,7 @@ export class VentaComponent implements OnInit {
       total: 0,
       ventaMuebles: []
     };
-    this.muebleSeleccionadoId = null;
-    this.cantidadSeleccionada = 1;
+    this.muebleSeleccionadoIdControl.setValue(null);
     this.mostrarFormulario = true;
   }
 
@@ -70,11 +97,11 @@ export class VentaComponent implements OnInit {
     if (v.ventaMuebles.length > 0) {
       const nombre = v.ventaMuebles[0].nombreMueble;
       const muebleEncontrado = this.mueblesDisponibles.find(m => m.nombre === nombre);
-      this.muebleSeleccionadoId = this.ventaSeleccionada.ventaMuebles[0].id ?? null;
-      this.cantidadSeleccionada = v.ventaMuebles[0].cantidad;
+      this.muebleSeleccionadoIdControl.setValue(muebleEncontrado?.id ?? null);
+      this.cantidadSeleccionadaControl.setValue(muebleEncontrado?.stock ?? 1);
     } else {
-      this.muebleSeleccionadoId = null;
-      this.cantidadSeleccionada = 1;
+      this.muebleSeleccionadoIdControl.setValue(null);
+      this.cantidadSeleccionadaControl.setValue(1);
     }
 
     this.mostrarFormulario = true;
@@ -92,19 +119,20 @@ export class VentaComponent implements OnInit {
 
   guardarVenta() {
     if (!this.ventaSeleccionada) return;
-    if (this.muebleSeleccionadoId == null) {
+    if (this.muebleSeleccionadoIdControl.value == null) {
       alert('Debes seleccionar un mueble');
       return;
     }
-    if (this.cantidadSeleccionada < 1) {
+    if (this.cantidadSeleccionadaControl.value < 1) {
       alert('La cantidad debe ser al menos 1');
       return;
     }
 
     try {
       const payloadItems: VentaMueblePayload[] = [{
-        mueble: { id: this.muebleSeleccionadoId },
-        cantidad: this.cantidadSeleccionada
+        mueble: { id: this.muebleSeleccionadoIdControl.value ?? 0 },
+        cantidad: this.cantidadSeleccionadaControl.value,
+        id: this.ventaSeleccionada.ventaMuebles[0].id
       }];
 
       if (!this.ventaSeleccionada.fecha) {
@@ -113,12 +141,13 @@ export class VentaComponent implements OnInit {
 
       const fechaISO = (this.ventaSeleccionada.fecha instanceof Date
         ? this.ventaSeleccionada.fecha
-       : new Date(this.ventaSeleccionada.fecha)
-        ).toISOString();
+        : new Date(this.ventaSeleccionada.fecha)
+      ).toISOString();
 
       const payload: VentaPayload = {
         id: this.ventaSeleccionada.id ?? undefined,
-        fecha: fechaISO,
+        fecha: fechaISO.split('T')[0],
+        total: this.ventaSeleccionada.total ?? undefined,
         ventaMuebles: payloadItems
       };
 
@@ -154,12 +183,9 @@ export class VentaComponent implements OnInit {
   get fechaPorDefecto(): string {
     return new Date().toISOString().substring(0, 10);
   }
-
   get stockSeleccionado(): number {
-    if (this.muebleSeleccionadoId == null) {
-      return 1;
-    }
-    const m = this.mueblesDisponibles.find(x => x.id === this.muebleSeleccionadoId);
-    return m ? m.stock : 1;
+    const id = this.muebleSeleccionadoIdControl.value;
+    return this.mueblesDisponibles.find(x => x.id === id)?.stock ?? 1;
   }
+
 }

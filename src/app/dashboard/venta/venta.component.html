@@ -47,54 +47,34 @@
 <!-- Formulario para agregar/editar venta -->
 <div *ngIf="mostrarFormulario && ventaSeleccionada" class="formulario-venta">
   <h3>{{ ventaSeleccionada.id ? 'Editar Venta' : 'Agregar Venta' }}</h3>
-  <form #formVenta="ngForm" (ngSubmit)="guardarVenta()" novalidate>
-
+  <form [formGroup]="formVenta" (ngSubmit)="guardarVenta()" novalidate>
+    @let fecha= formVenta.get('fecha');
     <!-- Campo Fecha -->
     <label for="fecha">Fecha:</label>
-    <input
-      id="fecha"
-      name="fecha"
-      type="date"
-      [ngModel]="ventaSeleccionada.fecha ? (ventaSeleccionada.fecha | date:'yyyy-MM-dd') : fechaPorDefecto"
-      (ngModelChange)="onFechaChange($event)"
-      required
-      #fecha="ngModel"
-    />
-    <div *ngIf="fecha.invalid && fecha.touched" class="error">
+    <input id="fecha" name="fecha" type="date" formControlName="fecha" [attr.min]="fechaMinima"
+      (ngModelChange)="onFechaChange($event)" required />
+    <div *ngIf="fecha?.invalid && fecha?.touched" class="error">
       La fecha es obligatoria.
     </div>
-
+    @let muebleSeleccionadoId= formVenta.get('muebleSeleccionadoId');
     <!-- Selección de Mueble -->
     <label for="mueble">Mueble:</label>
-    <select
-      id="mueble"
-      name="muebleSeleccionadoId"
-      [(ngModel)]="muebleSeleccionadoId"
-      required
-      #mSel="ngModel"
-    >
+    <select id="mueble" name="muebleSeleccionadoId" formControlName="muebleSeleccionadoId" >
       <option value="" disabled>-- Selecciona un mueble --</option>
       <option *ngFor="let m of mueblesDisponibles" [value]="m.id">
         {{ m.nombre }} (stock: {{ m.stock }})
       </option>
     </select>
-    <div *ngIf="mSel.invalid && mSel.touched" class="error">
+    <div *ngIf="muebleSeleccionadoId?.invalid && muebleSeleccionadoId?.touched" class="error">
       Debes elegir un mueble.
     </div>
-
+    @let cantidadSeleccionada= formVenta.get('cantidadSeleccionada');
     <!-- Cantidad -->
     <label for="cantidad">Cantidad:</label>
-    <input
-      id="cantidad"
-      name="cantidadSeleccionada"
-      type="number"
-      [(ngModel)]="cantidadSeleccionada"
-      [min]="1"
-      [max]="stockSeleccionado"
-      required
-      #cant="ngModel"
-    />
-    <div *ngIf="cant.invalid && cant.touched" class="error">
+    <input id="cantidad" name="cantidadSeleccionada" type="number" formControlName="cantidadSeleccionada"
+      [attr.max]="stockSeleccionado" />
+
+    <div *ngIf=" cantidadSeleccionada?.invalid && cantidadSeleccionada?.touched" class="error">
       Cantidad inválida.
     </div>
 
