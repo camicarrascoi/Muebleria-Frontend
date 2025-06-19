@@ -9,6 +9,7 @@
 </div>
 
 <!-- Tabla de muebles -->
+<div class="tabla-contenedor">
 <table *ngIf="muebles.length > 0">
   <thead>
     <tr>
@@ -43,9 +44,10 @@
     </tr>
   </tbody>
 </table>
+</div>
 
 <!-- Formulario para agregar/editar muebles -->
-<div *ngIf="mostrarFormulario && muebleSeleccionado">
+<div *ngIf="mostrarFormulario && muebleSeleccionado" class="formulario-mueble">
   <h3>{{ muebleSeleccionado.id ? 'Editar Mueble' : 'Agregar Mueble' }}</h3>
   <form (ngSubmit)="guardarMueble()">
     <label>

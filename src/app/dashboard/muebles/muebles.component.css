@@ -41,16 +41,24 @@
   background-color: #935e3f;
 }
 
-/* Tabla de muebles */
-table {
+/* Contenedor para centrar la tabla */
+.tabla-contenedor {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  border-collapse: collapse;
   margin-bottom: 20px;
-  overflow-x: auto;
-  display: block;
+}
+
+/* Tabla de materiales centrada */
+.tabla-contenedor table {
+  display: table;
+  width: auto;    /* Ajusta al contenido */
+  min-width: 80%; /* Puedes cambiar a 90% u otro valor si lo prefieres */
+  border-collapse: collapse;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+/* Encabezados */
 thead {
   background-color: #f5deb3;
   color: #333;
@@ -92,7 +100,7 @@ td ul li {
 /* Botones de editar y eliminar */
 td .acciones-botones {
   display: flex;
-  gap: 12px;     /* mayor separación entre botones */
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -111,8 +119,8 @@ td .acciones-botones button:hover {
   background-color: #6f442a;
 }
 
-/* Formulario de mueble */
-.formulario-material {
+/* Formulario de mueble (sin cambios, conserva su tamaño original) */
+.formulario-mueble {
   background-color: #fff4e6;
   padding: 20px;
   border-radius: 8px;
@@ -121,15 +129,13 @@ td .acciones-botones button:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Título del formulario */
-.formulario-material h3 {
+.formulario-mueble h3 {
   margin-top: 0;
   font-size: 24px;
   color: #8b5e3c;
   text-align: center;
 }
 
-/* Etiquetas e inputs */
 form label {
   display: block;
   margin-bottom: 15px;
@@ -154,7 +160,6 @@ form select[multiple] {
   min-height: 100px;
 }
 
-/* Botones del formulario */
 form button {
   background-color: #4caf50;
   color: white;
@@ -179,7 +184,6 @@ form button[type="button"]:hover {
   background-color: #d32f2f;
 }
 
-/* Mensajes de error */
 .error {
   color: #d8000c;
   font-size: 14px;
@@ -193,22 +197,27 @@ form button[type="button"]:hover {
     padding: 10px;
   }
 
-  table,
+  /* En móvil dejamos scroll horizontal */
+  .tabla-centro {
+    overflow-x: auto;
+  }
+
+  .tabla-centro table,
   thead,
   tbody,
   th,
   td,
   tr {
     display: block;
+    width: 100%;
   }
 
   tr {
     margin-bottom: 15px;
   }
 
-  th {
-    background-color: #f5deb3;
-    font-weight: bold;
+  thead {
+    display: none;
   }
 
   td {

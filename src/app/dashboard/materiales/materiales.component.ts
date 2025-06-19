@@ -32,9 +32,7 @@ export class MaterialesComponent implements OnInit {
 
   ngOnInit(): void {
     this.esAdmin = this.authService.isAdmin();
-    // Cargar proveedores antes de materiales para asignaciones
     this.cargarProveedores();
-    // Obtener tipos de material
     this.materialesService.getTiposMaterial().subscribe({
       next: (tipos) => (this.tiposMaterial = tipos),
       error: (err) => console.error('Error al obtener tipos de material', err),
@@ -93,11 +91,39 @@ export class MaterialesComponent implements OnInit {
 
   editarMaterial(material: Material): void {
     this.materialSeleccionado = { ...material };
-    // Mapear proveedores para el select múltiple
     this.proveedoresSeleccionados = this.materialSeleccionado.proveedorMateriales
       .map(pm => this.proveedores.find(p => p.id === pm.id)!)
       .filter(p => !!p);
     this.mostrarFormulario = true;
+  }
+
+  // Bloquea teclas no válidas para campos de solo letras
+  soloLetras(event: KeyboardEvent): void {
+    const char = event.key;
+    const letrasRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]$/;
+    if (!letrasRegex.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  // Bloquea teclas no válidas para campos numéricos
+  soloNumeros(event: KeyboardEvent): void {
+    const char = event.key;
+    const numerosRegex = /[0-9]/;
+    if (!numerosRegex.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  // También validamos antes de guardar, por seguridad
+  validarSoloLetras(texto: string): boolean {
+    const letrasRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
+    return letrasRegex.test(texto);
+  }
+
+  validarSoloNumeros(valor: any): boolean {
+    const numeroRegex = /^\d+$/;
+    return numeroRegex.test(String(valor));
   }
 
   guardarMaterial(form: NgForm): void {
@@ -110,33 +136,31 @@ export class MaterialesComponent implements OnInit {
       return;
     }
 
-    // Validación extra: solo letras en nombre y descripción
-    const letrasRegex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/;
     if (
-      !letrasRegex.test(this.materialSeleccionado.nombre) ||
-      !letrasRegex.test(this.materialSeleccionado.descripcion)
+      !this.validarSoloLetras(this.materialSeleccionado.nombre) ||
+      !this.validarSoloLetras(this.materialSeleccionado.descripcion)
     ) {
       alert('Nombre y descripción deben contener solo letras y espacios.');
       return;
     }
 
-    // Asignar proveedores seleccionados
+    if (!this.validarSoloNumeros(this.materialSeleccionado.stockActual)) {
+      alert('Stock debe ser un número válido.');
+      return;
+    }
+
     this.materialSeleccionado.proveedorMateriales = this.proveedoresSeleccionados.map(p => ({
       id: p.id!,
       nombre: p.nombre,
     }));
 
-    // Llamada a servicio
     if (this.materialSeleccionado.id) {
-      this.materialesService.editarMaterial(
-        this.materialSeleccionado.id,
-        this.materialSeleccionado
-      ).subscribe({
+      this.materialesService.editarMaterial(this.materialSeleccionado.id, this.materialSeleccionado).subscribe({
         next: () => {
           this.cargarMateriales();
           this.cancelarFormulario();
         },
-        error: err => console.error('Error al actualizar material', err),
+        error: (err) => console.error('Error al actualizar material', err),
       });
     } else {
       this.materialesService.agregarMaterial(this.materialSeleccionado).subscribe({
@@ -144,16 +168,16 @@ export class MaterialesComponent implements OnInit {
           this.cargarMateriales();
           this.cancelarFormulario();
         },
-        error: err => console.error('Error al crear material', err),
+        error: (err) => console.error('Error al crear material', err),
       });
     }
   }
 
   eliminarMaterial(id: number): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este material?')) {
+    if (confirm('¿Estás segura de que deseas eliminar este material?')) {
       this.materialesService.eliminarMaterial(id).subscribe({
         next: () => this.cargarMateriales(),
-        error: err => console.error('Error al eliminar material', err),
+        error: (err) => console.error('Error al eliminar material', err),
       });
     }
   }

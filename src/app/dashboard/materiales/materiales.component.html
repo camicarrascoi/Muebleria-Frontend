@@ -67,6 +67,7 @@
         required
         pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+"
         [(ngModel)]="materialSeleccionado!.nombre"
+        (keypress)="soloLetras($event)"
         #nombre="ngModel"
       />
       <div class="error" *ngIf="nombre.invalid && nombre.touched">
@@ -95,6 +96,7 @@
         required
         pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+"
         [(ngModel)]="materialSeleccionado!.descripcion"
+        (keypress)="soloLetras($event)"
         #descripcion="ngModel"
       />
       <div class="error" *ngIf="descripcion.invalid && descripcion.touched">
@@ -121,6 +123,7 @@
         min="0"
         step="1"
         [(ngModel)]="materialSeleccionado!.stockActual"
+        (keypress)="soloNumeros($event)"
         #stockActual="ngModel"
       />
       <div class="error" *ngIf="stockActual.invalid && stockActual.touched">
