@@ -113,6 +113,16 @@ export class MueblesComponent implements OnInit {
   guardarMueble() {
     if (!this.muebleSeleccionado) return;
 
+     // Validación extra: evitar valores no válidos
+  if (
+    this.muebleSeleccionado.precioVenta < 0 ||
+    this.muebleSeleccionado.stock < 0 ||
+    this.muebleSeleccionado.materialMuebles.some(mm => mm.cantidadUtilizada < 0)
+  ) {
+    alert('No se permiten valores negativos.');
+    return;
+  }
+
     if (this.muebleSeleccionado.id) {
       this.mueblesService.editarMueble(this.muebleSeleccionado).subscribe({
         next: () => {

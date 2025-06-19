@@ -68,6 +68,18 @@ td button {
   cursor: pointer;
   transition: background-color 0.2s;
 }
+
+td .acciones-botones {
+  display: flex;
+  gap: 8px; /* Espacio entre botones */
+  flex-wrap: wrap;
+}
+
+/* Botones de acciones dentro de celdas */
+td .acciones-botones button {
+  margin: 0;
+}
+
 td button:hover {
   background-color: #6f442a;
 }

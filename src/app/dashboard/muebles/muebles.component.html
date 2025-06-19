@@ -33,10 +33,13 @@
           </li>
         </ul>
       </td>
-      <td *ngIf="esAdmin">
-        <button (click)="editarMueble(mueble)">✏️ Editar</button>
-        <button (click)="eliminarMueble(mueble.id!)">🗑️ Eliminar</button>
-      </td>
+      
+<td *ngIf="esAdmin">
+  <div class="acciones-botones">
+    <button (click)="editarMueble(mueble)">✏️ Editar</button>
+    <button (click)="eliminarMueble(mueble.id!)">🗑️ Eliminar</button>
+  </div>
+</td>
     </tr>
   </tbody>
 </table>
@@ -47,41 +50,78 @@
   <form (ngSubmit)="guardarMueble()">
     <label>
       Nombre:
-      <input type="text" [(ngModel)]="muebleSeleccionado.nombre" name="nombre" required />
+      <input
+        type="text"
+        [(ngModel)]="muebleSeleccionado.nombre"
+        name="nombre"
+        required
+        #nombreInput="ngModel"
+        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
+        oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+      />
+      <div class="error" *ngIf="nombreInput.invalid && nombreInput.touched">
+        Solo se permiten letras.
+      </div>
     </label>
     <br />
     <label>
       Descripción:
-      <input type="text" [(ngModel)]="muebleSeleccionado.descripcion" name="descripcion" required />
+      <input
+        type="text"
+        [(ngModel)]="muebleSeleccionado.descripcion"
+        name="descripcion"
+        required
+        #descripcionInput="ngModel"
+        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
+        oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')"
+      />
+      <div class="error" *ngIf="descripcionInput.invalid && descripcionInput.touched">
+        Solo se permiten letras.
+      </div>
     </label>
     <br />
     <label>
       Precio Venta:
-      <input type="number" [(ngModel)]="muebleSeleccionado.precioVenta" name="precioVenta" required />
+      <input
+        type="number"
+        [(ngModel)]="muebleSeleccionado.precioVenta"
+        name="precioVenta"
+        required
+        min="0"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      />
     </label>
     <br />
     <label>
       Stock:
-      <input type="number" [(ngModel)]="muebleSeleccionado.stock" name="stock" required />
+      <input
+        type="number"
+        [(ngModel)]="muebleSeleccionado.stock"
+        name="stock"
+        required
+        min="0"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      />
     </label>
     <br />
 
     <!-- Ajustar materiales -->
     <fieldset>
-  <legend>Materiales del mueble</legend>
-  <div *ngFor="let mm of muebleSeleccionado.materialMuebles; let i = index">
-    <label>
-      {{ mm.material.nombre }} ({{ mm.material.unidadDeMedida }}):
-      <input
-        type="number"
-        [(ngModel)]="mm.cantidadUtilizada"
-        name="cantidadUtilizada{{ i }}"
-        min="0"
-        required
-      />
-    </label>
-  </div>
-</fieldset>
+      <legend>Materiales del mueble</legend>
+      <div *ngFor="let mm of muebleSeleccionado.materialMuebles; let i = index">
+        <label>
+          {{ mm.material.nombre }} ({{ mm.material.unidadDeMedida }}):
+          <input
+            type="number"
+            [(ngModel)]="mm.cantidadUtilizada"
+            name="cantidadUtilizada{{ i }}"
+            required
+            min="0"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+          />
+        </label>
+      </div>
+    </fieldset>
 
     <button type="submit">💾 Guardar</button>
     <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
