@@ -1,10 +1,11 @@
 .dashboard {
-  max-width: 900px;
-  margin: 30px auto;
+  width: 100%;           /* ocupa el 100% del ancho del viewport */
+  max-width: none;       /* sin límite máximo */
+  margin: 0;             /* sin auto-centro */
   background-color: #f9f5ee; /* beige claro */
-  padding: 25px 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  padding: 25px 30px;    /* igual que antes, o ajusta según prefieras */
+  border-radius: 0;      /* quita los bordes redondeados para un aspecto “full‑width” */
+  box-shadow: none;      /* elimina la sombra si no la necesitas */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #4a4a4a;
   text-align: center;

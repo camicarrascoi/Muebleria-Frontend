@@ -1,3 +1,16 @@
+/* Contenedor de la tabla sin scroll */
+.tabla-contenedor {
+  width: 100%;
+  overflow-x: visible;    /* elimino cualquier scroll */
+}
+
+/* Tabla adaptativa */
+.tabla-materiales {
+  width: 100%;
+  table-layout: auto;     /* columnas se ajustan */
+  display: table !important;
+}
+
 /* Fondo general */
 :host {
   display: block;
@@ -42,15 +55,16 @@
   background-color: #935e3f;
 }
 
-/* Tabla */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  display: block;
+/* Tabla de materiales */
+.tabla-contenedor table { /* para quien use directamente <table> */
+  overflow-x: visible;
 }
 
+/*.tabla-contenedor .tabla-materiales {
+  /* ya definido arriba */
+
+
+/* Encabezados y celdas */
 thead {
   background-color: #f5deb3;
   color: #333;
@@ -69,10 +83,9 @@ tr:nth-child(even) {
   background-color: #fff8ee;
 }
 
-/* Listas dentro de celdas */
 /* Listas dentro de celdas con estilo "chip" */
 td ul {
-  list-style: none; /* quitamos viñetas */
+  list-style: none;
   padding-left: 0;
   margin: 0;
   display: flex;
@@ -91,19 +104,24 @@ td ul li {
 }
 
 /* Botones de editar y eliminar */
-td button {
+td .acciones-botones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+td .acciones-botones button {
   background-color: #8b5e3c;
   color: white;
   border: none;
   padding: 8px 12px;
-  margin-right: 5px;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-td button:hover {
+td .acciones-botones button:hover {
   background-color: #6f442a;
 }
 
@@ -190,13 +208,15 @@ form button[type="button"]:hover {
     padding: 10px;
   }
 
-  table,
+  .tabla-contenedor,
+  .tabla-contenedor .tabla-materiales,
   thead,
   tbody,
   th,
   td,
   tr {
     display: block;
+    width: 100%;
   }
 
   tr {
