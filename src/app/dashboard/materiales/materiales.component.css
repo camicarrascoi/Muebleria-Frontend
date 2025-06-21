@@ -58,10 +58,12 @@
 /* Tabla de materiales */
 .tabla-contenedor table { /* para quien use directamente <table> */
   overflow-x: visible;
+  display: table;
+  width: auto;    /* Ajusta al contenido */
+  min-width: 80%; /* Puedes cambiar a 90% u otro valor si lo prefieres */
+  border-collapse: collapse;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-
-/*.tabla-contenedor .tabla-materiales {
-  /* ya definido arriba */
 
 
 /* Encabezados y celdas */
