@@ -25,14 +25,14 @@
 }
 
 .acciones button {
-  background-color: #a86f4c;
-  color: #fff;
+  background-color: #8b5e3c;
+  color: white;
   border: none;
-  padding: 12px 20px;
+  padding: 8px 12px;
   font-size: 16px;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s;
 }
 .acciones button:hover {
   background-color: #935e3f;
@@ -47,37 +47,40 @@ table {
 }
 thead {
   background-color: #f5deb3;
+  color: #333;
+  font-weight: bold;
 }
+
 th, td {
   border: 1px solid #ddd;
   padding: 12px;
+  vertical-align: top;
   text-align: left;
+  min-width: 120px;
 }
+
 tr:nth-child(even) {
   background-color: #fff8ee;
 }
-/* Listas dentro de celdas */
-ul {
-  padding-left: 20px;
-  margin: 0;
-}
-ul li {
-  list-style-type: disc;
+/* Botones de editar y eliminar */
+td .acciones-botones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* Botones dentro de la tabla */
-td button {
+td .acciones-botones button {
   background-color: #8b5e3c;
-  color: #fff;
+  color: white;
   border: none;
-  padding: 6px 12px;
-  margin-right: 5px;
-  font-size: 14px;
+  padding: 8px 12px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s;
 }
-td button:hover {
+
+td .acciones-botones button:hover {
   background-color: #6f442a;
 }
 
@@ -86,98 +89,134 @@ td button:hover {
   background-color: #fff4e6;
   padding: 20px;
   border-radius: 8px;
-  max-width: 600px;
-  margin: 0 auto 20px auto;
+  max-width: 700px;
+  margin: 0 auto 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
+
 .formulario-proveedor h3 {
   margin-top: 0;
   color: #8b5e3c;
 }
+
 .formulario-proveedor form {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 15px;
 }
+
 .formulario-proveedor label {
   display: flex;
   flex-direction: column;
   font-weight: bold;
+  margin-bottom: 8px; /* un poco de espacio abajo para separar campos */
 }
+
 .formulario-proveedor input[type="text"],
 .formulario-proveedor input[type="email"],
-.formulario-proveedor input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  margin-top: 5px;
-  border-radius: 4px;
+.formulario-proveedor input[type="number"],
+.formulario-proveedor input[type="date"],
+.formulario-proveedor input[type="tel"] {
+  padding: 8px;
   border: 1px solid #ccc;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box; /* para que el padding no aumente el ancho */
 }
+
 .formulario-proveedor input:focus {
   border-color: #8b5e3c;
   outline: none;
 }
 
 /* Fieldset de materiales */
-.formulario-proveedor fieldset {
+fieldset {
   border: 1px solid #ddd;
   border-radius: 6px;
   padding: 15px;
   background-color: #fff8ee;
 }
-.formulario-proveedor fieldset legend {
+
+fieldset legend {
   font-weight: bold;
   color: #8b5e3c;
   padding: 0 5px;
 }
-.formulario-proveedor fieldset > div {
-  display: flex;
-  align-items: center;
+
+.material-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
   gap: 10px;
+  align-items: center;
   margin-bottom: 10px;
 }
-.formulario-proveedor fieldset input {
-  flex: 1;
+
+.material-item input {
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-/* Botones del formulario */
+/* Botones Agregar/Quitar material */
+.boton-agregar button,
+.boton-quitar button {
+  background-color: #444 !important; /* gris oscuro */
+  color: white !important;
+  border: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.boton-agregar button:hover,
+.boton-quitar button:hover {
+  background-color: #2f2f2f !important; /* más oscuro */
+}
+
+/* Botones del formulario principal */
 .botones-formulario {
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
 }
-.formulario-proveedor button[type="submit"] {
+
+.botones-formulario button[type="submit"] {
   background-color: #4caf50;
-  color: #fff;
-  padding: 10px 20px;
+  color: white;
   border: none;
+  padding: 10px 18px;
+  font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-.formulario-proveedor button[type="submit"]:hover {
-  background-color: #45a049;
-}
-.formulario-proveedor button[type="button"] {
-  background-color: #ccc;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.formulario-proveedor button[type="button"]:hover {
-  background-color: #bbb;
+  transition: background-color 0.3s;
 }
 
-/* Mensajes de error */
-.error {
-  color: #d32f2f;
-  font-size: 13px;
-  margin-top: -10px;
-  margin-bottom: 5px;
+.botones-formulario button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.botones-formulario button[type="button"] {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.botones-formulario button[type="button"]:hover {
+  background-color: #d32f2f;
+}
+
+.botones-formulario {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;     /* centra verticalmente */
 }
 
 /* Responsive */
@@ -187,5 +226,8 @@ td button:hover {
   }
   .botones-formulario {
     flex-direction: column;
+  }
+  .material-item {
+    grid-template-columns: 1fr;
   }
 }

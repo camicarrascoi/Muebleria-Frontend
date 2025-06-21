@@ -39,6 +39,12 @@ export class ProveedoresComponent implements OnInit {
     this.esUsuario = rol === 'usuario';
   }
 
+  soloNumeros(event: KeyboardEvent): void {
+  const charCode = event.charCode || event.keyCode;
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
   cargarProveedores() {
     this.proveedoresService.obtenerProveedores().subscribe({
       next: data => {
@@ -93,12 +99,15 @@ export class ProveedoresComponent implements OnInit {
     telefono: this.proveedorSeleccionado.telefono,
     correo: this.proveedorSeleccionado.correo,
     direccion: this.proveedorSeleccionado.direccion,
+    fechaPedido: this.proveedorSeleccionado.fechaPedido,
     proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => ({
       ...(pm.id != null ? { id: pm.id } : {}),
       material: { id: pm.material.id! }, // usamos el operador non-null porque ya validamos arriba
       costoUnitario: pm.costoUnitario
     }))
   };
+
+  
 
   const operacion = this.proveedorSeleccionado.id
     ? this.proveedoresService.editarProveedor(this.proveedorSeleccionado.id, body)

@@ -1,17 +1,16 @@
-<!-- Barra de navegación simple -->
+<!-- proveedores.component.html -->
 <nav class="navbar">
   <span>Lista Proveedores</span>
 </nav>
 
-<!-- Botón Agregar solo visible para admin -->
 <div class="acciones">
   <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar proveedor</button>
 </div>
 
-<!-- Tabla de proveedores -->
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
     <tr>
+      <th>Fecha de Pedido</th>
       <th>Nombre</th>
       <th>Teléfono</th>
       <th>Correo</th>
@@ -23,6 +22,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let proveedor of proveedores">
+      <td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}</td>
       <td>{{ proveedor.nombre }}</td>
       <td>{{ proveedor.telefono }}</td>
       <td>{{ proveedor.correo }}</td>
@@ -30,75 +30,137 @@
       <td>
         <ul>
           <li *ngFor="let pm of proveedor.proveedorMateriales">
-            {{ pm.material.nombre }}
+            {{ pm.material.nombre }} ({{ pm.material.unidadDeMedida }})
           </li>
         </ul>
       </td>
       <td>
         <ul>
           <li *ngFor="let pm of proveedor.proveedorMateriales">
-            {{ pm.costoUnitario }}
+            {{ pm.cantidadSolicitada }} x {{ pm.costoUnitario | currency:'CLP':'symbol':'1.0-0' }}
           </li>
         </ul>
       </td>
       <td *ngIf="esAdmin">
-        <button (click)="editarProveedor(proveedor)">✏️ Editar</button>
-        <button (click)="eliminarProveedor(proveedor.id!)">🗑️ Eliminar</button>
+        <div class="acciones-botones">
+          <button (click)="editarProveedor(proveedor)">✏️ Editar</button>
+          <button (click)="eliminarProveedor(proveedor.id!)">🗑️ Eliminar</button>
+        </div>
       </td>
     </tr>
   </tbody>
 </table>
 
-<!-- Formulario agregar/editar -->
-<div *ngIf="mostrarFormulario && proveedorSeleccionado">
+<div *ngIf="mostrarFormulario && proveedorSeleccionado" class="formulario-proveedor">
   <h3>{{ proveedorSeleccionado.id ? 'Editar Proveedor' : 'Agregar Proveedor' }}</h3>
   <form (ngSubmit)="guardarProveedor()" #formProveedor="ngForm" novalidate>
-    <!-- Datos básicos -->
+    <!-- Fecha de Pedido -->
+    <label>
+      Fecha de Pedido:
+      <input
+        type="date"
+        [(ngModel)]="proveedorSeleccionado.fechaPedido"
+        name="fechaPedido"
+        required
+      />
+    </label>
+
+    <!-- Nombre (solo letras y espacios) -->
     <label>
       Nombre:
-      <input type="text" [(ngModel)]="proveedorSeleccionado.nombre" name="nombre" required />
-    </label><br />
+      <input
+        type="text"
+        [(ngModel)]="proveedorSeleccionado.nombre"
+        name="nombre"
+        required
+        pattern="^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$"
+        title="Solo letras y espacios"
+        oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúñÑ ]/g, '')"
+      />
+    </label>
 
+    <!-- Teléfono (solo dígitos) -->
     <label>
       Teléfono:
-      <input type="text" [(ngModel)]="proveedorSeleccionado.telefono" name="telefono" required />
-    </label><br />
+      <input
+        type="tel"
+        name="telefono"
+        required
+        minlength="7"
+        maxlength="15"
+        [(ngModel)]="proveedorSeleccionado.telefono"
+        (keypress)="soloNumeros($event)"
+        #telefono="ngModel"
+      />
+        <div class="error" *ngIf="telefono.invalid && telefono.touched">
+        Debe ingresar solo números (entre 7 y 15 dígitos).
+       </div>
+    </label>
 
+    <!-- Correo (letras, números y al menos una @) -->
     <label>
       Correo:
-      <input type="email" [(ngModel)]="proveedorSeleccionado.correo" name="correo" required />
-    </label><br />
+      <input
+        type="email"
+        [(ngModel)]="proveedorSeleccionado.correo"
+        name="correo"
+        required
+        pattern="^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+        title="Debe ser un correo válido con '@' y dominio"
+      />
+    </label>
 
+    <!-- Dirección (texto libre, admite números) -->
     <label>
       Dirección:
-      <input type="text" [(ngModel)]="proveedorSeleccionado.direccion" name="direccion" required />
-    </label><br />
+      <input
+        type="text"
+        [(ngModel)]="proveedorSeleccionado.direccion"
+        name="direccion"
+        required
+      />
+    </label>
 
     <!-- Materiales -->
     <fieldset>
       <legend>Materiales que provee</legend>
-
-      <button type="button" (click)="agregarMaterial()">➕ Agregar material</button>
-
-      <div *ngFor="let pm of proveedorSeleccionado.proveedorMateriales; let i = index" style="margin-bottom:1em">
-        <!-- Selección del material -->
-        <select [(ngModel)]="pm.material.id" (ngModelChange)="onMaterialChange(pm, $event)"
-                name="materialId{{i}}" required>
-          <option [ngValue]="undefined">-- Selecciona un material --</option>
-          <option *ngFor="let mat of materialesDisponibles" [ngValue]="mat.id">
-            {{ mat.nombre }}
-          </option>
-        </select>
-
-        <!-- Costo unitario -->
-        <input type="number" [(ngModel)]="pm.costoUnitario" name="costo{{i}}" [min]="0" required />
-
-        <!-- Botón para quitar -->
-        <button type="button" (click)="quitarMaterial(i)">🗑️</button>
+      <div
+        *ngFor="let pm of proveedorSeleccionado.proveedorMateriales; let i = index"
+        class="material-item"
+      >
+        <label>
+          {{ pm.material.nombre }} ({{ pm.material.unidadDeMedida }}):
+          <input
+            type="number"
+            [(ngModel)]="pm.cantidadSolicitada"
+            name="cantidadSolicitada{{ i }}"
+            required
+            min="0"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+          />
+        </label>
+        <label>
+          Costo:
+          <input
+            type="number"
+            [(ngModel)]="pm.costoUnitario"
+            name="costo{{ i }}"
+            required
+            min="0"
+          />
+        </label>
+        <div class="boton-quitar">
+          <button type="button" (click)="quitarMaterial(i)">🗑️</button>
+        </div>
+      </div>
+      <div class="boton-agregar">
+        <button type="button" (click)="agregarMaterial()">➕ Agregar material</button>
       </div>
     </fieldset>
 
-    <button type="submit" [disabled]="formProveedor.invalid">💾 Guardar</button>
-    <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
+    <div class="botones-formulario">
+      <button type="submit" [disabled]="formProveedor.invalid">💾 Guardar</button>
+      <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
+    </div>
   </form>
 </div>
