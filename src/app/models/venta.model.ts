@@ -23,5 +23,5 @@ export interface VentaPayload {
 export interface VentaMueblePayload {
   mueble: { id: number };
   cantidad: number;
-  id: number;
+  id?: number;
 }

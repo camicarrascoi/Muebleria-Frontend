@@ -1,5 +1,3 @@
-<!-- venta.component.html -->
-
 <!-- Barra de navegación -->
 <nav class="navbar">
   <span>Lista Ventas</span>
@@ -16,7 +14,6 @@
   <table border="1" class="tabla-ventas">
     <thead>
       <tr>
-        <th>Nombre del Mueble</th>
         <th>Fecha</th>
         <th>Total</th>
         <th>Muebles Vendidos</th>
@@ -25,18 +22,17 @@
     </thead>
     <tbody>
       <tr *ngFor="let v of ventas">
-        <td>{{ v.ventaMuebles[0].nombreMueble }}</td> <!-- Usamos nombreMueble -->
         <td>{{ v.fecha | date: 'dd/MM/yyyy' }}</td>
         <td>{{ v.total | currency:'CLP':'symbol' }}</td>
         <td>
           <ul>
-            <li *ngFor="let m of v.ventaMuebles">
-              {{ m.nombreMueble }} (x{{ m.cantidad }})
+            <li *ngFor="let vm of v.ventaMuebles">
+              {{ getNombreMueblePorId(vm.id) }} (x{{ vm.cantidad }})
             </li>
           </ul>
         </td>
         <td *ngIf="esAdmin">
-          <button (click)="editarVenta(v)">✏️</button>
+          <!--<button (click)="editarVenta(v)">✏️</button>-->
           <button (click)="eliminarVenta(v.id!)">🗑️</button>
         </td>
       </tr>
@@ -48,41 +44,64 @@
 <div *ngIf="mostrarFormulario && ventaSeleccionada" class="formulario-venta">
   <h3>{{ ventaSeleccionada.id ? 'Editar Venta' : 'Agregar Venta' }}</h3>
   <form [formGroup]="formVenta" (ngSubmit)="guardarVenta()" novalidate>
-    @let fecha= formVenta.get('fecha');
     <!-- Campo Fecha -->
     <label for="fecha">Fecha:</label>
-    <input id="fecha" name="fecha" type="date" formControlName="fecha" [attr.min]="fechaMinima"
-      (ngModelChange)="onFechaChange($event)" required />
-    <div *ngIf="fecha?.invalid && fecha?.touched" class="error">
+    <input
+      id="fecha"
+      name="fecha"
+      type="date"
+      formControlName="fecha"
+      [attr.min]="fechaMinima"
+      (ngModelChange)="onFechaChange($event)"
+      required
+    />
+    <div *ngIf="formVenta.get('fecha')?.invalid && formVenta.get('fecha')?.touched" class="error">
       La fecha es obligatoria.
     </div>
-    @let muebleSeleccionadoId= formVenta.get('muebleSeleccionadoId');
+
     <!-- Selección de Mueble -->
     <label for="mueble">Mueble:</label>
-    <select id="mueble" name="muebleSeleccionadoId" formControlName="muebleSeleccionadoId" >
+    <select id="mueble" name="muebleSeleccionadoId" formControlName="muebleSeleccionadoId">
       <option value="" disabled>-- Selecciona un mueble --</option>
       <option *ngFor="let m of mueblesDisponibles" [value]="m.id">
         {{ m.nombre }} (stock: {{ m.stock }})
       </option>
     </select>
-    <div *ngIf="muebleSeleccionadoId?.invalid && muebleSeleccionadoId?.touched" class="error">
+    <div
+      *ngIf="
+        formVenta.get('muebleSeleccionadoId')?.invalid &&
+        formVenta.get('muebleSeleccionadoId')?.touched
+      "
+      class="error"
+    >
       Debes elegir un mueble.
     </div>
-    @let cantidadSeleccionada= formVenta.get('cantidadSeleccionada');
+
     <!-- Cantidad -->
     <label for="cantidad">Cantidad:</label>
-    <input id="cantidad" name="cantidadSeleccionada" type="number" formControlName="cantidadSeleccionada"
-      [attr.max]="stockSeleccionado" />
+    <input
+  id="cantidad"
+  name="cantidadSeleccionada"
+  type="number"
+  formControlName="cantidadSeleccionada"
+  [attr.min]="1"
+  [attr.max]="stockSeleccionado"
+/>
 
-    <div *ngIf=" cantidadSeleccionada?.invalid && cantidadSeleccionada?.touched" class="error">
+    <div
+      *ngIf="
+        formVenta.get('cantidadSeleccionada')?.invalid &&
+        formVenta.get('cantidadSeleccionada')?.touched
+      "
+      class="error"
+    >
       Cantidad inválida.
     </div>
 
     <!-- Botones -->
     <div class="botones-formulario">
-      <button type="submit" [disabled]="formVenta.invalid">Guardar</button>
-      <button type="button" (click)="cancelarFormulario()">Cancelar</button>
+      <button type="submit">💾 Guardar</button>
+      <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
     </div>
-
   </form>
 </div>
