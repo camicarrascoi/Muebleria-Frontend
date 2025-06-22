@@ -131,6 +131,19 @@
       </div>
     </label>
 
+    <label>Proveedores:</label>
+<div class="proveedores-lista">
+  <label *ngFor="let proveedor of proveedores">
+    <input
+      type="checkbox"
+      [value]="proveedor.id"
+      (change)="toggleProveedorSeleccionado(proveedor, $event)"
+      [checked]="isProveedorSeleccionado(proveedor.id!)"
+    />
+    {{ proveedor.nombre }}
+  </label>
+</div>
+
     <div class="botones-formulario">
       <button type="submit" [disabled]="frm.invalid">💾 Guardar</button>
       <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>

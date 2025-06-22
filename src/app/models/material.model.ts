@@ -22,3 +22,13 @@ export interface MuebleMaterialSimple {
   cantidadUtilizada: number;
   muebleNombre: string;
 }
+
+export interface MaterialRequest {
+  id: number | null;
+  nombre: string;
+  tipo: string;
+  descripcion: string;
+  unidadDeMedida: string;
+  stockActual: number;
+  proveedorIds: number[];
+}

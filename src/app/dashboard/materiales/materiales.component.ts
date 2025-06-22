@@ -20,6 +20,7 @@ export class MaterialesComponent implements OnInit {
   proveedores: Proveedor[] = [];
   proveedoresSeleccionados: Proveedor[] = [];
   materialSeleccionado: Material | null = null;
+  proveedoresDisponibles: Proveedor[] = [];
   mostrarFormulario = false;
   esAdmin = false;
   tiposMaterial: string[] = [];
@@ -32,6 +33,7 @@ export class MaterialesComponent implements OnInit {
 
   ngOnInit(): void {
     this.esAdmin = this.authService.isAdmin();
+    this.cargarMateriales();
     this.cargarProveedores();
     this.materialesService.getTiposMaterial().subscribe({
       next: (tipos) => (this.tiposMaterial = tipos),
@@ -50,29 +52,58 @@ export class MaterialesComponent implements OnInit {
   }
 
   cargarMateriales(): void {
-    this.materialesService.obtenerMateriales().subscribe({
-      next: (data) => {
-        this.materiales = data.map((material: any) => ({
+  this.materialesService.obtenerMateriales().subscribe({
+    next: (data) => {
+      this.materiales = data.map((material: any) => {
+        // Mapear proveedores con nombre completo
+        const proveedorMateriales = (material.proveedorMateriales || []).map((prov: any) => {
+          const proveedorCompleto = this.proveedores.find(p => p.id === prov.id);
+          return {
+            id: prov.id,
+            nombre: proveedorCompleto ? proveedorCompleto.nombre : 'Sin nombre',
+          };
+        });
+
+        return {
           id: material.id,
           nombre: material.nombre,
           tipo: material.tipo,
           descripcion: material.descripcion,
           unidadDeMedida: material.unidadDeMedida,
           stockActual: material.stockActual,
-          proveedorMateriales: (material.proveedorMateriales || []).map((prov: any) => ({
-            id: prov.id,
-            nombre: prov.nombreProveedor,
-          })),
+          proveedorMateriales,
           materialMuebles: (material.materialMuebles || []).map((mm: any) => ({
             id: mm.id,
             cantidadUtilizada: mm.cantidadUtilizada,
             muebleNombre: mm.nombreMueble,
           })),
-        }));
-      },
-      error: (err) => console.error('Error al cargar materiales', err),
-    });
+        };
+      });
+    },
+    error: (err) => console.error('Error al cargar materiales', err),
+  });
+}
+
+  //metodo nuevo QUE PIDIO EL PROFE
+toggleProveedorSeleccionado(proveedor: Proveedor, event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const seleccionado = input.checked;
+
+  if (seleccionado) {
+    if (!this.proveedoresSeleccionados.some(p => p.id === proveedor.id)) {
+      this.proveedoresSeleccionados.push(proveedor);
+    }
+  } else {
+    this.proveedoresSeleccionados = this.proveedoresSeleccionados.filter(p => p.id !== proveedor.id);
   }
+}
+
+isProveedorSeleccionado(proveedorId: number | null | undefined): boolean {
+  if (proveedorId == null) return false; // cubre null y undefined
+  return this.proveedoresSeleccionados.some(p => p.id === proveedorId);
+}
+
+//fin a lo que pidio el profe
 
   abrirFormularioNuevo(): void {
     this.materialSeleccionado = {
@@ -127,51 +158,59 @@ export class MaterialesComponent implements OnInit {
   }
 
   guardarMaterial(form: NgForm): void {
-    if (form.invalid) {
-      form.control.markAllAsTouched();
-      return;
-    }
-
-    if (!this.materialSeleccionado) {
-      return;
-    }
-
-    if (
-      !this.validarSoloLetras(this.materialSeleccionado.nombre) ||
-      !this.validarSoloLetras(this.materialSeleccionado.descripcion)
-    ) {
-      alert('Nombre y descripción deben contener solo letras y espacios.');
-      return;
-    }
-
-    if (!this.validarSoloNumeros(this.materialSeleccionado.stockActual)) {
-      alert('Stock debe ser un número válido.');
-      return;
-    }
-
-    this.materialSeleccionado.proveedorMateriales = this.proveedoresSeleccionados.map(p => ({
-      id: p.id!,
-      nombre: p.nombre,
-    }));
-
-    if (this.materialSeleccionado.id) {
-      this.materialesService.editarMaterial(this.materialSeleccionado.id, this.materialSeleccionado).subscribe({
-        next: () => {
-          this.cargarMateriales();
-          this.cancelarFormulario();
-        },
-        error: (err) => console.error('Error al actualizar material', err),
-      });
-    } else {
-      this.materialesService.agregarMaterial(this.materialSeleccionado).subscribe({
-        next: () => {
-          this.cargarMateriales();
-          this.cancelarFormulario();
-        },
-        error: (err) => console.error('Error al crear material', err),
-      });
-    }
+  if (form.invalid) {
+    form.control.markAllAsTouched();
+    return;
   }
+
+  if (!this.materialSeleccionado) {
+    return;
+  }
+
+  if (
+    !this.validarSoloLetras(this.materialSeleccionado.nombre) ||
+    !this.validarSoloLetras(this.materialSeleccionado.descripcion)
+  ) {
+    alert('Nombre y descripción deben contener solo letras y espacios.');
+    return;
+  }
+
+  if (!this.validarSoloNumeros(this.materialSeleccionado.stockActual)) {
+    alert('Stock debe ser un número válido.');
+    return;
+  }
+
+  // Aquí armo el objeto para enviar con solo los datos necesarios para el backend
+  const materialParaGuardar = {
+    id: this.materialSeleccionado.id,
+    nombre: this.materialSeleccionado.nombre,
+    tipo: this.materialSeleccionado.tipo,
+    descripcion: this.materialSeleccionado.descripcion,
+    unidadDeMedida: this.materialSeleccionado.unidadDeMedida,
+    stockActual: this.materialSeleccionado.stockActual,
+    proveedorIds: this.proveedoresSeleccionados.map(p => p.id!), // solo los ids, no nombre
+  };
+
+  console.log('Material para enviar:', materialParaGuardar);
+
+  if (materialParaGuardar.id) {
+    this.materialesService.editarMaterial(materialParaGuardar.id, materialParaGuardar).subscribe({
+      next: () => {
+        this.cargarMateriales();
+        this.cancelarFormulario();
+      },
+      error: (err) => console.error('Error al actualizar material', err),
+    });
+  } else {
+    this.materialesService.agregarMaterial(materialParaGuardar).subscribe({
+      next: () => {
+        this.cargarMateriales();
+        this.cancelarFormulario();
+      },
+      error: (err) => console.error('Error al crear material', err),
+    });
+  }
+}
 
   eliminarMaterial(id: number): void {
     if (confirm('¿Estás segura de que deseas eliminar este material?')) {
