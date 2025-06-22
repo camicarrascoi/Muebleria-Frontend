@@ -40,11 +40,12 @@ export class ProveedoresComponent implements OnInit {
   }
 
   soloNumeros(event: KeyboardEvent): void {
-  const charCode = event.charCode || event.keyCode;
-  if (charCode < 48 || charCode > 57) {
-    event.preventDefault();
+    const charCode = event.charCode || event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
   }
-}
+
   cargarProveedores() {
     this.proveedoresService.obtenerProveedores().subscribe({
       next: data => {
@@ -84,55 +85,85 @@ export class ProveedoresComponent implements OnInit {
   }
 
   guardarProveedor() {
-  if (!this.proveedorSeleccionado) return;
+    if (!this.proveedorSeleccionado) return;
 
-  // Validación: asegurarse que todos los materiales tienen ID válido
-  const tieneMaterialInvalido = this.proveedorSeleccionado.proveedorMateriales?.some(pm => pm.material.id === null || pm.material.id === undefined);
+    // Validar que todos los materiales tengan id válido
+    const tieneMaterialInvalido = this.proveedorSeleccionado.proveedorMateriales?.some(pm => !pm.material?.id || pm.material.id === 0);
 
-  if (tieneMaterialInvalido) {
-    alert('Por favor selecciona un material válido para todos los elementos.');
-    return;
+    if (tieneMaterialInvalido) {
+      alert('Por favor selecciona un material válido para todos los elementos.');
+      return;
+    }
+
+      // Formateo manual de fecha a dd/MM/yyyy
+    let fechaFormateada: string | undefined;
+    if (this.proveedorSeleccionado.fechaPedido) {
+    const f = new Date(this.proveedorSeleccionado.fechaPedido);
+    const dd = f.getDate().toString().padStart(2, '0');
+    const mm = (f.getMonth() + 1).toString().padStart(2, '0');
+    const yyyy = f.getFullYear();
+    fechaFormateada = `${dd}/${mm}/${yyyy}`;
   }
 
-  const body = {
+    const body: any = {
+    // Si tu ProveedorDTO lleva nombre, teléfono, etc., mantenlos:
     nombre: this.proveedorSeleccionado.nombre,
     telefono: this.proveedorSeleccionado.telefono,
     correo: this.proveedorSeleccionado.correo,
     direccion: this.proveedorSeleccionado.direccion,
-    fechaPedido: this.proveedorSeleccionado.fechaPedido,
+    fechaPedido: fechaFormateada,
     proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => ({
+      // sólo incluyes el id de la relación si existe (para PUT)
       ...(pm.id != null ? { id: pm.id } : {}),
-      material: { id: pm.material.id! }, // usamos el operador non-null porque ya validamos arriba
-      costoUnitario: pm.costoUnitario
+      costoUnitario: pm.costoUnitario,
+      // **Renombramos** la cantidad
+      cantidadSuministrada: pm.cantidadSolicitada,
+      // anidamos sólo el id del material
+      material: { id: pm.material.id }
     }))
   };
 
+    const operacion = this.proveedorSeleccionado.id
+      ? this.proveedoresService.editarProveedor(this.proveedorSeleccionado.id, body)
+      : this.proveedoresService.agregarProveedor(body);
+
+    operacion.subscribe({
+      next: () => {
+        this.cargarProveedores();
+        this.cancelarFormulario();
+      },
+      error: err => {
+        console.error('Error al guardar proveedor:', err);
+        alert('Ocurrió un error al guardar el proveedor.');
+      }
+    });
+  }
+
+  eliminarProveedor(id: number) {
+  // mostramos el confirm y capturamos la respuesta
+  const confirmado = window.confirm('¿Estás seguro de eliminar este proveedor?');
   
+  if (!confirmado) {
+    // si el usuario presiona “Cancelar”
+    window.alert('Eliminación cancelada.');
+    return;
+  }
 
-  const operacion = this.proveedorSeleccionado.id
-    ? this.proveedoresService.editarProveedor(this.proveedorSeleccionado.id, body)
-    : this.proveedoresService.agregarProveedor(body);
-
-  operacion.subscribe({
+  // si presionó “Aceptar”, llamamos al servicio…
+  this.proveedoresService.eliminarProveedor(id).subscribe({
     next: () => {
+      // recargamos lista y cerramos formulario
       this.cargarProveedores();
-      this.cancelarFormulario();
+      this.mostrarFormulario = false;
+      this.proveedorSeleccionado = null;
+      window.alert('Proveedor eliminado correctamente.');
     },
     error: err => {
-      console.error('Error al guardar proveedor:', err);
-      alert('Ocurrió un error al guardar el proveedor.');
+      console.error('Error al eliminar proveedor', err);
+      window.alert('Ocurrió un error al eliminar el proveedor.');        
     }
   });
 }
-
-  eliminarProveedor(id: number) {
-    if (confirm('¿Estás seguro de eliminar este proveedor?')) {
-      this.proveedoresService.eliminarProveedor(id).subscribe({
-        next: () => this.cargarProveedores(),
-        error: err => console.error('Error al eliminar proveedor', err)
-      });
-    }
-  }
 
   cancelarFormulario() {
     this.mostrarFormulario = false;
@@ -143,7 +174,8 @@ export class ProveedoresComponent implements OnInit {
     if (this.proveedorSeleccionado) {
       this.proveedorSeleccionado.proveedorMateriales = this.proveedorSeleccionado.proveedorMateriales || [];
       this.proveedorSeleccionado.proveedorMateriales.push({
-        material: { id: 0, nombre: '', tipo: '', descripcion: '', unidadDeMedida: '' , stockActual: 0 , proveedorMateriales: [], materialMuebles: [] },
+        material: { id: 0, nombre: '', tipo: '', descripcion: '', unidadDeMedida: '', stockActual: 0, proveedorMateriales: [], materialMuebles: [] },
+        cantidadSolicitada: 0,
         costoUnitario: 0
       });
     }
@@ -155,10 +187,12 @@ export class ProveedoresComponent implements OnInit {
     }
   }
 
-  onMaterialChange(pm: ProveedorMaterial, nuevoId: number) {
+  // Cambiamos para recibir índice y nuevo id y actualizar el material completo
+  onMaterialChange(index: number, nuevoIdStr: string) {
+    const nuevoId = Number(nuevoIdStr);
     const material = this.materialesDisponibles.find(m => m.id === nuevoId);
-    if (material) {
-      pm.material = material;
+    if (material && this.proveedorSeleccionado?.proveedorMateriales) {
+      this.proveedorSeleccionado.proveedorMateriales[index].material = material;
     }
   }
 }
