@@ -24,6 +24,7 @@ export class ProveedoresComponent implements OnInit {
   esUsuario = false;
 
   materialesDisponibles: Material[] = [];
+  tiposMaterial: string[] = [];
 
   constructor(
     private proveedoresService: ProveedoresService,
@@ -34,6 +35,10 @@ export class ProveedoresComponent implements OnInit {
   ngOnInit(): void {
     this.cargarProveedores();
     this.cargarMateriales();
+      this.materialesService.getTiposMaterial().subscribe({
+    next: (tipos) => (this.tiposMaterial = tipos),
+    error: (err) => console.error('Error al obtener tipos de material', err),
+  });
     const rol = this.authService.getRole();
     this.esAdmin = rol === 'admin';
     this.esUsuario = rol === 'usuario';
@@ -46,15 +51,31 @@ export class ProveedoresComponent implements OnInit {
     }
   }
 
-  cargarProveedores() {
-    this.proveedoresService.obtenerProveedores().subscribe({
-      next: data => {
-        console.log('Proveedores recibidos:', data);
-        this.proveedores = data;
-      },
-      error: err => console.error('Error al obtener proveedores', err)
-    });
+cargarProveedores() {
+  this.proveedoresService.obtenerProveedores().subscribe({
+    next: data => {
+      this.proveedores = data.map(p => ({
+        ...p,
+        fechaPedido: typeof p.fechaPedido === 'string' && p.fechaPedido
+          ? this.parseFechaDDMMYYYY(p.fechaPedido)
+          : p.fechaPedido  // ya es Date o undefined
+      }));
+    },
+    error: err => console.error('Error al obtener proveedores', err)
+  });
+}
+
+// Convierte string 'dd/MM/yyyy' en Date
+parseFechaDDMMYYYY(fechaStr: string): Date {
+  const partes = fechaStr.split('/');
+  if (partes.length === 3) {
+    const dia = Number(partes[0]);
+    const mes = Number(partes[1]) - 1; // Mes base 0 en JS
+    const anio = Number(partes[2]);
+    return new Date(anio, mes, dia);
   }
+  return new Date(fechaStr); // fallback por si cambia el formato
+}
 
   cargarMateriales() {
     this.materialesService.obtenerMateriales().subscribe({
@@ -64,17 +85,35 @@ export class ProveedoresComponent implements OnInit {
       error: err => console.error('Error al cargar materiales', err)
     });
   }
-
-  abrirFormularioNuevo() {
-    this.proveedorSeleccionado = {
-      nombre: '',
-      direccion: '',
-      correo: '',
-      telefono: '',
-      proveedorMateriales: []
-    } as Proveedor;
-    this.mostrarFormulario = true;
-  }
+getMaterialNombre(id: number | null | undefined): string {
+  if (id == null) return '';
+  const m = this.materialesDisponibles.find(mat => mat.id === id);
+  return m ? m.nombre : '';
+}
+abrirFormularioNuevo() {
+  this.proveedorSeleccionado = {
+    nombre: '',
+    telefono: '',
+    correo: '',
+    direccion: '',
+    fechaPedido: undefined,
+    proveedorMateriales: [
+      {
+        // id NO existe en creación
+        costoUnitario: 0,
+        cantidadSuministrada: 0,
+        material: {
+          // solo los campos que quiere tu POST de creación
+          nombre: '',
+          tipo: '',
+          descripcion: '',
+          unidadDeMedida: ''
+        } as any
+      }
+    ]
+  } as Proveedor;
+  this.mostrarFormulario = true;
+}
 
   editarProveedor(proveedor: Proveedor) {
     this.proveedorSeleccionado = {
@@ -85,59 +124,74 @@ export class ProveedoresComponent implements OnInit {
   }
 
   guardarProveedor() {
-    if (!this.proveedorSeleccionado) return;
+  if (!this.proveedorSeleccionado) return;
 
-    // Validar que todos los materiales tengan id válido
-    const tieneMaterialInvalido = this.proveedorSeleccionado.proveedorMateriales?.some(pm => !pm.material?.id || pm.material.id === 0);
+  const isEdit = !!this.proveedorSeleccionado.id;
 
-    if (tieneMaterialInvalido) {
-      alert('Por favor selecciona un material válido para todos los elementos.');
-      return;
-    }
-
-      // Formateo manual de fecha a dd/MM/yyyy
-    let fechaFormateada: string | undefined;
-    if (this.proveedorSeleccionado.fechaPedido) {
-    const f = new Date(this.proveedorSeleccionado.fechaPedido);
-    const dd = f.getDate().toString().padStart(2, '0');
-    const mm = (f.getMonth() + 1).toString().padStart(2, '0');
-    const yyyy = f.getFullYear();
-    fechaFormateada = `${dd}/${mm}/${yyyy}`;
+  // Validación mínima
+  const invalido = (this.proveedorSeleccionado.proveedorMateriales || []).some(pm =>
+    !pm.material || (isEdit
+      ? !pm.material.id
+      : !pm.material.nombre || !pm.material.tipo || !pm.material.descripcion || !pm.material.unidadDeMedida)
+  );
+  if (invalido) {
+    alert('Por favor completa todos los campos de material.');
+    return;
   }
 
-    const body: any = {
-    // Si tu ProveedorDTO lleva nombre, teléfono, etc., mantenlos:
+  // Formateo de fecha
+  let fechaFmt: string | undefined;
+  if (this.proveedorSeleccionado.fechaPedido) {
+    const d = new Date(this.proveedorSeleccionado.fechaPedido);
+    fechaFmt = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  }
+
+  const body: any = {
     nombre: this.proveedorSeleccionado.nombre,
     telefono: this.proveedorSeleccionado.telefono,
     correo: this.proveedorSeleccionado.correo,
     direccion: this.proveedorSeleccionado.direccion,
-    fechaPedido: fechaFormateada,
-    proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => ({
-      // sólo incluyes el id de la relación si existe (para PUT)
-      ...(pm.id != null ? { id: pm.id } : {}),
-      costoUnitario: pm.costoUnitario,
-      // **Renombramos** la cantidad
-      cantidadSuministrada: pm.cantidadSolicitada,
-      // anidamos sólo el id del material
-      material: { id: pm.material.id }
-    }))
+    fechaPedido: fechaFmt,
+    proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => {
+      if (isEdit) {
+        // --- JSON de EDICIÓN ---
+        return {
+          id: pm.id,                               // id de la relación VentaMaterial
+          costoUnitario: pm.costoUnitario,
+          cantidadSuministrada: pm.cantidadSuministrada,
+          material: { id: pm.material.id }         // solo el id del material
+        };
+      } else {
+        // --- JSON de CREACIÓN ---
+        return {
+          costoUnitario: pm.costoUnitario,
+          cantidadSuministrada: pm.cantidadSuministrada,
+          material: {
+            nombre: pm.material.nombre,
+            tipo: pm.material.tipo,
+            descripcion: pm.material.descripcion,
+            unidadDeMedida: pm.material.unidadDeMedida
+          }
+        };
+      }
+    })
   };
 
-    const operacion = this.proveedorSeleccionado.id
-      ? this.proveedoresService.editarProveedor(this.proveedorSeleccionado.id, body)
-      : this.proveedoresService.agregarProveedor(body);
+  const llamada = isEdit
+    ? this.proveedoresService.editarProveedor(this.proveedorSeleccionado.id!, body)
+    : this.proveedoresService.agregarProveedor(body);
 
-    operacion.subscribe({
-      next: () => {
-        this.cargarProveedores();
-        this.cancelarFormulario();
-      },
-      error: err => {
-        console.error('Error al guardar proveedor:', err);
-        alert('Ocurrió un error al guardar el proveedor.');
-      }
-    });
-  }
+  llamada.subscribe({
+    next: () => {
+      this.cargarProveedores();
+      this.cancelarFormulario();
+    },
+    error: err => {
+      console.error('Error al guardar proveedor:', err);
+      alert('Ocurrió un error al guardar el proveedor.');
+    }
+  });
+}
 
   eliminarProveedor(id: number) {
   // mostramos el confirm y capturamos la respuesta
@@ -174,8 +228,15 @@ export class ProveedoresComponent implements OnInit {
     if (this.proveedorSeleccionado) {
       this.proveedorSeleccionado.proveedorMateriales = this.proveedorSeleccionado.proveedorMateriales || [];
       this.proveedorSeleccionado.proveedorMateriales.push({
-        material: { id: 0, nombre: '', tipo: '', descripcion: '', unidadDeMedida: '', stockActual: 0, proveedorMateriales: [], materialMuebles: [] },
-        cantidadSolicitada: 0,
+        material: { 
+          id: 0, 
+          nombre: '', 
+          tipo: '', 
+          descripcion: '', 
+          unidadDeMedida: '', 
+          stockActual: 0 
+        },
+        cantidadSuministrada: 0,
         costoUnitario: 0
       });
     }
@@ -192,7 +253,14 @@ export class ProveedoresComponent implements OnInit {
     const nuevoId = Number(nuevoIdStr);
     const material = this.materialesDisponibles.find(m => m.id === nuevoId);
     if (material && this.proveedorSeleccionado?.proveedorMateriales) {
-      this.proveedorSeleccionado.proveedorMateriales[index].material = material;
+      this.proveedorSeleccionado.proveedorMateriales[index].material = {
+        id: material.id!,
+        nombre: material.nombre,
+        tipo: material.tipo,
+        descripcion: material.descripcion,
+        unidadDeMedida: material.unidadDeMedida,
+        stockActual: material.stockActual,
+      };
     }
   }
 }
