@@ -45,23 +45,22 @@ export class VentaComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  this.esAdmin = this.authService.isAdmin();
-  this.cargarVentas();
-  this.cargarMuebles();
+    this.esAdmin = this.authService.isAdmin();
+    this.cargarVentas();
+    this.cargarMuebles();
 
-  this.muebleSeleccionadoIdControl.valueChanges.subscribe(rawId => {
-  const id = typeof rawId === 'string' ? +rawId : rawId as number;
-  const encontrado = this.mueblesDisponibles.find(x => x.id === id);
-  const stock = encontrado?.stock ?? 100;  // Default 100 para que no limite a 1
+    this.muebleSeleccionadoIdControl.valueChanges.subscribe(rawId => {
+      const id = typeof rawId === 'string' ? +rawId : rawId as number;
+      const encontrado = this.mueblesDisponibles.find(x => x.id === id);
+      const stock = encontrado?.stock ?? 100;
 
-  this.cantidadSeleccionadaControl.setValidators([
-    Validators.min(1),
-    Validators.max(stock)
-  ]);
-
-  this.cantidadSeleccionadaControl.updateValueAndValidity();
-});
-}
+      this.cantidadSeleccionadaControl.setValidators([
+        Validators.min(1),
+        Validators.max(stock)
+      ]);
+      this.cantidadSeleccionadaControl.updateValueAndValidity();
+    });
+  }
 
   private cargarVentas() {
     this.ventaService.obtenerVentas().subscribe({
@@ -69,12 +68,13 @@ export class VentaComponent implements OnInit {
       error: err => console.error('Error al cargar ventas:', err)
     });
   }
-private cargarMuebles() {
-  this.mueblesService.obtenerMuebles().subscribe({
-    next: list => this.mueblesDisponibles = list.filter(m => m.stock > 0),
-    error: err => console.error('Error al cargar muebles:', err)
-  });
-}
+
+  private cargarMuebles() {
+    this.mueblesService.obtenerMuebles().subscribe({
+      next: list => this.mueblesDisponibles = list.filter(m => m.stock > 0),
+      error: err => console.error('Error al cargar muebles:', err)
+    });
+  }
 
   abrirFormularioNuevo() {
     this.ventaSeleccionada = {
@@ -85,13 +85,6 @@ private cargarMuebles() {
     };
     this.muebleSeleccionadoIdControl.setValue(null);
     this.cantidadSeleccionadaControl.setValue(1);
-
-    // Reinicia los validadores para asegurar límite correcto al abrir
-    this.cantidadSeleccionadaControl.setValidators([
-      Validators.min(1),
-      Validators.max(1) // se actualiza luego en valueChanges
-    ]);
-    this.cantidadSeleccionadaControl.updateValueAndValidity();
 
     this.mostrarFormulario = true;
   }
@@ -106,54 +99,109 @@ private cargarMuebles() {
     this.ventaSeleccionada.fecha = value ? new Date(value) : new Date();
   }
 
-  guardarVenta() {
-    if (!this.ventaSeleccionada) return;
+  agregarMueble() {
+  if (!this.ventaSeleccionada) return;
 
-    if (this.muebleSeleccionadoIdControl.value == null) {
-      alert('Debes seleccionar un mueble');
-      return;
-    }
+  const rawId = this.muebleSeleccionadoIdControl.value;
+  const muebleId = typeof rawId === 'string' ? parseInt(rawId, 10) : rawId;
 
-    if (this.cantidadSeleccionadaControl.value < 1) {
-      alert('La cantidad debe ser al menos 1');
-      return;
-    }
-
-    try {
-      const itemPayload: VentaMueblePayload = {
-        mueble: { id: this.muebleSeleccionadoIdControl.value ?? 0 },
-        cantidad: this.cantidadSeleccionadaControl.value
-      };
-
-      const payloadItems: VentaMueblePayload[] = [itemPayload];
-
-      if (!this.ventaSeleccionada.fecha) {
-        throw new Error('La fecha es obligatoria');
-      }
-
-      const fechaISO = (this.ventaSeleccionada.fecha instanceof Date
-        ? this.ventaSeleccionada.fecha
-        : new Date(this.ventaSeleccionada.fecha)
-      ).toISOString();
-
-      const payload: VentaPayload = {
-        fecha: fechaISO.split('T')[0],
-        ventaMuebles: payloadItems
-      };
-
-      this.ventaService.crearVenta(payload).subscribe({
-        next: () => {
-          this.cargarVentas();
-          this.cancelarFormulario();
-        },
-        error: err =>
-          alert('Error al guardar venta: ' + (err.error?.message || err.message))
-      });
-
-    } catch (e: any) {
-      alert(e.message);
-    }
+  if (!muebleId) {
+    alert('Selecciona un mueble antes de agregarlo.');
+    return;
   }
+
+  const cantidad = this.cantidadSeleccionadaControl.value ?? 0;
+  if (cantidad < 1) {
+    alert('Cantidad debe ser al menos 1.');
+    return;
+  }
+
+  const muebleEncontrado = this.mueblesDisponibles.find(m => m.id === muebleId);
+  if (!muebleEncontrado) {
+    alert('Mueble no encontrado.');
+    return;
+  }
+
+  const stockDisponible = muebleEncontrado.stock;
+
+  if (cantidad > stockDisponible) {
+    alert(`No puedes agregar más de ${stockDisponible} unidades de este mueble.`);
+    return;
+  }
+
+  const yaAgregado = this.ventaSeleccionada.ventaMuebles.some(vm => vm.mueble.id === muebleId);
+  if (yaAgregado) {
+    alert('Este mueble ya fue agregado. Si quieres cambiar la cantidad, elimínalo primero.');
+    return;
+  }
+
+  this.ventaSeleccionada.ventaMuebles.push({
+    mueble: { id: muebleId },
+    nombreMueble: muebleEncontrado.nombre,
+    cantidad: cantidad,
+    precioUnitario: 0,
+    subtotal: 0
+  });
+
+  this.muebleSeleccionadoIdControl.setValue(null);
+  this.cantidadSeleccionadaControl.setValue(1);
+}
+
+  eliminarMueble(index: number) {
+    if (!this.ventaSeleccionada) return;
+    this.ventaSeleccionada.ventaMuebles.splice(index, 1);
+  }
+
+  guardarVenta() {
+  if (!this.ventaSeleccionada) return;
+
+  if (!this.ventaSeleccionada.ventaMuebles || this.ventaSeleccionada.ventaMuebles.length === 0) {
+    alert('Agrega al menos un mueble a la venta.');
+    return;
+  }
+
+  if (!this.ventaSeleccionada.fecha) {
+    alert('La fecha es obligatoria');
+    return;
+  }
+
+  // Calcular total sumando subtotales (o calcularlos ahora)
+  let total = 0;
+
+  const items: VentaMueblePayload[] = this.ventaSeleccionada.ventaMuebles.map(vm => {
+    const precio = vm.precioUnitario ?? 0;
+    const cantidad = vm.cantidad ?? 0;
+    const subtotal = precio * cantidad;
+    total += subtotal;
+    return {
+      mueble: { id: vm.mueble.id },
+      cantidad: cantidad,
+      precioUnitario: precio,
+      subtotal: subtotal
+    };
+  });
+
+  const fechaISO = (this.ventaSeleccionada.fecha instanceof Date
+    ? this.ventaSeleccionada.fecha
+    : new Date(this.ventaSeleccionada.fecha)
+  ).toISOString().split('T')[0];
+
+  const payload: VentaPayload = {
+    fecha: fechaISO,
+    total: total,
+    ventaMuebles: items
+  };
+
+  this.ventaService.crearVenta(payload).subscribe({
+    next: () => {
+      this.cargarVentas();
+      this.cancelarFormulario();
+    },
+    error: err =>
+      alert('Error al guardar venta: ' + (err.error?.error || err.message))
+  });
+}
+
 
   eliminarVenta(id: number) {
     if (!confirm('¿Estás segura/o de que quieres eliminar esta venta?')) return;
@@ -175,7 +223,7 @@ private cargarMuebles() {
   }
 
   get stockSeleccionado(): number {
-  const id = this.muebleSeleccionadoIdControl.value;
-  return this.mueblesDisponibles.find(x => x.id === id)?.stock ?? 100;
-}
+    const id = this.muebleSeleccionadoIdControl.value;
+    return this.mueblesDisponibles.find(x => x.id === id)?.stock ?? 100;
+  }
 }

@@ -2,21 +2,21 @@ export interface Venta {
   id: number | null;
   fecha: string | Date;
   total: number;
-  ventaMuebles: VentaMueble[];
+  ventaMuebles: VentaMueble[];    // ahora con la nueva forma
 }
 
 export interface VentaMueble {
-  id: number;
+  mueble: { id: number }; 
   cantidad: number;
-  precioUnitario: number;
-  subtotal: number;
-  nombreMueble: string;
+  precioUnitario?: number;
+  subtotal?: number;
+  nombreMueble?: string;
 }
 
 export interface VentaPayload {
   id?: number;
   fecha: string;
-  total?: number; // El total puede ser calculado por el backend
+  total?: number;                // puede calcularlo el backend
   ventaMuebles: VentaMueblePayload[];
 }
 

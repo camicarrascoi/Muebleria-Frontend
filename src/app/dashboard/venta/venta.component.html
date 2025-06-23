@@ -98,6 +98,28 @@
       Cantidad inválida.
     </div>
 
+    <!--LO NUEVO-->
+  <div class="boton-agregar">
+    <button type="button" (click)="agregarMueble()">➕ Agregar otro mueble</button>
+  </div>
+
+<div *ngIf="ventaSeleccionada?.ventaMuebles?.length">
+  <h4>Muebles agregados:</h4>
+  <ul>
+    <li *ngFor="let m of ventaSeleccionada.ventaMuebles; let i = index" style="margin-bottom: 8px;">
+      <label style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <span>{{ m.nombreMueble || 'Mueble sin nombre' }} (x{{ m.cantidad }})</span>
+        <div class="boton-quitar">
+        <button type="button" (click)="eliminarMueble(i)" class="boton-quitar">🗑️</button>
+        </div>
+      </label>
+    </li>
+  </ul>
+</div>
+
+
+
+
     <!-- Botones -->
     <div class="botones-formulario">
       <button type="submit">💾 Guardar</button>
