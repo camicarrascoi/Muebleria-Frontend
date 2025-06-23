@@ -27,7 +27,7 @@
         <td>
           <ul>
             <li *ngFor="let vm of v.ventaMuebles">
-              {{ getNombreMueblePorId(vm.id) }} (x{{ vm.cantidad }})
+              {{ vm.nombreMueble }} (x{{ vm.cantidad }})
             </li>
           </ul>
         </td>

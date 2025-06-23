@@ -3,20 +3,18 @@ import { Material } from './material.model';
 export interface Proveedor {
   id?: number;
   nombre: string;
-  rut?: string;  //opcional
-  direccion: string;
-  correo: string;
   telefono: string;
-  fechaPedido?: Date;  
-  proveedorMateriales?: ProveedorMaterial[]; // para poder mapear
-  materiales?: MaterialSimpleProveedor[];    // la propiedad que usarás en el template
+  correo: string;
+  direccion: string;
+  fechaPedido?: string | Date;
+  proveedorMateriales?: ProveedorMaterial[];   // la propiedad que usarás en el template
 }
 
 export interface ProveedorMaterial {
-  id?: number; // ← ahora es opcional
-  material: Material;
+  id?: number;
+  material: MaterialSimpleProveedor;
   costoUnitario: number;
-  cantidadSolicitada?: number;
+  cantidadSuministrada?: number;
 }
 
 export interface MaterialSimpleProveedor {

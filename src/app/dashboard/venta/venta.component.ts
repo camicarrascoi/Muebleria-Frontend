@@ -69,13 +69,12 @@ export class VentaComponent implements OnInit {
       error: err => console.error('Error al cargar ventas:', err)
     });
   }
-
-  private cargarMuebles() {
-    this.mueblesService.obtenerMuebles().subscribe({
-      next: list => this.mueblesDisponibles = list,
-      error: err => console.error('Error al cargar muebles:', err)
-    });
-  }
+private cargarMuebles() {
+  this.mueblesService.obtenerMuebles().subscribe({
+    next: list => this.mueblesDisponibles = list.filter(m => m.stock > 0),
+    error: err => console.error('Error al cargar muebles:', err)
+  });
+}
 
   abrirFormularioNuevo() {
     this.ventaSeleccionada = {
