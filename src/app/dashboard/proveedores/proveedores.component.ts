@@ -65,14 +65,13 @@ cargarProveedores() {
   });
 }
 
-// Convierte string 'dd/MM/yyyy' en Date
 parseFechaDDMMYYYY(fechaStr: string): Date {
   const partes = fechaStr.split('/');
   if (partes.length === 3) {
     const dia = Number(partes[0]);
     const mes = Number(partes[1]) - 1; // Mes base 0 en JS
     const anio = Number(partes[2]);
-    return new Date(anio, mes, dia);
+    return new Date(anio, mes, dia, 12, 0, 0);
   }
   return new Date(fechaStr); // fallback por si cambia el formato
 }
@@ -140,11 +139,23 @@ abrirFormularioNuevo() {
   }
 
   // Formateo de fecha
-  let fechaFmt: string | undefined;
-  if (this.proveedorSeleccionado.fechaPedido) {
-    const d = new Date(this.proveedorSeleccionado.fechaPedido);
-    fechaFmt = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+let fechaFmt: string | undefined;
+if (this.proveedorSeleccionado.fechaPedido) {
+  const fecha = this.proveedorSeleccionado.fechaPedido.toString();
+
+  if (fecha.includes('-')) {
+    // formato 'yyyy-MM-dd' → convertir a 'dd/MM/yyyy'
+    const [anio, mes, dia] = fecha.split('-');
+    fechaFmt = `${dia}/${mes}/${anio}`;
+  } else if (fecha.includes('/')) {
+    // ya está en formato correcto
+    fechaFmt = fecha;
+  } else {
+    // último recurso: usar como Date (solo si no es string)
+    const d = new Date(fecha);
+    fechaFmt = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
   }
+}
 
   const body: any = {
     nombre: this.proveedorSeleccionado.nombre,
