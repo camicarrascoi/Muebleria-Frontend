@@ -40,8 +40,8 @@ export class ProveedoresComponent implements OnInit {
     error: (err) => console.error('Error al obtener tipos de material', err),
   });
     const rol = this.authService.getRole();
-    this.esAdmin = rol === 'admin';
-    this.esUsuario = rol === 'usuario';
+    this.esAdmin = rol === 'ADMIN';
+    this.esUsuario = rol === 'USUARIO';
   }
 
   soloNumeros(event: KeyboardEvent): void {

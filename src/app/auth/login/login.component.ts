@@ -1,13 +1,19 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../dashboard/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule,  // para HttpClient en AuthService
+    RouterModule       // para routerLink, Router.navigate
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -19,14 +25,20 @@ export class LoginComponent {
   constructor(private router: Router, private authService: AuthService) {}
 
   onLogin() {
-    if (this.usuario === 'admin' && this.clave === 'admin') {
-      this.authService.loginAsAdmin();
-      this.router.navigate(['/dashboard']);
-    } else if (this.usuario === 'usuario' && this.clave === 'usuario') {
-      this.authService.loginAsUser();
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.error = 'Usuario o contraseña incorrectos.';
-    }
+    this.error = '';
+    this.authService.login(this.usuario, this.clave).subscribe({
+      next: res => {
+        // Guarda el token y el rol ya los hace AuthService
+        // Redirige según rol
+        if (res.rol === 'ADMIN') {
+          this.router.navigate(['/dashboard']); // o '/admin-dashboard'
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      error: err => {
+        this.error = err.error?.error || 'Usuario o contraseña incorrectos.';
+      }
+    });
   }
 }
