@@ -24,21 +24,21 @@ export class LoginComponent {
 
   constructor(private router: Router, private authService: AuthService) {}
 
+  //cambie esto pa entrar xd
   onLogin() {
     this.error = '';
     this.authService.login(this.usuario, this.clave).subscribe({
-      next: res => {
-        // Guarda el token y el rol ya los hace AuthService
-        // Redirige según rol
-        if (res.rol === 'ADMIN') {
-          this.router.navigate(['/dashboard']); // o '/admin-dashboard'
-        } else {
-          this.router.navigate(['/dashboard']);
-        }
-      },
-      error: err => {
-        this.error = err.error?.error || 'Usuario o contraseña incorrectos.';
-      }
-    });
+  next: res => {
+    if (res.rol === 'ADMIN') {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
+  },
+  error: err => {
+    this.error = err.error?.error || 'Usuario o contraseña incorrectos.';
+  }
+});
+
   }
 }

@@ -32,6 +32,7 @@ export class ProveedoresComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+  // NUEVO Inicializamos los roles
   ngOnInit(): void {
     this.cargarProveedores();
     this.cargarMateriales();

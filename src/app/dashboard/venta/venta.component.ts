@@ -22,6 +22,7 @@ export class VentaComponent implements OnInit {
 
   mostrarFormulario = false;
   esAdmin = false;
+  esUsuario = false;
 
   formVenta = new FormGroup({
     fecha: new FormControl(this.fechaMinima, [Validators.required]),
@@ -45,7 +46,6 @@ export class VentaComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.esAdmin = this.authService.isAdmin();
     this.cargarVentas();
     this.cargarMuebles();
 
@@ -60,6 +60,10 @@ export class VentaComponent implements OnInit {
       ]);
       this.cantidadSeleccionadaControl.updateValueAndValidity();
     });
+    
+    const rol = this.authService.getRole();
+    this.esAdmin = rol === 'ADMIN';
+    this.esUsuario = rol === 'USUARIO';
   }
 
   private cargarVentas() {

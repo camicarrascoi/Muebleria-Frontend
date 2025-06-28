@@ -30,7 +30,8 @@ export class MueblesComponent implements OnInit {
   materialesDisponibles: Material[] = [];
   muebleSeleccionado: MuebleConMateriales = this.getMuebleVacio();
   mostrarFormulario: boolean = false;
-  esAdmin: boolean = false;
+  esAdmin = false;
+  esUsuario = false;
 
   constructor(
     private mueblesService: MueblesService,
@@ -41,7 +42,9 @@ export class MueblesComponent implements OnInit {
   ngOnInit(): void {
     this.cargarMuebles();
     this.cargarMateriales();
-    this.esAdmin = this.authService.isAdmin();
+    const rol = this.authService.getRole();
+    this.esAdmin = rol === 'ADMIN';
+    this.esUsuario = rol === 'USUARIO';
   }
 
   getMuebleVacio(): MuebleConMateriales {

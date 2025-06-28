@@ -111,6 +111,7 @@ td .acciones-botones button:hover {
   margin-bottom: 8px; /* un poco de espacio abajo para separar campos */
 }
 
+.formulario-proveedor select,
 .formulario-proveedor input[type="text"],
 .formulario-proveedor input[type="email"],
 .formulario-proveedor input[type="number"],
@@ -128,6 +129,8 @@ td .acciones-botones button:hover {
   border-color: #8b5e3c;
   outline: none;
 }
+
+
 
 /* Fieldset de materiales */
 fieldset {
@@ -219,6 +222,8 @@ fieldset legend {
   justify-content: center;
   align-items: center;     /* centra verticalmente */
 }
+
+
 
 /* Responsive */
 @media (max-width: 600px) {

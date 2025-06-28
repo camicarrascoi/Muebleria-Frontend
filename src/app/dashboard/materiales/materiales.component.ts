@@ -23,6 +23,7 @@ export class MaterialesComponent implements OnInit {
   proveedoresDisponibles: Proveedor[] = [];
   mostrarFormulario = false;
   esAdmin = false;
+  esUsuario = false;
   tiposMaterial: string[] = [];
 
   constructor(
@@ -32,13 +33,16 @@ export class MaterialesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.esAdmin = this.authService.isAdmin();
     this.cargarMateriales();
     this.cargarProveedores();
     this.materialesService.getTiposMaterial().subscribe({
       next: (tipos) => (this.tiposMaterial = tipos),
       error: (err) => console.error('Error al obtener tipos de material', err),
     });
+    const rol = this.authService.getRole();
+    this.esAdmin = rol === 'ADMIN';
+    this.esUsuario = rol === 'USUARIO';
+  
   }
 
   cargarProveedores(): void {
