@@ -1,0 +1,40 @@
+<h2>Nuevo Pedido</h2>
+
+<form (ngSubmit)="guardarPedido()">
+  <label>Proveedor:
+    <select [(ngModel)]="pedido.proveedorId" name="proveedorId" required>
+      <option value="" disabled selected>Seleccione un proveedor</option>
+      <option *ngFor="let prov of proveedores" [value]="prov.id">{{ prov.nombre }}</option>
+    </select>
+  </label>
+
+  <label>Fecha de pedido:
+    <input type="date" [(ngModel)]="pedido.fechaPedido" name="fechaPedido" required>
+  </label>
+
+  <hr>
+
+  <div *ngFor="let item of pedido.materiales; let i = index">
+    <h4>Material {{ i + 1 }}</h4>
+    <label>Material:
+      <select [(ngModel)]="item.materialId" name="material{{i}}" required>
+        <option *ngFor="let mat of materiales" [value]="mat.id">{{ mat.nombre }}</option>
+      </select>
+    </label>
+
+    <label>Cantidad:
+      <input type="number" [(ngModel)]="item.cantidad" name="cantidad{{i}}" min="1" required>
+    </label>
+
+    <label>Costo Unitario:
+      <input type="number" [(ngModel)]="item.costoUnitario" name="costo{{i}}" min="0" required>
+    </label>
+
+    <button type="button" (click)="quitarMaterial(i)">❌ Quitar</button>
+  </div>
+
+  <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
+
+  <hr>
+  <button type="submit">💾 Guardar Pedido</button>
+</form>

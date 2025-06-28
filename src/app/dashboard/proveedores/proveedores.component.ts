@@ -205,6 +205,30 @@ if (this.proveedorSeleccionado.fechaPedido) {
   });
 }
 
+  // 🔥 NUEVO MÉTODO para hacer un nuevo pedido con proveedor existente
+  //nuevoPedido(proveedor: Proveedor) {
+  //  this.proveedorSeleccionado = {
+    //  ...proveedor,
+      //id: undefined, // para que Angular lo trate como nuevo
+      //fechaPedido: new Date(), // nueva fecha de pedido
+      //proveedorMateriales: [
+        //{
+          //cantidadSuministrada: 0,
+          //costoUnitario: 0,
+  //        material: {
+    //        nombre: '',
+      //      tipo: '',
+        //    descripcion: '',
+          //  unidadDeMedida: ''
+      //    }
+      //  }
+      //]
+   // } as Proveedor;
+
+    //this.mostrarFormulario = true;
+ // }
+
+
   eliminarProveedor(id: number) {
   // mostramos el confirm y capturamos la respuesta
   const confirmado = window.confirm('¿Estás seguro de eliminar este proveedor?');

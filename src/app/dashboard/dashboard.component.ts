@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
   cantidadMuebles: number = 0;
   cantidadMateriales: number = 0;
   cantidadProveedores: number = 0;
+  cantidadPedidos: number = 0;  // <-- Nueva variable para contar pedidos
   cantidadVentas: number = 0;
   esAdmin: boolean = false;
 

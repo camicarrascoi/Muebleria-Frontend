@@ -60,6 +60,11 @@
   color: black; /* Para mejor contraste con amarillo */
 }
 
+.nav-link.pedidos:hover {
+  background-color: #c11cbe; /* Púrpura Google */
+  color: white;
+}
+
 .nav-link.ventas:hover {
   background-color: #0F9D58; /* Verde Google */
   color: white;
@@ -113,6 +118,10 @@
 
 .tarjeta-resumen.proveedores {
   border-top: 5px solid #F4B400; /* Amarillo Google */
+}
+
+.tarjeta-resumen.pedidos {
+  border-top: 5px solid #c11cbe; /* Púrpura Google */
 }
 
 .tarjeta-resumen.ventas {

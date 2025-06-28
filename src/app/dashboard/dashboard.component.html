@@ -6,6 +6,7 @@
     <a routerLink="muebles" class="nav-link muebles">Muebles</a>
     <a routerLink="materiales" class="nav-link materiales">Materiales</a>
     <a routerLink="proveedores" class="nav-link proveedores">Proveedores</a>
+    <a routerLink="pedidos" class="nav-link pedidos">Pedidos</a>
     <a routerLink="venta" class="nav-link ventas">Ventas</a>
     <a (click)="logout()" class="nav-link cerrar">Cerrar sesión</a>
   </nav>
@@ -22,6 +23,10 @@
     <div class="tarjeta-resumen proveedores">
       <span class="cantidad">{{ cantidadProveedores }}</span>
       <h3>Proveedores</h3>
+    </div>
+    <div class="tarjeta-resumen pedidos">
+      <span class="cantidad">{{ cantidadPedidos }}</span>
+      <h3>Pedidos</h3>
     </div>
     <div class="tarjeta-resumen ventas">
       <span class="cantidad">{{ cantidadVentas }}</span>

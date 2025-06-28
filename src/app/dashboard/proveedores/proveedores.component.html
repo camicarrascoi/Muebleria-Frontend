@@ -1,13 +1,7 @@
 <!-- proveedores.component.html -->
 
 <nav class="navbar">
-  <span>Lista Proveedores</span>
-</nav>
-
-<div class="acciones">
-  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar proveedor</button>
-</div>
-
+  <!-- Lista de proveedores -->
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
     <tr>
@@ -46,11 +40,15 @@
         <div class="acciones-botones">
           <button (click)="editarProveedor(proveedor)">✏️ Editar</button>
           <button (click)="eliminarProveedor(proveedor.id!)">🗑️ Eliminar</button>
+
+          <!-- ✅ NUEVO: Permite hacer otro pedido con este proveedor sin editarlo 
+          <button (click)="nuevoPedido(proveedor)">📦 Nuevo pedido</button>
         </div>
       </td>
     </tr>
   </tbody>
-</table>
+</table> -->
+
 
 <!-- Formulario Añadir/Editar Proveedor -->
 <div *ngIf="mostrarFormulario && proveedorSeleccionado as prov" class="formulario-proveedor">

@@ -23,6 +23,10 @@ export const dashboardRoutes: Routes = [
         path: 'venta',
         loadComponent: () => import('./venta/venta.component').then(m => m.VentaComponent)
       },
+      {
+        path: 'pedidos',
+        loadComponent: () => import('./pedidos/pedidos.component').then(m => m.PedidosComponent)
+      }
       
     ]
   }
