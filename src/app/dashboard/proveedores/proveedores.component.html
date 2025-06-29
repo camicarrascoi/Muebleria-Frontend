@@ -1,6 +1,9 @@
 <!-- proveedores.component.html -->
 
 <nav class="navbar">
+  <div class="acciones">
+  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar mueble</button>
+</div>
   <!-- Lista de proveedores -->
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
