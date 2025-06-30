@@ -1,11 +1,21 @@
 <!-- proveedores.component.html -->
-
+<p style="color: red; font-weight: bold;">
+  Rol actual: {{ esAdmin ? 'ADMIN' : esUsuario ? 'USER' : 'Desconocido' }}
+</p>
 <nav class="navbar">
-  <!-- Lista de proveedores -->
+  <span>Lista Proveedores</span>
+</nav>
+<!--<div class="acciones">
+  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar mueble??????</button>
+</div>-->
+<div class="acciones">
+  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar proveedor</button>
+</div>
+
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
     <tr>
-      <th>Fecha de Pedido</th>
+    <th>Fecha de Pedido</th>
       <th>Nombre</th>
       <th>Teléfono</th>
       <th>Correo</th>
@@ -17,7 +27,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let proveedor of proveedores">
-      <td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}</td>
+      <td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}
       <td>{{ proveedor.nombre }}</td>
       <td>{{ proveedor.telefono }}</td>
       <td>{{ proveedor.correo }}</td>
@@ -40,15 +50,11 @@
         <div class="acciones-botones">
           <button (click)="editarProveedor(proveedor)">✏️ Editar</button>
           <button (click)="eliminarProveedor(proveedor.id!)">🗑️ Eliminar</button>
-
-          <!-- ✅ NUEVO: Permite hacer otro pedido con este proveedor sin editarlo 
-          <button (click)="nuevoPedido(proveedor)">📦 Nuevo pedido</button>
         </div>
       </td>
     </tr>
   </tbody>
-</table> -->
-
+</table>
 
 <!-- Formulario Añadir/Editar Proveedor -->
 <div *ngIf="mostrarFormulario && proveedorSeleccionado as prov" class="formulario-proveedor">
@@ -56,7 +62,7 @@
   <form (ngSubmit)="guardarProveedor()" #formProveedor="ngForm" novalidate>
 
     <!-- Campos básicos del proveedor -->
-    <label>
+   <label>
       Fecha de Pedido:
       <input type="date"
              [(ngModel)]="prov.fechaPedido"
@@ -176,11 +182,7 @@
           required
           (ngModelChange)="onMaterialChange(i, $event)"
         >
-          <!-- Opción fija con el valor actual -->
-          <option [ngValue]="pm.material.id" disabled>
-            {{ getMaterialNombre(pm.material.id) }}
-          </option>
-          <!-- Opciones para cambiar -->
+          <!-- Opciones disponibles, incluyendo la opción actual -->
           <option *ngFor="let mat of materialesDisponibles" [ngValue]="mat.id">
             {{ mat.nombre }}
           </option>
@@ -200,6 +202,7 @@
     </li>
   </ul>
 </div>
+
 
     <!-- Botones Guardar/Cancelar -->
     <div class="botones-formulario">

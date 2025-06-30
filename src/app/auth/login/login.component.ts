@@ -22,23 +22,26 @@ export class LoginComponent {
   clave = '';
   error = '';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) { }
 
-  //cambie esto pa entrar xd
+  
   onLogin() {
-    this.error = '';
-    this.authService.login(this.usuario, this.clave).subscribe({
-  next: res => {
-    if (res.rol === 'ADMIN') {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.router.navigate(['/dashboard']);
+  this.error = '';
+  this.authService.login(this.usuario, this.clave).subscribe({
+    next: res => {
+      console.log('Respuesta login:', res); // <--- aquí
+      localStorage.setItem('rol', res.rol); // Asegúrate que se guarda el rol
+      if (res.rol === 'ADMIN') {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.router.navigate(['/dashboard']);
+      }
+    },
+    error: err => {
+      this.error = err.error?.error || 'Usuario o contraseña incorrectos.';
     }
-  },
-  error: err => {
-    this.error = err.error?.error || 'Usuario o contraseña incorrectos.';
-  }
-});
+  });
+}
 
-  }
+
 }

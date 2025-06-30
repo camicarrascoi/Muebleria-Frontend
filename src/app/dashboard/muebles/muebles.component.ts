@@ -44,7 +44,7 @@ export class MueblesComponent implements OnInit {
     this.cargarMateriales();
     const rol = this.authService.getRole();
     this.esAdmin = rol === 'ADMIN';
-    this.esUsuario = rol === 'USUARIO';
+    this.esUsuario = rol === 'USER';
   }
 
   getMuebleVacio(): MuebleConMateriales {

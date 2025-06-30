@@ -34,16 +34,19 @@ export class ProveedoresComponent implements OnInit {
 
   // NUEVO Inicializamos los roles
   ngOnInit(): void {
-    this.cargarProveedores();
-    this.cargarMateriales();
-      this.materialesService.getTiposMaterial().subscribe({
+  const rol = this.authService.getRole();
+  this.esAdmin = rol === 'ADMIN';
+  this.esUsuario = rol === 'USER';
+
+  this.cargarProveedores();
+  this.cargarMateriales();
+
+  this.materialesService.getTiposMaterial().subscribe({
     next: (tipos) => (this.tiposMaterial = tipos),
     error: (err) => console.error('Error al obtener tipos de material', err),
   });
-    const rol = this.authService.getRole();
-    this.esAdmin = rol === 'ADMIN';
-    this.esUsuario = rol === 'USUARIO';
-  }
+}
+
 
   soloNumeros(event: KeyboardEvent): void {
     const charCode = event.charCode || event.keyCode;

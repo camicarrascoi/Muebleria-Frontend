@@ -15,6 +15,7 @@ export interface ProveedorMaterial {
   material: MaterialSimpleProveedor;
   costoUnitario: number;
   cantidadSuministrada?: number;
+  fechaPedido?: string | Date; 
 }
 
 export interface MaterialSimpleProveedor {

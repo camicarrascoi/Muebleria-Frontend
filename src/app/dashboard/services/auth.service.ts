@@ -20,7 +20,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(nombre: string, password: string): Observable<LoginResponse> {
+ login(nombre: string, password: string): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${this.API}/login`, { nombre, password })
       .pipe(
@@ -30,6 +30,8 @@ export class AuthService {
         })
       );
   }
+
+ 
 
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
