@@ -129,30 +129,22 @@ export class ProveedoresComponent implements OnInit {
   //Guardar proveedor, si no existe el material se crea, buscando por ID, luego nombre y tipo.
   guardarProveedor() {
     if (!this.proveedorSeleccionado) return;
-
     const isEdit = !!this.proveedorSeleccionado.id;
 
-    // Validación mínima
+    // Validación 
     const invalido = (this.proveedorSeleccionado.proveedorMateriales || []).some(pm =>
-      !pm.material.nombre ||
-      !pm.material.tipo ||
-      pm.material.stockActual == null ||
-      pm.material.stockActual < 0 ||
-      pm.costoUnitario == null ||
-      pm.costoUnitario < 0 ||
-      pm.cantidadSuministrada == null ||
-      pm.cantidadSuministrada < 1
+       !pm.material.id || pm.costoUnitario == null || pm.costoUnitario < 0 ||
+      (pm.cantidadSuministrada == null) || pm.cantidadSuministrada < 1 ||
+      (pm.material.stockActual == null) || pm.material.stockActual < 0
     );
     if (invalido) {
-      alert('Por favor completa todos los campos requeridos del material.');
+      alert('Por favor completa correctamente todos los campos de material.');
       return;
     }
 
-    // Formateo de fecha
-    let fechaFmt: string | undefined;
+     let fechaFmt: string | undefined;
     if (this.proveedorSeleccionado.fechaPedido) {
       const fecha = this.proveedorSeleccionado.fechaPedido.toString();
-
       if (fecha.includes('-')) {
         const [anio, mes, dia] = fecha.split('-');
         fechaFmt = `${dia}/${mes}/${anio}`;
@@ -160,36 +152,24 @@ export class ProveedoresComponent implements OnInit {
         fechaFmt = fecha;
       } else {
         const d = new Date(fecha);
-        fechaFmt = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        fechaFmt = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
       }
     }
 
     const body: any = {
-      nombre: this.proveedorSeleccionado.nombre,
-      telefono: this.proveedorSeleccionado.telefono,
-      correo: this.proveedorSeleccionado.correo,
-      direccion: this.proveedorSeleccionado.direccion,
+      id: this.proveedorSeleccionado!.id,
+      nombre: this.proveedorSeleccionado!.nombre,
+      telefono: this.proveedorSeleccionado!.telefono,
+      correo: this.proveedorSeleccionado!.correo,
+      direccion: this.proveedorSeleccionado!.direccion,
       fechaPedido: fechaFmt,
-      proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => {
-        if (isEdit) {
-          return {
-            id: pm.id,
-            costoUnitario: pm.costoUnitario,
-            cantidadSuministrada: pm.cantidadSuministrada,
-            material: { id: pm.material.id }
-          };
+      proveedorMateriales: this.proveedorSeleccionado!.proveedorMateriales!.map(pm => {
+        if (isEdit && pm.id) {
+           // Material existente en edición
+          return { id: pm.id, costoUnitario: pm.costoUnitario, cantidadSuministrada: pm.cantidadSuministrada, material: { id: pm.material.id }};
         } else {
-          return { //JSON de creación
-            costoUnitario: pm.costoUnitario,
-            cantidadSuministrada: pm.cantidadSuministrada,
-            material: {
-              nombre: pm.material.nombre,
-              tipo: pm.material.tipo,
-              descripcion: pm.material.descripcion,
-              unidadDeMedida: pm.material.unidadDeMedida,
-              stockActual: pm.material.stockActual
-            }
-          };
+          // Creación o nuevo en edición
+          return { costoUnitario: pm.costoUnitario, cantidadSuministrada: pm.cantidadSuministrada, material: { id: pm.material.id }};
         }
       })
     };
@@ -199,41 +179,10 @@ export class ProveedoresComponent implements OnInit {
       : this.proveedoresService.agregarProveedor(body);
 
     llamada.subscribe({
-      next: () => {
-        this.cargarProveedores();
-        this.cancelarFormulario();
-      },
-      error: err => {
-        console.error('Error al guardar proveedor:', err);
-        alert('Ocurrió un error al guardar el proveedor.');
-      }
+      next: () => { this.cargarProveedores(); this.cancelarFormulario(); },
+      error: err => { console.error('Error al guardar proveedor:', err); alert('Ocurrió un error.'); }
     });
   }
-
-
-  //  NUEVO MÉTODO para hacer un nuevo pedido con proveedor existente
-  //nuevoPedido(proveedor: Proveedor) {
-  //  this.proveedorSeleccionado = {
-  //  ...proveedor,
-  //id: undefined, // para que Angular lo trate como nuevo
-  //fechaPedido: new Date(), // nueva fecha de pedido
-  //proveedorMateriales: [
-  //{
-  //cantidadSuministrada: 0,
-  //costoUnitario: 0,
-  //        material: {
-  //        nombre: '',
-  //      tipo: '',
-  //    descripcion: '',
-  //  unidadDeMedida: ''
-  //    }
-  //  }
-  //]
-  // } as Proveedor;
-
-  //this.mostrarFormulario = true;
-  // }
-
 
   eliminarProveedor(id: number) {
     // mostramos el confirm y capturamos la respuesta

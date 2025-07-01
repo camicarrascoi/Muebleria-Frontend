@@ -1,4 +1,3 @@
-<!-- Header -->
 <p style="color: rgb(0, 119, 255); font-weight: bold;">
   ROL: {{ esAdmin ? 'ADMIN' : esUsuario ? 'USER' : 'Desconocido' }}
 </p>
@@ -25,7 +24,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let proveedor of proveedores">
-      <td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}
+      <td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}</td>
       <td>{{ proveedor.nombre }}</td>
       <td>{{ proveedor.telefono }}</td>
       <td>{{ proveedor.correo }}</td>
@@ -59,7 +58,7 @@
   <h3>{{ prov.id ? 'Editar Proveedor' : 'Agregar Proveedor' }}</h3>
   <form (ngSubmit)="guardarProveedor()" #formProveedor="ngForm" novalidate>
 
-    <!-- Campos básicos del proveedor -->
+    <!-- Campos básicos -->
     <label>
       Fecha de Pedido:
       <input type="date" [(ngModel)]="prov.fechaPedido" name="fechaPedido" required />
@@ -83,153 +82,81 @@
 
     <hr />
 
-    <!-- Crear Materiales del proveedor -->
-        <div *ngIf="!prov.id">
+    <!-- SECCIÓN CREAR MATERIALES -->
+    <div *ngIf="!prov.id">
       <h4>Agregar materiales</h4>
-
       <div *ngFor="let pm of prov.proveedorMateriales; let i = index" class="material-item">
-        <!-- Nombre del material -->
         <label>
           Nombre Material:
-          <input type="text"
-                 [(ngModel)]="pm.material.nombre"
-                 name="matNombreNew{{i}}"
-                 required />
+          <input type="text" [(ngModel)]="pm.material.nombre" name="matNombreNew{{i}}" required />
         </label>
-
-        <!-- Tipo del material -->
         <label>
           Tipo:
-          <select [(ngModel)]="pm.material.tipo"
-                  name="tipoMaterial{{i}}"
-                  required>
+          <select [(ngModel)]="pm.material.tipo" name="tipoMaterial{{i}}" required>
             <option value="" disabled>Seleccione tipo</option>
             <option *ngFor="let tipo of tiposMaterial" [value]="tipo">{{ tipo }}</option>
           </select>
         </label>
-
-        <!-- Descripción -->
         <label>
           Descripción:
-          <input type="text"
-                 [(ngModel)]="pm.material.descripcion"
-                 name="matDescNew{{i}}"
-                 required />
+          <input type="text" [(ngModel)]="pm.material.descripcion" name="matDescNew{{i}}" required />
         </label>
-
-        <!-- Unidad de medida -->
         <label>
           Unidad de Medida:
-          <input type="text"
-                 [(ngModel)]="pm.material.unidadDeMedida"
-                 name="matUnidadNew{{i}}"
-                 required />
+          <input type="text" [(ngModel)]="pm.material.unidadDeMedida" name="matUnidadNew{{i}}" required />
         </label>
-
-        <!-- Stock Actual -->
         <label>
           Stock Actual:
-          <input type="number"
-                 [(ngModel)]="pm.material.stockActual"
-                 name="stockActualNew{{i}}"
-                 min="0"
-                 required />
+          <input type="number" [(ngModel)]="pm.material.stockActual" name="stockActualNew{{i}}" min="0" required />
         </label>
-
-        <!-- Costo unitario -->
         <label>
           Costo Unitario:
-          <input type="number"
-                 [(ngModel)]="pm.costoUnitario"
-                 name="costoNew{{i}}"
-                 min="0"
-                 required />
+          <input type="number" [(ngModel)]="pm.costoUnitario" name="costoNew{{i}}" min="0" required />
         </label>
-
-        <!-- Cantidad suministrada -->
         <label>
           Cantidad:
-          <input type="number"
-                 [(ngModel)]="pm.cantidadSuministrada"
-                 name="cantidadNew{{i}}"
-                 min="1"
-                 required />
+          <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantidadNew{{i}}" min="1" required />
         </label>
-
-        <div class="boton-quitar">
-          <button type="button" (click)="quitarMaterial(i)">🗑️</button>
-        </div>
+        <button type="button" (click)="quitarMaterial(i)">🗑️</button>
       </div>
-
-      <div class="boton-agregar">
-        <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
-      </div>
+      <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
     </div>
 
-    <!-- Editar Materiales del proveedor -->
-     <div *ngIf="prov.id" class="materiales-edit-section">
+    <!-- SECCIÓN EDITAR MATERIALES -->
+    <div *ngIf="prov.id" class="materiales-edit-section">
       <h4>Materiales asignados</h4>
       <div *ngFor="let pm of prov.proveedorMateriales; let i = index" class="material-item">
-        <!-- ID de la relación -->
-        <label>
-          ID Relación:
-          <input type="number"
-                 [value]="pm.id"
-                 name="pmIdEdit{{i}}"
-                 disabled />
-        </label>
-
-        <!-- Selección de material -->
-        <label>
-          Material:
-          <select [(ngModel)]="pm.material.id"
-                  name="materialEdit{{i}}"
-                  required
-                  (ngModelChange)="onMaterialChange(i, $event)">
-            <option *ngFor="let mat of materialesDisponibles" [ngValue]="mat.id">
-              {{ mat.nombre }}
-            </option>
-          </select>
-        </label>
-
-        <!-- Costo unitario -->
-        <label>
-          Costo Unitario:
-          <input type="number"
-                 [(ngModel)]="pm.costoUnitario"
-                 name="costoEdit{{i}}"
-                 min="0"
-                 required />
-        </label>
-
-        <!-- Cantidad suministrada -->
-        <label>
-          Cantidad:
-          <input type="number"
-                 [(ngModel)]="pm.cantidadSuministrada"
-                 name="cantidadEdit{{i}}"
-                 min="1"
-                 required />
-        </label>
-
-        <!-- Stock actual (solo lectura) -->
-        <label>
-          Stock Actual:
-          <input type="number"
-                 [value]="pm.material.stockActual"
-                 disabled />
-        </label>
-
-        <div class="boton-quitar">
-          <button type="button" (click)="quitarMaterial(i)">🗑️</button>
-        </div>
+        <ng-container *ngIf="pm.id; else nuevoMaterialEdit">
+          <label>ID Relación:
+            <input type="number" [value]="pm.id" disabled />
+          </label>
+          <label>Costo Unitario:
+            <input type="number" [(ngModel)]="pm.costoUnitario" name="costoEdit{{i}}" min="0" required />
+          </label>
+          <label>Cantidad:
+            <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantidadEdit{{i}}" min="1" required />
+          </label>
+          <label>Stock Actual:
+            <input type="number" [value]="pm.material.stockActual" disabled />
+          </label>
+        </ng-container>
+        <ng-template #nuevoMaterialEdit>
+          <label>Material:
+            <select [(ngModel)]="pm.material.id" name="matEditNew{{i}}" required>
+              <option *ngFor="let mat of materialesDisponibles" [ngValue]="mat.id">{{ mat.nombre }}</option>
+            </select>
+          </label>
+          <label>Costo Unitario:
+            <input type="number" [(ngModel)]="pm.costoUnitario" name="costoEditNew{{i}}" min="0" required />
+          </label>
+          <label>Cantidad:
+            <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantEditNew{{i}}" min="1" required />
+          </label>
+        </ng-template>
+        <button type="button" (click)="quitarMaterial(i)">🗑️</button>
       </div>
-      <div class="boton-agregar">
-        <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
-      </div>
+      <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
     </div>
-
-
 
     <!-- Botones Guardar/Cancelar -->
     <div class="botones-formulario">
