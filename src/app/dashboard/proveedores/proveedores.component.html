@@ -1,13 +1,11 @@
-<!-- proveedores.component.html -->
-<p style="color: red; font-weight: bold;">
-  Rol actual: {{ esAdmin ? 'ADMIN' : esUsuario ? 'USER' : 'Desconocido' }}
+<!-- Header -->
+<p style="color: rgb(0, 119, 255); font-weight: bold;">
+  ROL: {{ esAdmin ? 'ADMIN' : esUsuario ? 'USER' : 'Desconocido' }}
 </p>
 <nav class="navbar">
   <span>Lista Proveedores</span>
 </nav>
-<!--<div class="acciones">
-  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar mueble??????</button>
-</div>-->
+
 <div class="acciones">
   <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar proveedor</button>
 </div>
@@ -15,7 +13,7 @@
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
     <tr>
-    <th>Fecha de Pedido</th>
+      <th>Fecha de Pedido</th>
       <th>Nombre</th>
       <th>Teléfono</th>
       <th>Correo</th>
@@ -62,46 +60,30 @@
   <form (ngSubmit)="guardarProveedor()" #formProveedor="ngForm" novalidate>
 
     <!-- Campos básicos del proveedor -->
-   <label>
+    <label>
       Fecha de Pedido:
-      <input type="date"
-             [(ngModel)]="prov.fechaPedido"
-             name="fechaPedido"
-             required />
+      <input type="date" [(ngModel)]="prov.fechaPedido" name="fechaPedido" required />
     </label>
     <label>
       Nombre:
-      <input type="text"
-             [(ngModel)]="prov.nombre"
-             name="nombre"
-             required />
+      <input type="text" [(ngModel)]="prov.nombre" name="nombre" required />
     </label>
     <label>
       Teléfono:
-      <input type="tel"
-             [(ngModel)]="prov.telefono"
-             name="telefono"
-             required
-             (keypress)="soloNumeros($event)" />
+      <input type="tel" [(ngModel)]="prov.telefono" name="telefono" required (keypress)="soloNumeros($event)" />
     </label>
     <label>
       Correo:
-      <input type="email"
-             [(ngModel)]="prov.correo"
-             name="correo"
-             required />
+      <input type="email" [(ngModel)]="prov.correo" name="correo" required />
     </label>
     <label>
       Dirección:
-      <input type="text"
-             [(ngModel)]="prov.direccion"
-             name="direccion"
-             required />
+      <input type="text" [(ngModel)]="prov.direccion" name="direccion" required />
     </label>
 
     <hr />
 
-    <!-- ======= SECCIÓN CREAR ======= -->
+    <!-- Crear Materiales del proveedor -->
     <div *ngIf="!prov.id">
       <h4>Agregar materiales</h4>
 
@@ -109,99 +91,57 @@
         <!-- Nombre del material -->
         <label>
           Nombre Material:
-          <input type="text"
-                 [(ngModel)]="pm.material.nombre"
-                 name="matNombreNew{{i}}"
-                 required />
+          <input type="text" [(ngModel)]="pm.material.nombre" name="matNombreNew{{i}}" required />
         </label>
 
         <!-- Tipo del material -->
-<label>Tipo:
-  <select [(ngModel)]="pm.material.tipo" name="tipoMaterial{{i}}" required>
-    <option value="" disabled>Seleccione tipo</option>
-    <option *ngFor="let tipo of tiposMaterial" [value]="tipo">{{ tipo }}</option>
-  </select>
-</label>
+        <label>
+          Tipo:
+          <select [(ngModel)]="pm.material.tipo" name="tipoMaterial{{i}}" required>
+            <option value="" disabled>Seleccione tipo</option>
+            <option *ngFor="let tipo of tiposMaterial" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </label>
 
         <!-- Descripción -->
         <label>
           Descripción:
-          <input type="text"
-                 [(ngModel)]="pm.material.descripcion"
-                 name="matDescNew{{i}}"
-                 required />
+          <input type="text" [(ngModel)]="pm.material.descripcion" name="matDescNew{{i}}" required />
         </label>
 
         <!-- Unidad de medida -->
         <label>
           Unidad de Medida:
-          <input type="text"
-                 [(ngModel)]="pm.material.unidadDeMedida"
-                 name="matUnidadNew{{i}}"
-                 required />
+          <input type="text" [(ngModel)]="pm.material.unidadDeMedida" name="matUnidadNew{{i}}" required />
+        </label>
+
+        <!-- Stock Actual -->
+        <label>
+          Stock Actual:
+          <input type="number" [(ngModel)]="pm.material.stockActual" name="stockActualNew{{i}}" min="0" required />
         </label>
 
         <!-- Costo unitario -->
         <label>
           Costo Unitario:
-          <input type="number"
-                 [(ngModel)]="pm.costoUnitario"
-                 name="costoNew{{i}}"
-                 min="0"
-                 required />
+          <input type="number" [(ngModel)]="pm.costoUnitario" name="costoNew{{i}}" min="0" required />
         </label>
 
         <!-- Cantidad suministrada -->
         <label>
           Cantidad:
-          <input type="number"
-                 [(ngModel)]="pm.cantidadSuministrada"
-                 name="cantidadNew{{i}}"
-                 min="1"
-                 required />
+          <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantidadNew{{i}}" min="1" required />
         </label>
+
         <div class="boton-quitar">
-        <button type="button" (click)="quitarMaterial(i)">🗑️</button>
+          <button type="button" (click)="quitarMaterial(i)">🗑️</button>
         </div>
-    </div>
-        <div class="boton-agregar">
+      </div>
+
+      <div class="boton-agregar">
         <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
-        </div>
+      </div>
     </div>
-
-    <!-- SECCIÓN EDITAR: proveedor existente -->
-<div *ngIf="prov.id" class="formulario-proveedor">
-  <h4>Materiales asignados</h4>
-  <ul>
-    <li *ngFor="let pm of prov.proveedorMateriales; let i = index">
-      <label>
-        Material:
-        <select
-          [(ngModel)]="pm.material.id"
-          name="materialEdit{{i}}"
-          required
-          (ngModelChange)="onMaterialChange(i, $event)"
-        >
-          <!-- Opciones disponibles, incluyendo la opción actual -->
-          <option *ngFor="let mat of materialesDisponibles" [ngValue]="mat.id">
-            {{ mat.nombre }}
-          </option>
-        </select>
-      </label>
-
-      <label>
-        Cantidad:
-        <input
-          type="number"
-          [(ngModel)]="pm.cantidadSuministrada"
-          name="cantidadEdit{{i}}"
-          min="1"
-          required
-        />
-      </label>
-    </li>
-  </ul>
-</div>
 
 
     <!-- Botones Guardar/Cancelar -->
@@ -212,7 +152,3 @@
 
   </form>
 </div>
-
-
-
-
