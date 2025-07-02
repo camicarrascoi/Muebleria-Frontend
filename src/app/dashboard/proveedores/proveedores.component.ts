@@ -120,22 +120,21 @@ guardarProveedor() {
   const isEdit = !!this.proveedorSeleccionado.id;
 
   // Validación mínima para materiales
-  const invalido = (this.proveedorSeleccionado.proveedorMateriales || []).some(pm => {
-    if (!pm.material) return true;
+const invalido = (this.proveedorSeleccionado.proveedorMateriales || []).some(pm => {
+  if (!pm.material) return true;
 
-    if (isEdit) {
-      if (!pm.material.id) return true;
-    } else {
-      if (
-        !pm.material.nombre?.trim() ||
-        !pm.material.tipo?.trim() ||
-        !pm.material.descripcion?.trim() ||
-        !pm.material.unidadDeMedida?.trim()
-      ) return true;
-    }
+  if (isEdit) {
+    if (!pm.material.id) return true;
+  } else {
+    if (
+      !pm.material.nombre?.trim() ||
+      !pm.material.tipo?.trim() ||
+      !pm.material.descripcion?.trim() ||
+      !pm.material.unidadDeMedida?.trim()
+    ) return true;
+  }
 
     if (pm.costoUnitario == null || pm.costoUnitario < 0) return true;
-    if (pm.cantidadSuministrada == null || pm.cantidadSuministrada < 1) return true;
 
     return false;
   });
@@ -146,35 +145,33 @@ guardarProveedor() {
   }
 
   const body: any = {
-    nombre: this.proveedorSeleccionado.nombre?.trim(),
-    telefono: this.proveedorSeleccionado.telefono?.trim(),
-    correo: this.proveedorSeleccionado.correo?.trim(),
-    direccion: this.proveedorSeleccionado.direccion?.trim(),
-    proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => {
-      const costoInt = Math.round(pm.costoUnitario);
-      const cantidadInt = Math.round(pm.cantidadSuministrada);
+  nombre: this.proveedorSeleccionado.nombre?.trim(),
+  telefono: this.proveedorSeleccionado.telefono?.trim(),
+  correo: this.proveedorSeleccionado.correo?.trim(),
+  direccion: this.proveedorSeleccionado.direccion?.trim(),
+  proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => {
+    const costoInt = Math.round(pm.costoUnitario);
+    // Asegura cantidadSuministrada, mínimo 0 si no existe
+    const cantidadInt = pm.cantidadSuministrada != null ? Math.round(pm.cantidadSuministrada) : 0;
 
-      if (isEdit) {
-        return {
-          id: pm.id,
-          costoUnitario: costoInt,
-          cantidadSuministrada: cantidadInt,
-          material: { id: pm.material.id }
-        };
-      } else {
-        return {
-          costoUnitario: costoInt,
-          cantidadSuministrada: cantidadInt,
-          material: {
-            nombre: pm.material.nombre.trim(),
-            tipo: pm.material.tipo.trim(),
-            descripcion: (pm.material.descripcion ?? '').trim(),
-            unidadDeMedida: (pm.material.unidadDeMedida ?? '').trim()
-          }
-        };
-      }
-    })
-  };
+    if (pm.id) {
+      // Relación ya existente, envia id, costo, cantidad y material id
+      return {
+        id: pm.id,
+        costoUnitario: costoInt,
+        cantidadSuministrada: cantidadInt,
+        material: { id: pm.material.id }
+      };
+    } else {
+      // Relación nueva, solo envía costo y material con id (porque dices que lo seleccionas de un select)
+      return {
+        costoUnitario: costoInt,
+        cantidadSuministrada: cantidadInt,
+        material: { id: pm.material.id }
+      };
+    }
+  })
+};
 
   console.log('Payload proveedor:', JSON.stringify(body, null, 2));
 

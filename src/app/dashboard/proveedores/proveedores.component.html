@@ -12,19 +12,18 @@
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
     <tr>
-      <!--<th>Fecha de Pedido</th>-->
       <th>Nombre</th>
       <th>Teléfono</th>
       <th>Correo</th>
       <th>Dirección</th>
       <th>Materiales</th>
+      <th>Cantidad Suministrada</th>
       <th>Costo Unitario</th>
       <th *ngIf="esAdmin">Acciones</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let proveedor of proveedores">
-      <!--<td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}</td>-->
       <td>{{ proveedor.nombre }}</td>
       <td>{{ proveedor.telefono }}</td>
       <td>{{ proveedor.correo }}</td>
@@ -39,7 +38,14 @@
       <td>
         <ul>
           <li *ngFor="let pm of proveedor.proveedorMateriales">
-            {{ pm.cantidadSuministrada }} x {{ pm.costoUnitario | currency:'CLP':'symbol':'1.0-0' }}
+            {{ pm.cantidadSuministrada }}
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li *ngFor="let pm of proveedor.proveedorMateriales">
+            {{ pm.costoUnitario | currency:'CLP':'symbol':'1.0-0' }}
           </li>
         </ul>
       </td>
@@ -105,17 +111,9 @@
           Unidad de Medida:
           <input type="text" [(ngModel)]="pm.material.unidadDeMedida" name="matUnidadNew{{i}}" required />
         </label>
-       <label>
-          Stock Actual:
-          <input type="number" [(ngModel)]="pm.material.stockActual" name="stockActualNew{{i}}" min="0" required />
-        </label>
         <label>
           Costo Unitario:
           <input type="number" [(ngModel)]="pm.costoUnitario" name="costoNew{{i}}" min="0" required />
-        </label>
-        <label>
-          Cantidad:
-          <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantidadNew{{i}}" min="1" required />
         </label>
         <button type="button" (click)="quitarMaterial(i)">🗑️</button>
       </div>
@@ -127,8 +125,10 @@
       <h4>Materiales asignados</h4>
       <div *ngFor="let pm of prov.proveedorMateriales; let i = index" class="material-item">
         <ng-container *ngIf="pm.id; else nuevoMaterialEdit">
-          <label>ID Relación:
-            <input type="number" [value]="pm.id" disabled />
+          <input type="hidden" [(ngModel)]="pm.id" name="idRelacion{{i}}" />
+          <label>
+            Nombre Material:
+            <span style="user-select: none;">{{ pm.material.nombre }}</span>
           </label>
           <label>Costo Unitario:
             <input type="number" [(ngModel)]="pm.costoUnitario" name="costoEdit{{i}}" min="0" required />

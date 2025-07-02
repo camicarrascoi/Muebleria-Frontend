@@ -36,16 +36,19 @@
       <td>{{ material.unidadDeMedida }}</td>
       <td>{{ material.stockActual }}</td>
       <td>
-        <ul>
+        <ul class="lista-proveedores">
           <li *ngFor="let prov of material.proveedorMateriales">
-            {{ prov?.nombre || 'Sin nombre' }}
+            {{ prov.nombreProveedor }}<br />
+            Cantidad suministrada: {{ prov.cantidadSuministrada || 'N/A' }}<br />
+            Costo Unitario: {{ prov.costoUnitario | currency:'CLP':'symbol':'1.0-0' }}
           </li>
         </ul>
       </td>
       <td>
-        <ul>
+        <ul class="lista-proveedores">
           <li *ngFor="let mm of material.materialMuebles">
-            {{ mm?.muebleNombre || 'Sin mueble' }}: {{ mm?.cantidadUtilizada ?? 'N/A' }}
+            {{ mm.muebleNombre || 'Sin mueble' }}<br />
+            Cantidad utilizada: {{ mm.cantidadUtilizada || 'N/A' }}
           </li>
         </ul>
       </td>
@@ -138,7 +141,7 @@
     </label>
 
     <div class="botones-formulario">
-      <button type="submit" [disabled]="frm.invalid">💾 Guardar</button>
+      <button type="submit">💾 Guardar</button>
       <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
     </div>
   </form>

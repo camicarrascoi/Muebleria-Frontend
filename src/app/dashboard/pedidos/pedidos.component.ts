@@ -59,23 +59,20 @@ export class PedidosComponent implements OnInit {
     });
   }
 
-  private loadPedidos(): void {
-    this.pedidosService.obtenerPedidos().subscribe({
-      next: data => {
-        this.pedidos = data.map(p => {
-          const detalle = p.proveedor.proveedorMateriales;
-          const cantidadPedido = detalle.reduce((sum, pm) => sum + pm.cantidadSuministrada, 0);
-          const costoTotal = detalle.reduce((sum, pm) => sum + pm.cantidadSuministrada * pm.costoUnitario, 0);
-          const detalleCantidades = detalle.map(pm => ({
-            nombreMaterial: pm.material.nombre,
-            cantidad: pm.cantidadSuministrada
-          }));
-          return { ...p, cantidadPedido, costoTotal, detalleCantidades };
-        });
-      },
-      error: err => console.error(err)
-    });
-  }
+private loadPedidos(): void {
+  this.pedidosService.obtenerPedidos().subscribe({
+    next: data => {
+      this.pedidos = data.map(p => {
+        const detalleCantidades = p.detalleCantidades ?? []; // usa [] si viene undefined
+        const cantidadPedido = detalleCantidades.reduce((sum, d) => sum + d.cantidad, 0);
+        const costoTotal = p.proveedor.proveedorMateriales.reduce((sum, pm) => sum + pm.cantidadSuministrada * pm.costoUnitario, 0);
+
+        return { ...p, cantidadPedido, costoTotal, detalleCantidades };
+      });
+    },
+    error: err => console.error(err)
+  });
+}
 
   abrirFormularioNuevo(): void {
     this.pedidosForm = {
@@ -125,10 +122,11 @@ export class PedidosComponent implements OnInit {
     this.pedidosForm = null;
   }
 
-  private formatFecha(date: Date): string {
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    return `${dd}/${mm}/${yyyy}`;
-  }
+private formatFecha(date: any): string {
+  const parsedDate = (date instanceof Date) ? date : new Date(date);
+  const dd = String(parsedDate.getDate()).padStart(2, '0');
+  const mm = String(parsedDate.getMonth() + 1).padStart(2, '0');
+  const yyyy = parsedDate.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
 }

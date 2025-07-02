@@ -25,7 +25,7 @@ export class MaterialesService {
   return this.http.post<Material>(this.apiUrl, material);
 }
 
-editarMaterial(id: number, material: MaterialRequest): Observable<Material> {
+editarMaterial(id: number, material: Partial<Material>): Observable<Material> {
   return this.http.put<Material>(`${this.apiUrl}/${id}`, material);
 }
 

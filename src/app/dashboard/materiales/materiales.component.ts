@@ -61,13 +61,15 @@ cargarMateriales(): void {
       this.materiales = data.map((material: any) => {
         const proveedorMateriales = (material.proveedorMateriales || []).map((prov: any) => ({
           id: prov.id,
-          nombre: prov.nombre || 'Sin nombre',
+          nombreProveedor: prov.nombreProveedor || 'Sin nombre',
+          costoUnitario: prov.costoUnitario ?? 0,
+          cantidadSuministrada: prov.cantidadSuministrada ?? 0
         }));
 
         const materialMuebles = (material.materialMuebles || []).map((mm: any) => ({
           id: mm.id,
           cantidadUtilizada: mm.cantidadUtilizada ?? 'N/A',
-          muebleNombre: mm.muebleNombre || 'Sin mueble',
+          muebleNombre: mm.nombreMueble || 'Sin mueble',
         }));
 
         return {
@@ -123,12 +125,13 @@ cargarMateriales(): void {
   }
 
   editarMaterial(material: Material): void {
-    this.materialSeleccionado = { ...material };
-    this.proveedoresSeleccionados = this.materialSeleccionado.proveedorMateriales
-      .map(pm => this.proveedores.find(p => p.id === pm.id)!)
-      .filter(p => !!p);
-    this.mostrarFormulario = true;
-  }
+  this.materialSeleccionado = { ...material };  // copia del material para editar
+  // Cargar proveedores seleccionados para el formulario (solo UI)
+  this.proveedoresSeleccionados = this.proveedores.filter(p =>
+    material.proveedorMateriales.some(pm => pm.id === p.id)
+  );
+  this.mostrarFormulario = true;
+}
 
   // Bloquea teclas no válidas para campos de solo letras
   soloLetras(event: KeyboardEvent): void {
@@ -159,64 +162,61 @@ cargarMateriales(): void {
     return numeroRegex.test(String(valor));
   }
 
-  guardarMaterial(form: NgForm): void {
-    if (form.invalid) {
-      form.control.markAllAsTouched();
-      return;
-    }
+guardarMaterial(form: NgForm): void {
+  console.log('guardarMaterial llamado');
+  //if (form.invalid) {
+    //form.control.markAllAsTouched();
+    //return;
+  //}
 
-    if (!this.materialSeleccionado) {
-      return;
-    }
-
-    
-
-    if (
-      !this.validarSoloLetras(this.materialSeleccionado.nombre) ||
-      !this.validarSoloLetras(this.materialSeleccionado.descripcion)
-    ) {
-      alert('Nombre y descripción deben contener solo letras y espacios.');
-      return;
-    }
-
-    if (!this.validarSoloNumeros(this.materialSeleccionado.stockActual)) {
-      alert('Stock debe ser un número válido.');
-      return;
-    }
-
-    
-
-    // Aquí armo el objeto para enviar con solo los datos necesarios para el backend
-    const materialParaGuardar = {
-      id: this.materialSeleccionado.id,
-      nombre: this.materialSeleccionado.nombre,
-      tipo: this.materialSeleccionado.tipo,
-      descripcion: this.materialSeleccionado.descripcion,
-      unidadDeMedida: this.materialSeleccionado.unidadDeMedida,
-      stockActual: this.materialSeleccionado.stockActual,
-      proveedorIds: this.proveedoresSeleccionados.map(p => p.id!), // solo los ids, no nombre
-    };
-
-    console.log('Material para enviar:', materialParaGuardar);
-
-    if (materialParaGuardar.id) {
-      this.materialesService.editarMaterial(materialParaGuardar.id, materialParaGuardar).subscribe({
-        next: () => {
-          this.cargarMateriales();
-          this.cancelarFormulario();
-        },
-        error: (err) => console.error('Error al actualizar material', err),
-      });
-    } else {
-      this.materialesService.agregarMaterial(materialParaGuardar).subscribe({
-        next: () => {
-          this.cargarMateriales();
-          this.cancelarFormulario();
-        },
-        error: (err) => console.error('Error al crear material', err),
-      });
-    }
+  if (!this.materialSeleccionado) {
+    console.log('materialSeleccionado es null');
+    return;
   }
+
+  console.log('Datos a guardar:', this.materialSeleccionado);
+  //if (
+    //!this.validarSoloLetras(this.materialSeleccionado.nombre) ||
+    //!this.validarSoloLetras(this.materialSeleccionado.descripcion)
+  //) {
+    //alert('Nombre y descripción deben contener solo letras y espacios.');
+    //return;
+  //}
+
+  if (!this.validarSoloNumeros(this.materialSeleccionado.stockActual)) {
+    alert('Stock debe ser un número válido.');
+    return;
+  }
+
+  // Solo estos campos según el backend
+  const materialParaGuardar = {
+    nombre: this.materialSeleccionado.nombre,
+    tipo: this.materialSeleccionado.tipo,
+    descripcion: this.materialSeleccionado.descripcion,
+    unidadDeMedida: this.materialSeleccionado.unidadDeMedida,
+    stockActual: this.materialSeleccionado.stockActual,
+  };
+
+  console.log('Material para enviar:', materialParaGuardar);
+
+  if (this.materialSeleccionado.id) {
+    this.materialesService.editarMaterial(this.materialSeleccionado.id, materialParaGuardar).subscribe({
+      next: () => {
+        this.cargarMateriales();
+        this.cancelarFormulario();
+      },
+      error: (err) => console.error('Error al actualizar material', err),
+    });
+  } else {
+    this.materialesService.agregarMaterial(materialParaGuardar).subscribe({
+      next: () => {
+        this.cargarMateriales();
+        this.cancelarFormulario();
+      },
+      error: (err) => console.error('Error al crear material', err),
+    });
+  }
+}
 
   eliminarMaterial(id: number): void {
     if (confirm('¿Estás segura de que deseas eliminar este material?')) {

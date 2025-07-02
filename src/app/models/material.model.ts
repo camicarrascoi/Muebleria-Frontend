@@ -14,7 +14,9 @@ export interface Material {
 
 export interface ProveedorSimple {
   id: number;
-  nombre: string;
+  costoUnitario: number;
+  cantidadSuministrada: number;
+  nombreProveedor: string;
 }
 
 export interface MuebleMaterialSimple {
@@ -24,11 +26,11 @@ export interface MuebleMaterialSimple {
 }
 
 export interface MaterialRequest {
-  id: number | null;
+  id?: number | null;
   nombre: string;
   tipo: string;
   descripcion: string;
   unidadDeMedida: string;
   stockActual: number;
-  proveedorIds: number[];
+  proveedorIds?: number[];  // opcional
 }

@@ -16,7 +16,6 @@
       <th>Materiales</th>
       <th>Cantidad Pedido</th>
       <th>Costo Total</th>
-      <th>Detalle</th>
     </tr>
   </thead>
   <tbody>
@@ -26,20 +25,14 @@
       <td>{{ ped.proveedor.nombre }}</td>
       <td>
         <ul>
-          <li *ngFor="let pm of ped.proveedor.proveedorMateriales">
-            {{ pm.material.nombre }} (x{{ pm.cantidadSuministrada }})
+          
+          <li *ngFor="let d of ped.detalleCantidades">
+            {{ d.nombreMaterial }} (x{{ d.cantidad }})
           </li>
         </ul>
       </td>
       <td>{{ ped.cantidadPedido }}</td>
       <td>{{ ped.costoTotal | currency:'CLP' }}</td>
-      <td>
-        <ul>
-          <li *ngFor="let d of ped.detalleCantidades">
-            {{ d.nombreMaterial }}: {{ d.cantidad }}
-          </li>
-        </ul>
-      </td>
     </tr>
   </tbody>
 </table>
