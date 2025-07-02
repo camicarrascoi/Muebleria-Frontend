@@ -52,6 +52,10 @@ export class AuthService {
   }
 
   isUser(): boolean {
-    return this.getRole() === 'USER';
+    return this.getRole() === 'USUARIO';
+  }
+
+   registerUsuario(data: { nombre: string; password: string; rol: string }) {
+    return this.http.post(this.API, data);
   }
 }

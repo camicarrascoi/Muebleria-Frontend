@@ -7,7 +7,7 @@ export interface Proveedor {
   telefono: string;
   correo: string;
   direccion: string;
-  fechaPedido?: string | Date;
+  //fechaPedido?: string | Date;
   proveedorMateriales: ProveedorMaterial[];   // la propiedad que usarás en el template
 }
 
@@ -16,7 +16,7 @@ export interface ProveedorMaterial {
   material: MaterialSimpleProveedor;
   costoUnitario: number;
   cantidadSuministrada: number;
-  fechaPedido?: string | Date; 
+  //fechaPedido?: string | Date; 
 }
 
 export interface MaterialSimpleProveedor {

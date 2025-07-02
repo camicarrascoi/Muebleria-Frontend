@@ -30,7 +30,7 @@ export class MaterialesComponent implements OnInit {
     private materialesService: MaterialesService,
     private proveedoresService: ProveedoresService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cargarMateriales();
@@ -41,8 +41,8 @@ export class MaterialesComponent implements OnInit {
     });
     const rol = this.authService.getRole();
     this.esAdmin = rol === 'ADMIN';
-    this.esUsuario = rol === 'USER';
-  
+    this.esUsuario = rol === 'USUARIO';
+
   }
 
   cargarProveedores(): void {
@@ -55,18 +55,20 @@ export class MaterialesComponent implements OnInit {
     });
   }
 
-  cargarMateriales(): void {
+cargarMateriales(): void {
   this.materialesService.obtenerMateriales().subscribe({
     next: (data) => {
       this.materiales = data.map((material: any) => {
-        // Mapear proveedores con nombre completo
-        const proveedorMateriales = (material.proveedorMateriales || []).map((prov: any) => {
-          const proveedorCompleto = this.proveedores.find(p => p.id === prov.id);
-          return {
-            id: prov.id,
-            nombre: proveedorCompleto ? proveedorCompleto.nombre : 'Sin nombre',
-          };
-        });
+        const proveedorMateriales = (material.proveedorMateriales || []).map((prov: any) => ({
+          id: prov.id,
+          nombre: prov.nombre || 'Sin nombre',
+        }));
+
+        const materialMuebles = (material.materialMuebles || []).map((mm: any) => ({
+          id: mm.id,
+          cantidadUtilizada: mm.cantidadUtilizada ?? 'N/A',
+          muebleNombre: mm.muebleNombre || 'Sin mueble',
+        }));
 
         return {
           id: material.id,
@@ -76,11 +78,7 @@ export class MaterialesComponent implements OnInit {
           unidadDeMedida: material.unidadDeMedida,
           stockActual: material.stockActual,
           proveedorMateriales,
-          materialMuebles: (material.materialMuebles || []).map((mm: any) => ({
-            id: mm.id,
-            cantidadUtilizada: mm.cantidadUtilizada,
-            muebleNombre: mm.nombreMueble,
-          })),
+          materialMuebles,
         };
       });
     },
@@ -89,25 +87,25 @@ export class MaterialesComponent implements OnInit {
 }
 
   //metodo nuevo QUE PIDIO EL PROFE
-toggleProveedorSeleccionado(proveedor: Proveedor, event: Event): void {
-  const input = event.target as HTMLInputElement;
-  const seleccionado = input.checked;
+  toggleProveedorSeleccionado(proveedor: Proveedor, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const seleccionado = input.checked;
 
-  if (seleccionado) {
-    if (!this.proveedoresSeleccionados.some(p => p.id === proveedor.id)) {
-      this.proveedoresSeleccionados.push(proveedor);
+    if (seleccionado) {
+      if (!this.proveedoresSeleccionados.some(p => p.id === proveedor.id)) {
+        this.proveedoresSeleccionados.push(proveedor);
+      }
+    } else {
+      this.proveedoresSeleccionados = this.proveedoresSeleccionados.filter(p => p.id !== proveedor.id);
     }
-  } else {
-    this.proveedoresSeleccionados = this.proveedoresSeleccionados.filter(p => p.id !== proveedor.id);
   }
-}
 
-isProveedorSeleccionado(proveedorId: number | null | undefined): boolean {
-  if (proveedorId == null) return false; // cubre null y undefined
-  return this.proveedoresSeleccionados.some(p => p.id === proveedorId);
-}
+  isProveedorSeleccionado(proveedorId: number | null | undefined): boolean {
+    if (proveedorId == null) return false; // cubre null y undefined
+    return this.proveedoresSeleccionados.some(p => p.id === proveedorId);
+  }
 
-//fin a lo que pidio el profe
+  //fin a lo que pidio el profe
 
   abrirFormularioNuevo(): void {
     this.materialSeleccionado = {
@@ -162,59 +160,63 @@ isProveedorSeleccionado(proveedorId: number | null | undefined): boolean {
   }
 
   guardarMaterial(form: NgForm): void {
-  if (form.invalid) {
-    form.control.markAllAsTouched();
-    return;
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+
+    if (!this.materialSeleccionado) {
+      return;
+    }
+
+    
+
+    if (
+      !this.validarSoloLetras(this.materialSeleccionado.nombre) ||
+      !this.validarSoloLetras(this.materialSeleccionado.descripcion)
+    ) {
+      alert('Nombre y descripción deben contener solo letras y espacios.');
+      return;
+    }
+
+    if (!this.validarSoloNumeros(this.materialSeleccionado.stockActual)) {
+      alert('Stock debe ser un número válido.');
+      return;
+    }
+
+    
+
+    // Aquí armo el objeto para enviar con solo los datos necesarios para el backend
+    const materialParaGuardar = {
+      id: this.materialSeleccionado.id,
+      nombre: this.materialSeleccionado.nombre,
+      tipo: this.materialSeleccionado.tipo,
+      descripcion: this.materialSeleccionado.descripcion,
+      unidadDeMedida: this.materialSeleccionado.unidadDeMedida,
+      stockActual: this.materialSeleccionado.stockActual,
+      proveedorIds: this.proveedoresSeleccionados.map(p => p.id!), // solo los ids, no nombre
+    };
+
+    console.log('Material para enviar:', materialParaGuardar);
+
+    if (materialParaGuardar.id) {
+      this.materialesService.editarMaterial(materialParaGuardar.id, materialParaGuardar).subscribe({
+        next: () => {
+          this.cargarMateriales();
+          this.cancelarFormulario();
+        },
+        error: (err) => console.error('Error al actualizar material', err),
+      });
+    } else {
+      this.materialesService.agregarMaterial(materialParaGuardar).subscribe({
+        next: () => {
+          this.cargarMateriales();
+          this.cancelarFormulario();
+        },
+        error: (err) => console.error('Error al crear material', err),
+      });
+    }
   }
-
-  if (!this.materialSeleccionado) {
-    return;
-  }
-
-  if (
-    !this.validarSoloLetras(this.materialSeleccionado.nombre) ||
-    !this.validarSoloLetras(this.materialSeleccionado.descripcion)
-  ) {
-    alert('Nombre y descripción deben contener solo letras y espacios.');
-    return;
-  }
-
-  if (!this.validarSoloNumeros(this.materialSeleccionado.stockActual)) {
-    alert('Stock debe ser un número válido.');
-    return;
-  }
-
-  // Aquí armo el objeto para enviar con solo los datos necesarios para el backend
-  const materialParaGuardar = {
-    id: this.materialSeleccionado.id,
-    nombre: this.materialSeleccionado.nombre,
-    tipo: this.materialSeleccionado.tipo,
-    descripcion: this.materialSeleccionado.descripcion,
-    unidadDeMedida: this.materialSeleccionado.unidadDeMedida,
-    stockActual: this.materialSeleccionado.stockActual,
-    proveedorIds: this.proveedoresSeleccionados.map(p => p.id!), // solo los ids, no nombre
-  };
-
-  console.log('Material para enviar:', materialParaGuardar);
-
-  if (materialParaGuardar.id) {
-    this.materialesService.editarMaterial(materialParaGuardar.id, materialParaGuardar).subscribe({
-      next: () => {
-        this.cargarMateriales();
-        this.cancelarFormulario();
-      },
-      error: (err) => console.error('Error al actualizar material', err),
-    });
-  } else {
-    this.materialesService.agregarMaterial(materialParaGuardar).subscribe({
-      next: () => {
-        this.cargarMateriales();
-        this.cancelarFormulario();
-      },
-      error: (err) => console.error('Error al crear material', err),
-    });
-  }
-}
 
   eliminarMaterial(id: number): void {
     if (confirm('¿Estás segura de que deseas eliminar este material?')) {

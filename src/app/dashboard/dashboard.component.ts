@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit {
   cantidadPedidos: number = 0;  // <-- Nueva variable para contar pedidos
   cantidadVentas: number = 0;
   esAdmin: boolean = false;
+  esUsuario: boolean = false;
 
   ventas: Venta[] = [];  // <-- Declaras variable para guardar las ventas
 
@@ -40,10 +41,12 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.esAdmin = this.authService.isAdmin();
     this.cdr.detectChanges(); // Fuerza que Angular se entere del cambio antes de seguir
 
     this.cargarResumen();
+    const rol = this.authService.getRole();
+    this.esAdmin = rol === 'ADMIN';
+    this.esUsuario = rol === 'USUARIO';
   }
 
   cargarResumen() {

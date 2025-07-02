@@ -36,7 +36,7 @@ export class ProveedoresComponent implements OnInit {
   ngOnInit(): void {
     const rol = this.authService.getRole();
     this.esAdmin = rol === 'ADMIN';
-    this.esUsuario = rol === 'USER';
+    this.esUsuario = rol === 'USUARIO';
 
     this.cargarProveedores();
     this.cargarMateriales();
@@ -60,25 +60,16 @@ export class ProveedoresComponent implements OnInit {
       next: data => {
         this.proveedores = data.map(p => ({
           ...p,
-          fechaPedido: typeof p.fechaPedido === 'string' && p.fechaPedido
-            ? this.parseFechaDDMMYYYY(p.fechaPedido)
-            : p.fechaPedido  // ya es Date o undefined
+          //fechaPedido: typeof p.fechaPedido === 'string' && p.fechaPedido
+          // ? this.parseFechaDDMMYYYY(p.fechaPedido)
+          //: p.fechaPedido  // ya es Date o undefined
         }));
       },
       error: err => console.error('Error al obtener proveedores', err)
     });
   }
 
-  parseFechaDDMMYYYY(fechaStr: string): Date {
-    const partes = fechaStr.split('/');
-    if (partes.length === 3) {
-      const dia = Number(partes[0]);
-      const mes = Number(partes[1]) - 1; // Mes base 0 en JS
-      const anio = Number(partes[2]);
-      return new Date(anio, mes, dia, 12, 0, 0);
-    }
-    return new Date(fechaStr); // fallback por si cambia el formato
-  }
+ 
 
   cargarMateriales() {
     this.materialesService.obtenerMateriales().subscribe({
@@ -94,95 +85,116 @@ export class ProveedoresComponent implements OnInit {
     return m ? m.nombre : '';
   }
   abrirFormularioNuevo() {
-    this.proveedorSeleccionado = {
-      nombre: '',
-      telefono: '',
-      correo: '',
-      direccion: '',
-      fechaPedido: undefined,
-      proveedorMateriales: [
-        {
-          // id NO existe en creación
-          costoUnitario: 0,
-          cantidadSuministrada: 0,
-          material: {
-            // solo los campos que quiere tu POST de creación
-            nombre: '',
-            tipo: '',
-            descripcion: '',
-            unidadDeMedida: ''
-          } as any
-        }
-      ]
-    } as Proveedor;
-    this.mostrarFormulario = true;
-  }
-
-  editarProveedor(proveedor: Proveedor) {
-    this.proveedorSeleccionado = {
-      ...proveedor,
-      proveedorMateriales: proveedor.proveedorMateriales ? [...proveedor.proveedorMateriales] : []
-    };
-    this.mostrarFormulario = true;
-  }
-
-  //Guardar proveedor, si no existe el material se crea, buscando por ID, luego nombre y tipo.
-  guardarProveedor() {
-    if (!this.proveedorSeleccionado) return;
-    const isEdit = !!this.proveedorSeleccionado.id;
-
-    // Validación 
-    const invalido = (this.proveedorSeleccionado.proveedorMateriales || []).some(pm =>
-       !pm.material.id || pm.costoUnitario == null || pm.costoUnitario < 0 ||
-      (pm.cantidadSuministrada == null) || pm.cantidadSuministrada < 1 ||
-      (pm.material.stockActual == null) || pm.material.stockActual < 0
-    );
-    if (invalido) {
-      alert('Por favor completa correctamente todos los campos de material.');
-      return;
-    }
-
-     let fechaFmt: string | undefined;
-    if (this.proveedorSeleccionado.fechaPedido) {
-      const fecha = this.proveedorSeleccionado.fechaPedido.toString();
-      if (fecha.includes('-')) {
-        const [anio, mes, dia] = fecha.split('-');
-        fechaFmt = `${dia}/${mes}/${anio}`;
-      } else if (fecha.includes('/')) {
-        fechaFmt = fecha;
-      } else {
-        const d = new Date(fecha);
-        fechaFmt = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  this.proveedorSeleccionado = {
+    nombre: '',
+    telefono: '',
+    correo: '',
+    direccion: '',
+    proveedorMateriales: [
+      {
+        costoUnitario: 0,
+        cantidadSuministrada: 0,
+        material: {
+          nombre: '',
+          tipo: '',
+          descripcion: '',
+          unidadDeMedida: ''
+        } as any
       }
+    ]
+  } as Proveedor;
+  this.mostrarFormulario = true;
+}
+
+editarProveedor(proveedor: Proveedor) {
+  this.proveedorSeleccionado = {
+    ...proveedor,
+    proveedorMateriales: proveedor.proveedorMateriales ? [...proveedor.proveedorMateriales] : []
+  };
+  this.mostrarFormulario = true;
+}
+
+guardarProveedor() {
+  if (!this.proveedorSeleccionado) return;
+
+  const isEdit = !!this.proveedorSeleccionado.id;
+
+  // Validación mínima para materiales
+  const invalido = (this.proveedorSeleccionado.proveedorMateriales || []).some(pm => {
+    if (!pm.material) return true;
+
+    if (isEdit) {
+      if (!pm.material.id) return true;
+    } else {
+      if (
+        !pm.material.nombre?.trim() ||
+        !pm.material.tipo?.trim() ||
+        !pm.material.descripcion?.trim() ||
+        !pm.material.unidadDeMedida?.trim()
+      ) return true;
     }
 
-    const body: any = {
-      id: this.proveedorSeleccionado!.id,
-      nombre: this.proveedorSeleccionado!.nombre,
-      telefono: this.proveedorSeleccionado!.telefono,
-      correo: this.proveedorSeleccionado!.correo,
-      direccion: this.proveedorSeleccionado!.direccion,
-      fechaPedido: fechaFmt,
-      proveedorMateriales: this.proveedorSeleccionado!.proveedorMateriales!.map(pm => {
-        if (isEdit && pm.id) {
-           // Material existente en edición
-          return { id: pm.id, costoUnitario: pm.costoUnitario, cantidadSuministrada: pm.cantidadSuministrada, material: { id: pm.material.id }};
-        } else {
-          // Creación o nuevo en edición
-          return { costoUnitario: pm.costoUnitario, cantidadSuministrada: pm.cantidadSuministrada, material: { id: pm.material.id }};
-        }
-      })
-    };
+    if (pm.costoUnitario == null || pm.costoUnitario < 0) return true;
+    if (pm.cantidadSuministrada == null || pm.cantidadSuministrada < 1) return true;
 
-    const llamada = isEdit
-      ? this.proveedoresService.editarProveedor(this.proveedorSeleccionado.id!, body)
-      : this.proveedoresService.agregarProveedor(body);
+    return false;
+  });
 
-    llamada.subscribe({
-      next: () => { this.cargarProveedores(); this.cancelarFormulario(); },
-      error: err => { console.error('Error al guardar proveedor:', err); alert('Ocurrió un error.'); }
-    });
+  if (invalido) {
+    alert('Por favor completa todos los campos de material correctamente.');
+    return;
   }
+
+  const body: any = {
+    nombre: this.proveedorSeleccionado.nombre?.trim(),
+    telefono: this.proveedorSeleccionado.telefono?.trim(),
+    correo: this.proveedorSeleccionado.correo?.trim(),
+    direccion: this.proveedorSeleccionado.direccion?.trim(),
+    proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => {
+      const costoInt = Math.round(pm.costoUnitario);
+      const cantidadInt = Math.round(pm.cantidadSuministrada);
+
+      if (isEdit) {
+        return {
+          id: pm.id,
+          costoUnitario: costoInt,
+          cantidadSuministrada: cantidadInt,
+          material: { id: pm.material.id }
+        };
+      } else {
+        return {
+          costoUnitario: costoInt,
+          cantidadSuministrada: cantidadInt,
+          material: {
+            nombre: pm.material.nombre.trim(),
+            tipo: pm.material.tipo.trim(),
+            descripcion: (pm.material.descripcion ?? '').trim(),
+            unidadDeMedida: (pm.material.unidadDeMedida ?? '').trim()
+          }
+        };
+      }
+    })
+  };
+
+  console.log('Payload proveedor:', JSON.stringify(body, null, 2));
+
+  const llamada = isEdit
+    ? this.proveedoresService.editarProveedor(this.proveedorSeleccionado.id!, body)
+    : this.proveedoresService.agregarProveedor(body);
+
+  llamada.subscribe({
+    next: () => {
+      this.cargarProveedores();
+      this.cancelarFormulario();
+    },
+    error: err => {
+      console.error('Error al guardar proveedor:', err);
+      alert('Ocurrió un error al guardar el proveedor.');
+    }
+  });
+}
+
+
 
   eliminarProveedor(id: number) {
     // mostramos el confirm y capturamos la respuesta

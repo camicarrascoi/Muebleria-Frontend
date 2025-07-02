@@ -12,7 +12,7 @@
 <table *ngIf="proveedores.length > 0" border="1">
   <thead>
     <tr>
-      <th>Fecha de Pedido</th>
+      <!--<th>Fecha de Pedido</th>-->
       <th>Nombre</th>
       <th>Teléfono</th>
       <th>Correo</th>
@@ -24,7 +24,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let proveedor of proveedores">
-      <td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}</td>
+      <!--<td>{{ proveedor.fechaPedido | date: 'dd/MM/yyyy' }}</td>-->
       <td>{{ proveedor.nombre }}</td>
       <td>{{ proveedor.telefono }}</td>
       <td>{{ proveedor.correo }}</td>
@@ -59,10 +59,10 @@
   <form (ngSubmit)="guardarProveedor()" #formProveedor="ngForm" novalidate>
 
     <!-- Campos básicos -->
-    <label>
+    <!--<label>
       Fecha de Pedido:
       <input type="date" [(ngModel)]="prov.fechaPedido" name="fechaPedido" required />
-    </label>
+    </label>-->
     <label>
       Nombre:
       <input type="text" [(ngModel)]="prov.nombre" name="nombre" required />
@@ -105,7 +105,7 @@
           Unidad de Medida:
           <input type="text" [(ngModel)]="pm.material.unidadDeMedida" name="matUnidadNew{{i}}" required />
         </label>
-        <label>
+       <label>
           Stock Actual:
           <input type="number" [(ngModel)]="pm.material.stockActual" name="stockActualNew{{i}}" min="0" required />
         </label>
@@ -136,7 +136,7 @@
           <label>Cantidad:
             <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantidadEdit{{i}}" min="1" required />
           </label>
-          <label>Stock Actual:
+         <label>Stock Actual:
             <input type="number" [value]="pm.material.stockActual" disabled />
           </label>
         </ng-container>
@@ -160,7 +160,7 @@
 
     <!-- Botones Guardar/Cancelar -->
     <div class="botones-formulario">
-      <button type="submit" [disabled]="formProveedor.invalid">💾 Guardar</button>
+      <button type="button" (click)="guardarProveedor()">💾 Guardar</button>
       <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
     </div>
 

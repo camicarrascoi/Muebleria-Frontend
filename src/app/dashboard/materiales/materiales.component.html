@@ -8,52 +8,58 @@
   <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar material</button>
 </div>
 
+<!-- Mostrar cantidad de materiales para debugging -->
+<p>Materiales cargados: {{ materiales.length }}</p>
+
 <!-- Tabla de materiales SIN overflow-x y adaptada al ancho -->
 <div class="tabla-contenedor">
-  <table *ngIf="materiales.length > 0" class="tabla-materiales">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Tipo</th>
-        <th>Descripción</th>
-        <th>Unidad de Medida</th>
-        <th>Stock Actual</th>
-        <th>Proveedores</th>
-        <th>Muebles</th>
-        <th *ngIf="esAdmin">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let material of materiales">
-        <td>{{ material.nombre }}</td>
-        <td>{{ material.tipo }}</td>
-        <td>{{ material.descripcion }}</td>
-        <td>{{ material.unidadDeMedida }}</td>
-        <td>{{ material.stockActual }}</td>
-        <td>
-          <ul>
-            <li *ngFor="let prov of material.proveedorMateriales">
-              {{ prov.nombre }}
-            </li>
-          </ul>
-        </td>
-        <td>
-          <ul>
-            <li *ngFor="let mm of material.materialMuebles">
-              {{ mm.muebleNombre }}: {{ mm.cantidadUtilizada }}
-            </li>
-          </ul>
-        </td>
-        <td *ngIf="esAdmin">
-          <div class="acciones-botones">
-            <button (click)="editarMaterial(material)">✏️ Editar</button>
-            <button (click)="eliminarMaterial(material.id!)">🗑️ Eliminar</button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Comentado *ngIf para pruebas, lo puedes descomentar cuando esté OK -->
+<table *ngIf="materiales.length > 0" class="tabla-materiales">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Tipo</th>
+      <th>Descripción</th>
+      <th>Unidad de Medida</th>
+      <th>Stock Actual</th>
+      <th>Proveedores</th>
+      <th>Muebles</th>
+      <th *ngIf="esAdmin">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let material of materiales">
+      <!-- Quité el id porque no quieres mostrarlo -->
+      <td>{{ material.nombre }}</td>
+      <td>{{ material.tipo }}</td>
+      <td>{{ material.descripcion }}</td>
+      <td>{{ material.unidadDeMedida }}</td>
+      <td>{{ material.stockActual }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let prov of material.proveedorMateriales">
+            {{ prov?.nombre || 'Sin nombre' }}
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li *ngFor="let mm of material.materialMuebles">
+            {{ mm?.muebleNombre || 'Sin mueble' }}: {{ mm?.cantidadUtilizada ?? 'N/A' }}
+          </li>
+        </ul>
+      </td>
+      <td *ngIf="esAdmin">
+        <div class="acciones-botones">
+          <button (click)="editarMaterial(material)">✏️ Editar</button>
+          <button (click)="eliminarMaterial(material.id!)">🗑️ Eliminar</button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 </div>
+
 
 <!-- Formulario para agregar/editar materiales -->
 <div *ngIf="mostrarFormulario" class="formulario-material">
@@ -130,20 +136,6 @@
         Solo números enteros ≥ 0.
       </div>
     </label>
-
-    <!--
-    <label>Proveedores:</label>
-<div class="proveedores-lista">
-  <label *ngFor="let proveedor of proveedores">
-    <input
-      type="checkbox"
-      [value]="proveedor.id"
-      (change)="toggleProveedorSeleccionado(proveedor, $event)"
-      [checked]="isProveedorSeleccionado(proveedor.id!)"
-    />
-    {{ proveedor.nombre }}
-  </label>
-</div> -->
 
     <div class="botones-formulario">
       <button type="submit" [disabled]="frm.invalid">💾 Guardar</button>

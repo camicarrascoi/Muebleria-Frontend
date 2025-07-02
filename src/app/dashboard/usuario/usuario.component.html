@@ -1,0 +1,23 @@
+<h2>Crear Nuevo Usuario</h2>
+
+<form (ngSubmit)="crearUsuario()" #form="ngForm">
+  <label>
+    Nombre de usuario:
+    <input type="text" name="nombre" [(ngModel)]="nombre" required />
+  </label>
+
+  <label>
+    Contraseña:
+    <input type="password" name="password" [(ngModel)]="password" required />
+  </label>
+
+  <label>
+    Rol:
+    <select name="rol" [(ngModel)]="rol" required>
+      <option value="USUARIO">Usuario</option>
+      <option value="ADMIN">Administrador</option>
+    </select>
+  </label>
+
+  <button type="submit" [disabled]="form.invalid">Crear Usuario</button>
+</form>

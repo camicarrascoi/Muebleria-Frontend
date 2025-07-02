@@ -63,7 +63,7 @@ export class VentaComponent implements OnInit {
     
     const rol = this.authService.getRole();
     this.esAdmin = rol === 'ADMIN';
-    this.esUsuario = rol === 'USER';
+    this.esUsuario = rol === 'USUARIO';
   }
 
   private cargarVentas() {
