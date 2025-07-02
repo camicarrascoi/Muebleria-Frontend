@@ -69,22 +69,21 @@
 
     <div *ngIf="form.items?.length">
       <h4>Materiales disponibles</h4>
-      <div *ngFor="let item of form.items; let i = index" class="item-material">
-        <!-- Como `item` solo tiene id y cantidad, mostramos el ID y dejamos que el back nombre el material -->
-        <label>
-          Material ID: {{ item.id }}
-        </label>
-        <label>
-          Cantidad:
-          <input
-            type="number"
-            [(ngModel)]="item.cantidadSuministrada"
-            name="cantidad{{i}}"
-            min="0"
-            required
-          />
-        </label>
-      </div>
+        <div *ngFor="let item of pedidosForm.items; let i = index" class="item-material">
+          <label>
+            Material: {{ getNombreMaterial(pedidosForm.proveedorId, item.id) }}
+          </label>
+          <label>
+            Cantidad:
+            <input
+              type="number"
+              [(ngModel)]="item.cantidadSuministrada"
+              name="cantidad{{i}}"
+              min="0"
+              required
+            />
+          </label>
+        </div>
     </div>
 
     <div class="botones-formulario">

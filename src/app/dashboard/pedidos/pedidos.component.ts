@@ -129,4 +129,11 @@ private formatFecha(date: any): string {
   const yyyy = parsedDate.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 }
+getNombreMaterial(proveedorId: number, proveedorMaterialId: number): string {
+  const proveedor = this.proveedores.find(p => p.id === proveedorId);
+  if (!proveedor) return 'Material desconocido';
+
+  const proveedorMaterial = proveedor.proveedorMateriales.find(pm => pm.id === proveedorMaterialId);
+  return proveedorMaterial ? proveedorMaterial.material.nombre : 'Material desconocido';
+}
 }
