@@ -1,40 +1,104 @@
-<h2>Nuevo Pedido</h2>
+<p style="color: rgb(0, 119, 255); font-weight: bold;">
+  Pedidos de materiales por proveedor
+</p>
 
-<form (ngSubmit)="guardarPedido()">
-  <label>Proveedor:
-    <select [(ngModel)]="pedido.proveedorId" name="proveedorId" required>
-      <option value="" disabled selected>Seleccione un proveedor</option>
-      <option *ngFor="let prov of proveedores" [value]="prov.id">{{ prov.nombre }}</option>
-    </select>
-  </label>
+<div class="acciones">
+  <button (click)="abrirFormularioNuevo()">➕ Nuevo Pedido</button>
+</div>
 
-  <label>Fecha de pedido:
-    <input type="date" [(ngModel)]="pedido.fechaPedido" name="fechaPedido" required>
-  </label>
+<!-- Tabla de pedidos existentes -->
+<table *ngIf="pedidos.length > 0" border="1">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Fecha</th>
+      <th>Proveedor</th>
+      <th>Materiales</th>
+      <th>Cantidad Pedido</th>
+      <th>Costo Total</th>
+      <th>Detalle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let ped of pedidos">
+      <td>{{ ped.id }}</td>
+      <td>{{ ped.fechaPedido }}</td>
+      <td>{{ ped.proveedor.nombre }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let pm of ped.proveedor.proveedorMateriales">
+            {{ pm.material.nombre }} (x{{ pm.cantidadSuministrada }})
+          </li>
+        </ul>
+      </td>
+      <td>{{ ped.cantidadPedido }}</td>
+      <td>{{ ped.costoTotal | currency:'CLP' }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let d of ped.detalleCantidades">
+            {{ d.nombreMaterial }}: {{ d.cantidad }}
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-  <hr>
+<!-- Formulario nuevo pedido -->
+<div *ngIf="mostrarFormulario && pedidosForm as form" class="formulario">
+  <h3>Registrar nuevo pedido</h3>
+  <form (ngSubmit)="guardarPedido()" #formPedido="ngForm" novalidate>
 
-  <div *ngFor="let item of pedido.materiales; let i = index">
-    <h4>Material {{ i + 1 }}</h4>
-    <label>Material:
-      <select [(ngModel)]="item.materialId" name="material{{i}}" required>
-        <option *ngFor="let mat of materiales" [value]="mat.id">{{ mat.nombre }}</option>
+    <label>
+      Fecha Pedido:
+      <input
+        type="date"
+        [(ngModel)]="form.fechaPedido"
+        name="fechaPedido"
+        required
+      />
+    </label>
+
+    <label>
+      Proveedor:
+      <select
+        [(ngModel)]="form.proveedorId"
+        name="proveedorId"
+        required
+        (ngModelChange)="onProveedorChange($event)"
+      >
+        <option [ngValue]="0" disabled>-- Selecciona --</option>
+        <option *ngFor="let prov of proveedores" [ngValue]="prov.id">
+          {{ prov.nombre }}
+        </option>
       </select>
     </label>
 
-    <label>Cantidad:
-      <input type="number" [(ngModel)]="item.cantidad" name="cantidad{{i}}" min="1" required>
-    </label>
+    <div *ngIf="form.items?.length">
+      <h4>Materiales disponibles</h4>
+      <div *ngFor="let item of form.items; let i = index" class="item-material">
+        <!-- Como `item` solo tiene id y cantidad, mostramos el ID y dejamos que el back nombre el material -->
+        <label>
+          Material ID: {{ item.id }}
+        </label>
+        <label>
+          Cantidad:
+          <input
+            type="number"
+            [(ngModel)]="item.cantidadSuministrada"
+            name="cantidad{{i}}"
+            min="0"
+            required
+          />
+        </label>
+      </div>
+    </div>
 
-    <label>Costo Unitario:
-      <input type="number" [(ngModel)]="item.costoUnitario" name="costo{{i}}" min="0" required>
-    </label>
-
-    <button type="button" (click)="quitarMaterial(i)">❌ Quitar</button>
-  </div>
-
-  <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
-
-  <hr>
-  <button type="submit">💾 Guardar Pedido</button>
-</form>
+    <div class="botones-formulario">
+      <button type="submit" [disabled]="formPedido.invalid">
+        💾 Guardar Pedido
+      </button>
+      <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
+    </div>
+  </form>
+</div>
