@@ -144,32 +144,28 @@ const invalido = (this.proveedorSeleccionado.proveedorMateriales || []).some(pm 
     return;
   }
 
-  const body: any = {
+const body: any = {
   nombre: this.proveedorSeleccionado.nombre?.trim(),
   telefono: this.proveedorSeleccionado.telefono?.trim(),
   correo: this.proveedorSeleccionado.correo?.trim(),
   direccion: this.proveedorSeleccionado.direccion?.trim(),
   proveedorMateriales: this.proveedorSeleccionado.proveedorMateriales!.map(pm => {
     const costoInt = Math.round(pm.costoUnitario);
-    // Asegura cantidadSuministrada, mínimo 0 si no existe
     const cantidadInt = pm.cantidadSuministrada != null ? Math.round(pm.cantidadSuministrada) : 0;
 
-    if (pm.id) {
-      // Relación ya existente, envia id, costo, cantidad y material id
-      return {
-        id: pm.id,
-        costoUnitario: costoInt,
-        cantidadSuministrada: cantidadInt,
-        material: { id: pm.material.id }
-      };
-    } else {
-      // Relación nueva, solo envía costo y material con id (porque dices que lo seleccionas de un select)
-      return {
-        costoUnitario: costoInt,
-        cantidadSuministrada: cantidadInt,
-        material: { id: pm.material.id }
-      };
-    }
+    return {
+      ...(pm.id && { id: pm.id }),
+      costoUnitario: costoInt,
+      cantidadSuministrada: cantidadInt,
+      material: pm.material.id
+        ? { id: pm.material.id }
+        : {
+            nombre: pm.material.nombre?.trim(),
+            tipo: pm.material.tipo?.trim(),
+            descripcion: pm.material.descripcion?.trim(),
+            unidadDeMedida: pm.material.unidadDeMedida?.trim()
+          }
+    };
   })
 };
 

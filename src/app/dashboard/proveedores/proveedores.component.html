@@ -133,11 +133,8 @@
           <label>Costo Unitario:
             <input type="number" [(ngModel)]="pm.costoUnitario" name="costoEdit{{i}}" min="0" required />
           </label>
-          <label>Cantidad:
-            <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantidadEdit{{i}}" min="1" required />
-          </label>
-         <label>Stock Actual:
-            <input type="number" [value]="pm.material.stockActual" disabled />
+         <label>Cantidad Suministrada:
+            <span style="user-select: none;">{{ pm.cantidadSuministrada}}</span>
           </label>
         </ng-container>
         <ng-template #nuevoMaterialEdit>
