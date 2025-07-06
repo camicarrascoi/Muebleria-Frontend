@@ -1,6 +1,7 @@
 // src/app/dashboard/dashboard-routing.module.ts
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
+import { AdminGuard } from '../auth/admin.guards';
 
 export const dashboardRoutes: Routes = [
   {
@@ -26,8 +27,15 @@ export const dashboardRoutes: Routes = [
       {
         path: 'pedidos',
         loadComponent: () => import('./pedidos/pedidos.component').then(m => m.PedidosComponent)
+      },
+
+      {
+        path: 'usuarios/crear',
+        loadComponent: () => import('./usuario/usuario.component').then(m => m.UsuarioComponent),
+        canActivate: [AdminGuard]
       }
-      
+
+
     ]
   }
 ];

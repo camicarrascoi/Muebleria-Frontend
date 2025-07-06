@@ -70,6 +70,12 @@
   color: white;
 }
 
+.nav-link.crear:hover {
+  background-color: #ff8800; /* Naranja vibrante */
+  color: white;
+}
+
+
 /* Resumen tarjetas */
 .resumen {
   display: flex;

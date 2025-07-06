@@ -1,0 +1,64 @@
+h2 {
+  color: #5a3e1b;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+form {
+  background-color: #fff7e6;
+  padding: 30px 35px;
+  border-radius: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+label {
+  font-weight: 600;
+  color: #4a4a4a;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 1rem;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  border: 1px solid #c2b59b;
+  border-radius: 6px;
+  background-color: #fdfaf5;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #5a3e1b;
+}
+
+button {
+  background-color: #5a3e1b;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #7b4e22;
+}
+
+button:disabled {
+  background-color: #bcae9e;
+  cursor: not-allowed;
+}

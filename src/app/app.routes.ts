@@ -1,12 +1,16 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';  // Ajusta la ruta si es diferente
-import { dashboardRoutes } from './dashboard/dashboard-routing.module';
-import { UsuarioComponent } from './dashboard/usuario/usuario.component';  
+import { LoginComponent }      from './auth/login/login.component';
+import { dashboardRoutes }     from './dashboard/dashboard-routing.module';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'usuario', component: UsuarioComponent },
-  ...dashboardRoutes,  // Aquí incluyes las rutas hijas del dashboard
+  { path: '',        redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login',   component: LoginComponent },
+
+  // Ya no existe: { path: 'usuario', component: UsuarioComponent },
+
+  // Todas las rutas de /dashboard, incluyendo usuarios/crear con AdminGuard
+  ...dashboardRoutes,
+
+  // Cualquier otra URL, redirige a login
   { path: '**', redirectTo: 'login' }
 ];

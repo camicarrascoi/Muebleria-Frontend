@@ -1,6 +1,5 @@
-/* auth.service.ts */
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -20,7 +19,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
- login(nombre: string, password: string): Observable<LoginResponse> {
+  login(nombre: string, password: string): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${this.API}/login`, { nombre, password })
       .pipe(
@@ -30,8 +29,6 @@ export class AuthService {
         })
       );
   }
-
- 
 
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
@@ -55,7 +52,11 @@ export class AuthService {
     return this.getRole() === 'USUARIO';
   }
 
-   registerUsuario(data: { nombre: string; password: string; rol: string }) {
-    return this.http.post(this.API, data);
+  // Registro de usuario
+  registerUsuario(data: { nombre: string; password: string; rol: string }) {
+    // Incluye el token para solicitudes protegidas
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
+    return this.http.post(this.API, data, headers ? { headers } : {});
   }
 }

@@ -23,13 +23,13 @@ export class UsuarioComponent {
         const usuario = {
             nombre: this.nombre,
             password: this.password,
-            rol: this.rol
+            rol: 'USUARIO' // siempre será usuario
         };
 
         this.authService.registerUsuario(usuario).subscribe({
             next: () => {
                 alert('Usuario creado correctamente');
-                this.router.navigate(['/login']);
+                this.router.navigate(['/dashboard']);
             },
             error: err => {
                 console.error('Error al crear usuario:', err);

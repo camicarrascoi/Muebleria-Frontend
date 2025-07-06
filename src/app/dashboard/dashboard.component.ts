@@ -37,7 +37,8 @@ export class DashboardComponent implements OnInit {
     private ventaService: VentaService,
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public auth: AuthService
   ) {}
 
   ngOnInit(): void {
