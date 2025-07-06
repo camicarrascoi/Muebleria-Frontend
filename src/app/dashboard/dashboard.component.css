@@ -74,6 +74,10 @@
   background-color: #ff8800; /* Naranja vibrante */
   color: white;
 }
+.nav-link.reportes:hover {
+  background-color: #6dd224; /* Verde vibrante */
+  color: white;
+}
 
 
 /* Resumen tarjetas */

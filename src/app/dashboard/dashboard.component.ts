@@ -10,6 +10,7 @@ import { AuthService } from '../dashboard/services/auth.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Venta } from '../models/venta.model';  
+import { ReporteService } from '../dashboard/services/reportes.service'; 
 
 @Component({
   selector: 'app-dashboard',
@@ -38,7 +39,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    public auth: AuthService
+    public auth: AuthService,
+    private reporteService: ReporteService  
   ) {}
 
   ngOnInit(): void {

@@ -9,10 +9,11 @@
     <a routerLink="pedidos" class="nav-link pedidos">Pedidos</a>
     <a routerLink="venta" class="nav-link ventas">Ventas</a>
 
-      <!-- Solo lo ve el admin -->
-<a *ngIf="auth.isAdmin()" routerLink="/dashboard/usuarios/crear" class="nav-link crear">
-  👤 Crear Usuario
-</a>
+    <!-- Solo lo ve el admin -->
+    <a *ngIf="auth.isAdmin()" routerLink="/dashboard/usuarios/crear" class="nav-link crear">
+      👤 Crear Usuario
+    </a>
+    <a routerLink="reportes" class="nav-link reportes"> Reporte</a>
 
     <a (click)="logout()" class="nav-link cerrar">Cerrar sesión</a>
   </nav>

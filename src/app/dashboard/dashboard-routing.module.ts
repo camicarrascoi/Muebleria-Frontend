@@ -33,8 +33,12 @@ export const dashboardRoutes: Routes = [
         path: 'usuarios/crear',
         loadComponent: () => import('./usuario/usuario.component').then(m => m.UsuarioComponent),
         canActivate: [AdminGuard]
-      }
+      },
 
+      {
+        path: 'reportes',
+        loadComponent: () => import('./reportes/reportes.component').then(m => m.ReportesComponent)
+      }
 
     ]
   }
