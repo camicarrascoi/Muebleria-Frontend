@@ -1,0 +1,179 @@
+:host {
+  display: block;
+  background-color: #fdf6e3;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Barra de navegación */
+.navbar {
+  background-color: #8b5e3c;
+  color: #fff;
+  padding: 15px 20px;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Acciones */
+.acciones {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.acciones button {
+  background-color: #8b5e3c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.acciones button:hover {
+  background-color: #935e3f;
+}
+
+/* Tabla de pedidos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+thead {
+  background-color: #f5deb3;
+  color: #333;
+  font-weight: bold;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  vertical-align: top;
+  text-align: left;
+  min-width: 100px;
+}
+
+tr:nth-child(even) {
+  background-color: #fff8ee;
+}
+
+/* Formulario de pedidos */
+.formulario {
+  background-color: #fff4e6;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 700px;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.formulario h3 {
+  margin-top: 0;
+  color: #8b5e3c;
+}
+
+.formulario form {
+  display: grid;
+  gap: 15px;
+}
+
+.formulario label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.formulario select,
+.formulario input[type="text"],
+.formulario input[type="number"],
+.formulario input[type="date"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formulario input:focus,
+.formulario select:focus {
+  border-color: #8b5e3c;
+  outline: none;
+}
+
+/* Material items en el form */
+.item-material {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.item-material label {
+  margin: 0;
+}
+
+.item-material input {
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Botones del formulario principal */
+.botones-formulario {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.botones-formulario button[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.botones-formulario button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.botones-formulario button[type="button"] {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.botones-formulario button[type="button"]:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .acciones {
+    flex-direction: column;
+  }
+  .botones-formulario {
+    flex-direction: column;
+  }
+  .item-material {
+    grid-template-columns: 1fr;
+  }
+}
