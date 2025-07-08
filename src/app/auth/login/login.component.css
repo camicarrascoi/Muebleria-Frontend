@@ -76,12 +76,12 @@ form .error {
   margin-top: 20px;
   text-align: center;
   font-size: 1rem;
-  color: #4a4a4a;
+  color: #ffffff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .crear-cuenta a {
-  color: #5a3e1b;
+  color: #ff7410;
   font-weight: bold;
   text-decoration: none;
   margin-left: 5px;
@@ -89,7 +89,7 @@ form .error {
 }
 
 .crear-cuenta a:hover {
-  color: #7b4e22;
+  color: #c52e0d;
   text-decoration: underline;
 }
 
