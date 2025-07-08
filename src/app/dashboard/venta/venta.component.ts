@@ -148,8 +148,13 @@ export class VentaComponent implements OnInit {
     subtotal: 0
   });
 
-  this.muebleSeleccionadoIdControl.setValue(null);
-  this.cantidadSeleccionadaControl.setValue(1);
+this.muebleSeleccionadoIdControl.setValue(null);
+this.muebleSeleccionadoIdControl.markAsPristine();
+this.muebleSeleccionadoIdControl.markAsUntouched();
+
+this.cantidadSeleccionadaControl.setValue(1);
+this.cantidadSeleccionadaControl.markAsPristine();
+this.cantidadSeleccionadaControl.markAsUntouched();
 }
 
   eliminarMueble(index: number) {
