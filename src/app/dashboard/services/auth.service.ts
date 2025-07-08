@@ -59,4 +59,19 @@ export class AuthService {
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
     return this.http.post(this.API, data, headers ? { headers } : {});
   }
+
+  // Obtener lista de usuarios
+getUsuarios() {
+  const token = this.getToken();
+  const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
+  return this.http.get<any[]>(`${this.API}`, headers ? { headers } : {});
+}
+
+// Eliminar un usuario
+eliminarUsuario(id: number) {
+  const token = this.getToken();
+  const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
+  return this.http.delete(`${this.API}/${id}`, headers ? { headers } : {});
+}
+
 }

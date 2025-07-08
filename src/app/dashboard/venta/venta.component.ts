@@ -11,7 +11,7 @@ import { DashboardComponent } from "../dashboard.component";
 @Component({
   selector: 'app-venta',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, DashboardComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,],
   templateUrl: './venta.component.html',
   styleUrls: ['./venta.component.css']
 })
