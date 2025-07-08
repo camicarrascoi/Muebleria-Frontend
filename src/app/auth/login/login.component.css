@@ -70,3 +70,26 @@ form .error {
   font-weight: bold;
   color: #ff4c4c; /* rojo para error */
 }
+
+/* crear cuenta */
+.crear-cuenta {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1rem;
+  color: #4a4a4a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.crear-cuenta a {
+  color: #5a3e1b;
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 5px;
+  transition: color 0.3s ease;
+}
+
+.crear-cuenta a:hover {
+  color: #7b4e22;
+  text-decoration: underline;
+}
+
