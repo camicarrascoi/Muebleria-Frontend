@@ -14,3 +14,30 @@
 
   <button type="submit" [disabled]="form.invalid">Crear Usuario</button>
 </form>
+
+<!-- Solo se muestra si el usuario es admin -->
+<div *ngIf="isAdmin">
+  <hr>
+  <h2>📋 Lista de Usuarios</h2>
+
+  <table border="1" class="tabla-usuarios">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of usuarios">
+        <td>{{ usuario.id }}</td>
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.rol }}</td>
+        <td>
+          <button (click)="eliminarUsuario(usuario.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
