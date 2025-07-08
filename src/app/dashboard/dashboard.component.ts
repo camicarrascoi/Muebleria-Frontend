@@ -7,6 +7,7 @@ import { MueblesService } from './services/muebles.service';
 import { ProveedoresService } from '../dashboard/services/proveedores.service';
 import { VentaService } from '../dashboard/services/venta.service';
 import { AuthService } from '../dashboard/services/auth.service';
+import { PedidosService } from './services/pedido.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Venta } from '../models/venta.model';  
@@ -35,6 +36,7 @@ export class DashboardComponent implements OnInit {
     private materialesService: MaterialesService,
     private mueblesService: MueblesService,
     private proveedoresService: ProveedoresService,
+    private pedidoService: PedidosService,
     private ventaService: VentaService,
     private authService: AuthService,
     private router: Router,
@@ -66,6 +68,11 @@ export class DashboardComponent implements OnInit {
     this.proveedoresService.obtenerProveedores().subscribe({
       next: proveedores => this.cantidadProveedores = proveedores.length,
       error: err => console.error('Error al obtener proveedores', err)
+    });
+    
+    this.pedidoService.obtenerPedidos().subscribe({
+      next: pedidos => this.cantidadPedidos = pedidos.length,
+      error: err => console.error('Error al obtener pedidos', err)
     });
 
     this.ventaService.obtenerVentas().subscribe({
