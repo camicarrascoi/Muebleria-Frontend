@@ -5,7 +5,8 @@
 
 <!-- Acciones: agregar y exportar -->
 <div *ngIf="!mostrarFormulario" class="acciones">
-  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar venta</button>
+  <!--<button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar material</button>-->
+  <button (click)="abrirFormularioNuevo()">➕ Agregar material</button>
   <!--<button (click)="exportarVentasExcel()">📥 Exportar a Excel</button>-->
 </div>
 
@@ -31,7 +32,8 @@
             </li>
           </ul>
         </td>
-        <td *ngIf="esAdmin">
+        <td>
+          <!--<td *ngIf="esAdmin">
           <!--<button (click)="editarVenta(v)">✏️</button>-->
           <button (click)="eliminarVenta(v.id!)">🗑️</button>
         </td>
