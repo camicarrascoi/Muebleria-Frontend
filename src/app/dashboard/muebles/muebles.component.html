@@ -5,7 +5,8 @@
 
 <!-- Botón para abrir el formulario -->
 <div class="acciones">
-  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar mueble</button>
+  <!--<button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar material</button>-->
+  <button (click)="abrirFormularioNuevo()">➕ Agregar material</button>
 </div>
 
 <!-- Tabla de muebles -->
@@ -18,7 +19,8 @@
       <th>Precio</th>
       <th>Stock</th>
       <th>Materiales</th>
-      <th *ngIf="esAdmin">Acciones</th>
+      <!--<th *ngIf="esAdmin">Acciones</th>-->
+      <th>Acciones</th>
     </tr>
   </thead>
   <tbody>
@@ -34,8 +36,8 @@
           </li>
         </ul>
       </td>
-      
-<td *ngIf="esAdmin">
+<!--<td *ngIf="esAdmin">-->
+<td>
   <div class="acciones-botones">
     <button (click)="editarMueble(mueble)">✏️ Editar</button>
     <button (click)="eliminarMueble(mueble.id!)">🗑️ Eliminar</button>
