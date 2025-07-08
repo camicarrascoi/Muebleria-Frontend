@@ -5,7 +5,8 @@
 
 <!-- Botón Agregar solo visible para admin -->
 <div class="acciones">
-  <button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar material</button>
+  <!--<button *ngIf="esAdmin" (click)="abrirFormularioNuevo()">➕ Agregar material</button>-->
+  <button (click)="abrirFormularioNuevo()">➕ Agregar material</button>
 </div>
 
 <!-- Mostrar cantidad de materiales para debugging -->
@@ -24,7 +25,8 @@
       <th>Stock Actual</th>
       <th>Proveedores</th>
       <th>Muebles</th>
-      <th *ngIf="esAdmin">Acciones</th>
+      <!--<th *ngIf="esAdmin">Acciones</th>-->
+      <th>Acciones</th>
     </tr>
   </thead>
   <tbody>
@@ -52,7 +54,8 @@
           </li>
         </ul>
       </td>
-      <td *ngIf="esAdmin">
+      <!--<td *ngIf="esAdmin">-->
+      <td>
         <div class="acciones-botones">
           <button (click)="editarMaterial(material)">✏️ Editar</button>
           <button (click)="eliminarMaterial(material.id!)">🗑️ Eliminar</button>
