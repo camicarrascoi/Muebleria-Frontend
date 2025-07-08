@@ -29,11 +29,11 @@ export const dashboardRoutes: Routes = [
         loadComponent: () => import('./pedidos/pedidos.component').then(m => m.PedidosComponent)
       },
 
-      // {
-      // path: 'usuarios/crear',
-      //loadComponent: () => import('./usuario/usuario.component').then(m => m.UsuarioComponent),
-      //canActivate: [AdminGuard]
-      //},
+      {
+        path: 'usuarios/crear',
+        loadComponent: () => import('./usuario/usuario.component').then(m => m.UsuarioComponent),
+        canActivate: [AdminGuard]
+      },
 
       {
         path: 'reportes',

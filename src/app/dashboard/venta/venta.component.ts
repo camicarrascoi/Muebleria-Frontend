@@ -6,11 +6,12 @@ import { MueblesService } from '../services/muebles.service';
 import { Venta, VentaPayload, VentaMueblePayload } from '../../models/venta.model';
 import { Mueble } from '../../models/mueble.model';
 import { AuthService } from '../services/auth.service';
+import { DashboardComponent } from "../dashboard.component";
 
 @Component({
   selector: 'app-venta',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DashboardComponent],
   templateUrl: './venta.component.html',
   styleUrls: ['./venta.component.css']
 })
