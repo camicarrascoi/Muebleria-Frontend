@@ -9,13 +9,14 @@ import { VentaService } from '../dashboard/services/venta.service';
 import { AuthService } from '../dashboard/services/auth.service';
 import { PedidosService } from './services/pedido.service';
 
+//inicio de iniciacion jeje
 
 @Component({
     standalone: true,
     imports: [CommonModule, FormsModule, RouterModule],
     selector: 'app-inicio',
     templateUrl: './inicio.component.html',
-    styleUrls: ['./inicio.component.css']
+    styleUrls: ['./inicio.component.css'] 
 })
 export class InicioComponent implements OnInit {
 
