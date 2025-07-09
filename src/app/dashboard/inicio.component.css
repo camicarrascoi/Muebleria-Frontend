@@ -1,0 +1,86 @@
+/* Resumen tarjetas */
+.resumen {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.tarjeta-resumen {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 180px;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.1);
+  padding: 20px 15px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.tarjeta-resumen:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.tarjeta-resumen .cantidad {
+  display: block;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #5a3e1b;
+}
+
+.tarjeta-resumen h3 {
+  font-weight: 600;
+  color: #7a6b4f;
+}
+
+/* Colores específicos (opcionales) */
+.tarjeta-resumen.muebles {
+  border-top: 5px solid #4285F4; /* Azul Google */
+}
+
+.tarjeta-resumen.materiales {
+  border-top: 5px solid #DB4437; /* Rojo Google */
+}
+
+.tarjeta-resumen.proveedores {
+  border-top: 5px solid #F4B400; /* Amarillo Google */
+}
+
+.tarjeta-resumen.pedidos {
+  border-top: 5px solid #c11cbe; /* Púrpura Google */
+}
+
+.tarjeta-resumen.ventas {
+  border-top: 5px solid #0F9D58; /* Verde Google */
+}
+
+
+/* Link cerrar sesión más separado a la derecha */
+.nav-link.cerrar {
+  margin-left: auto;
+  background-color: #d91111;
+  font-weight: 700;
+}
+
+.nav-link.cerrar:hover {
+  background-color: #af1010;
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .resumen {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tarjeta-resumen {
+    width: 80%;
+  }
+}

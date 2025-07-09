@@ -9,6 +9,10 @@ export const dashboardRoutes: Routes = [
     component: DashboardComponent,
     children: [
       {
+        path: 'inicio',
+        loadComponent: () => import('./inicio.component').then(m => m.InicioComponent)
+      },
+      {
         path: 'muebles',
         loadComponent: () => import('./muebles/muebles.component').then(m => m.MueblesComponent)
       },

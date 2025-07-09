@@ -45,6 +45,11 @@
   cursor: pointer;
 }
 
+.nav-link.inicio:hover {
+  background-color: #21211d; /* cafenegro más claro */
+  color: white;
+}
+
 .nav-link.muebles:hover {
   background-color: #4285F4; /* Azul Google */
   color: white;
