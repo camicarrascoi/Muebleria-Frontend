@@ -17,10 +17,10 @@
 
 <!-- Solo se muestra si el usuario es admin -->
 <div *ngIf="isAdmin">
-  <hr>
+  <hr />
   <h2>📋 Lista de Usuarios</h2>
 
-  <table border="1" class="tabla-usuarios">
+  <table>
     <thead>
       <tr>
         <th>ID</th>
@@ -33,10 +33,19 @@
       <tr *ngFor="let usuario of usuarios">
         <td>{{ usuario.id }}</td>
         <td>{{ usuario.nombre }}</td>
-        <td>{{ usuario.rol }}</td>
         <td>
-          <button (click)="eliminarUsuario(usuario.id)">Eliminar</button>
+            <select [(ngModel)]="usuario.rol" name="rol_{{ usuario.id }}">
+            <option value="USUARIO">USUARIO</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
         </td>
+        <td>
+         <div class="acciones-btns" *ngIf="isAdmin">
+            <button class="btn-guardar" (click)="actualizarRol(usuario)">💾 Guardar</button>
+            <button class="btn-eliminar" (click)="eliminarUsuario(usuario.id)">🗑️ Eliminar</button>
+          </div>
+        </td>
+
       </tr>
     </tbody>
   </table>

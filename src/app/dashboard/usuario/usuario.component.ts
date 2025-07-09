@@ -18,7 +18,7 @@ export class UsuarioComponent implements OnInit {
   usuarios: any[] = [];
   isAdmin = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -61,11 +61,52 @@ export class UsuarioComponent implements OnInit {
     });
   }
 
+  /** Elimina un usuario por ID */
   eliminarUsuario(id: number) {
-    if (confirm('¿Estás segura/o de eliminar este usuario?')) {
-      this.authService.eliminarUsuario(id).subscribe(() => {
+    if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
+
+    this.authService.eliminarUsuario(id).subscribe({
+      next: () => {
         this.usuarios = this.usuarios.filter(u => u.id !== id);
-      });
+      },
+      error: err => {
+        console.error('Error al eliminar usuario:', err);
+        alert('No se pudo eliminar el usuario');
+      }
+    });
+  }
+
+  //Cambia el rol de un usuario (solo admin).
+  actualizarRol(usuario: any) {
+    if (!confirm(`Vas a cambiar el rol de "${usuario.nombre}" a "${usuario.rol}". ¿Continuar?`)) {
+      return;
     }
+
+    // Paso 1: eliminar
+    this.authService.eliminarUsuario(usuario.id).subscribe({
+      next: () => {
+        // Paso 2: recrear con nuevo rol
+        const nuevo = {
+          nombre: usuario.nombre,
+          password: usuario.password, // Si deseas pedir contraseña nueva, reemplaza aquí
+          rol: usuario.rol
+        };
+
+        this.authService.registerUsuario(nuevo).subscribe({
+          next: () => {
+            alert(`Usuario "${nuevo.nombre}" recreado con rol "${nuevo.rol}"`);
+            this.cargarUsuarios();
+          },
+          error: err2 => {
+            console.error('Error al recrear usuario:', err2);
+            alert(`No se pudo recrear el usuario: ${err2.error?.message || err2.message}`);
+          }
+        });
+      },
+      error: err1 => {
+        console.error('Error al eliminar usuario:', err1);
+        alert(`No se pudo eliminar el usuario: ${err1.error?.message || err1.message}`);
+      }
+    });
   }
 }

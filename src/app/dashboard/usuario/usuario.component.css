@@ -62,3 +62,95 @@ button:disabled {
   background-color: #bcae9e;
   cursor: not-allowed;
 }
+
+/* tablas para el administrador */
+
+hr {
+  margin: 40px auto;
+  width: 80%;
+  border: none;
+  height: 1px;
+  background-color: #d8cbb9;
+}
+
+/* Tabla de usuarios */
+table {
+  width: 50%;
+  border-collapse: collapse;
+  margin: 30px auto;
+  margin-top: 25px;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: none;
+}
+
+th, td {
+  padding: 14px 18px;
+  text-align: left;
+  border: none;
+}
+
+th {
+  background-color: #5a3e1b;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f4ed;
+}
+
+tr:hover {
+  background-color: #f1e8dc;
+}
+
+td {
+  color: #4a4a4a;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+/* Contenedor para acciones (botones) */
+td .acciones-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Botón azul para guardar */
+.btn-guardar {
+  background-color: #4285F4;
+  color: white;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-guardar:hover {
+  background-color: #3367d6;
+}
+
+/* Botón rojo para eliminar */
+.btn-eliminar {
+  background-color: #c62828;
+  color: white;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #a61d1d;
+}
