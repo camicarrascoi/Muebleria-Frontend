@@ -162,11 +162,10 @@ fieldset legend {
   border-radius: 4px;
 }
 
-/* Botones Agregar/Quitar material */
-.boton-agregar button,
-.boton-quitar button {
-  background-color: #444 !important; /* gris oscuro */
-  color: white !important;
+/* Botón eliminar (café oscuro) */
+.btn-quitar {
+  background-color: #8b5e3c;
+  color: white;
   border: none;
   padding: 8px 14px;
   font-size: 14px;
@@ -175,18 +174,28 @@ fieldset legend {
   transition: background-color 0.3s ease;
 }
 
-.boton-agregar button:hover,
-.boton-quitar button:hover {
-  background-color: #2f2f2f !important; /* más oscuro */
+.btn-quitar:hover {
+  background-color: #6b422a;
 }
 
-/* Botones del formulario principal */
-.botones-formulario {
-  display: flex;
-  gap: 10px;
+/* Botón agregar (azul) */
+.btn-agregar {
+  background-color: #4285F4;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.botones-formulario button[type="submit"] {
+.btn-agregar:hover {
+  background-color: #3367d6;
+}
+
+
+.btn-guardar {
   background-color: #4caf50;
   color: white;
   border: none;
@@ -197,11 +206,12 @@ fieldset legend {
   transition: background-color 0.3s;
 }
 
-.botones-formulario button[type="submit"]:hover {
+.btn-guardar:hover {
   background-color: #45a049;
 }
 
-.botones-formulario button[type="button"] {
+/* Botón rojo (Cancelar) */
+.btn-cancelar {
   background-color: #f44336;
   color: white;
   border: none;
@@ -212,15 +222,8 @@ fieldset legend {
   transition: background-color 0.3s;
 }
 
-.botones-formulario button[type="button"]:hover {
+.btn-cancelar:hover {
   background-color: #d32f2f;
-}
-
-.botones-formulario {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;     /* centra verticalmente */
 }
 
 

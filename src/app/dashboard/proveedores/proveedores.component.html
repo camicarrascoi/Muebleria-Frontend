@@ -133,7 +133,7 @@
           <label>Costo Unitario:
             <input type="number" [(ngModel)]="pm.costoUnitario" name="costoEdit{{i}}" min="0" required />
           </label>
-         <label>Cantidad Suministrada:
+          <label>Cantidad Suministrada:
             <span style="user-select: none;">{{ pm.cantidadSuministrada}}</span>
           </label>
         </ng-container>
@@ -150,15 +150,15 @@
             <input type="number" [(ngModel)]="pm.cantidadSuministrada" name="cantEditNew{{i}}" min="1" required />
           </label>
         </ng-template>
-        <button type="button" (click)="quitarMaterial(i)">🗑️</button>
+        <button type="button" class="btn-quitar" (click)="quitarMaterial(i)">🗑️</button>
       </div>
-      <button type="button" (click)="agregarMaterial()">➕ Agregar otro material</button>
+      <button type="button" class="btn-agregar" (click)="agregarMaterial()">➕ Agregar otro material</button>
     </div>
 
     <!-- Botones Guardar/Cancelar -->
     <div class="botones-formulario">
-      <button type="button" (click)="guardarProveedor()">💾 Guardar</button>
-      <button type="button" (click)="cancelarFormulario()">❌ Cancelar</button>
+      <button type="button" class="btn-guardar" (click)="guardarProveedor()">💾 Guardar</button>
+      <button type="button" class="btn-cancelar" (click)="cancelarFormulario()">❌ Cancelar</button>
     </div>
 
   </form>
