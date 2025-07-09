@@ -20,33 +20,60 @@
   <hr />
   <h2>📋 Lista de Usuarios</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let usuario of usuarios">
-        <td>{{ usuario.id }}</td>
-        <td>{{ usuario.nombre }}</td>
-        <td>
-            <select [(ngModel)]="usuario.rol" name="rol_{{ usuario.id }}">
-            <option value="USUARIO">USUARIO</option>
-            <option value="ADMIN">ADMIN</option>
-          </select>
-        </td>
-        <td>
-         <div class="acciones-btns" *ngIf="isAdmin">
-            <button class="btn-guardar" (click)="actualizarRol(usuario)">💾 Guardar</button>
-            <button class="btn-eliminar" (click)="eliminarUsuario(usuario.id)">🗑️ Eliminar</button>
-          </div>
-        </td>
+ <table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Rol</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let usuario of usuarios">
+      <td>{{ usuario.id }}</td>
+      <td>{{ usuario.nombre }}</td>
+      <td>{{ usuario.rol }}</td>
+      <td>
+        <button (click)="abrirFormularioEdicion(usuario)">✏️ Editar</button>
+        <button (click)="eliminarUsuario(usuario.id)">🗑️ Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="usuarioEditando">
+  <hr />
+  <h3>✏️ Editando usuario: {{ usuarioEditando.nombre }}</h3>
 
-      </tr>
-    </tbody>
-  </table>
+  <form (ngSubmit)="guardarEdicion()">
+    <label>
+      Nombre:
+      <input [(ngModel)]="usuarioEditando.nombre" name="nombreEditado" required />
+    </label>
+    <br />
+
+    <label>
+      Contraseña nueva:
+      <input
+        type="password"
+        [(ngModel)]="usuarioEditando.password"
+        name="passwordEditada"
+        placeholder="Dejar en blanco para no cambiar"
+      />
+    </label>
+    <br />
+
+    <label>
+      Rol:
+      <select [(ngModel)]="usuarioEditando.rol" name="rolEditado" required>
+        <option value="USUARIO">USUARIO</option>
+        <option value="ADMIN">ADMIN</option>
+      </select>
+    </label>
+    <br />
+
+    <button type="submit">💾 Guardar cambios</button>
+    <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
+  </form>
+</div>
 </div>

@@ -76,37 +76,45 @@ export class UsuarioComponent implements OnInit {
     });
   }
 
-  //Cambia el rol de un usuario (solo admin).
-  actualizarRol(usuario: any) {
-    if (!confirm(`Vas a cambiar el rol de "${usuario.nombre}" a "${usuario.rol}". ¿Continuar?`)) {
-      return;
-    }
+usuarioEditando: any = null;
 
-    // Paso 1: eliminar
-    this.authService.eliminarUsuario(usuario.id).subscribe({
-      next: () => {
-        // Paso 2: recrear con nuevo rol
-        const nuevo = {
-          nombre: usuario.nombre,
-          password: usuario.password, // Si deseas pedir contraseña nueva, reemplaza aquí
-          rol: usuario.rol
-        };
+abrirFormularioEdicion(usuario: any) {
+  // Crear una copia para no afectar la tabla mientras se edita
+  this.usuarioEditando = {
+    id: usuario.id,
+    nombre: usuario.nombre,
+    password: '', // ← nunca mostrar el hash
+    rol: usuario.rol
+  };
+}
 
-        this.authService.registerUsuario(nuevo).subscribe({
-          next: () => {
-            alert(`Usuario "${nuevo.nombre}" recreado con rol "${nuevo.rol}"`);
-            this.cargarUsuarios();
-          },
-          error: err2 => {
-            console.error('Error al recrear usuario:', err2);
-            alert(`No se pudo recrear el usuario: ${err2.error?.message || err2.message}`);
-          }
-        });
-      },
-      error: err1 => {
-        console.error('Error al eliminar usuario:', err1);
-        alert(`No se pudo eliminar el usuario: ${err1.error?.message || err1.message}`);
-      }
-    });
+cancelarEdicion() {
+  this.usuarioEditando = null;
+}
+
+guardarEdicion() {
+  const datosActualizados = {
+    id: this.usuarioEditando.id,
+    nombre: this.usuarioEditando.nombre.trim(),
+    password: this.usuarioEditando.password.trim(), // puede ser ''
+    rol: this.usuarioEditando.rol
+  };
+
+  if (!datosActualizados.nombre) {
+    alert('El nombre no puede estar vacío.');
+    return;
   }
+
+  this.authService.editarUsuario(datosActualizados).subscribe({
+    next: () => {
+      alert(`Usuario "${datosActualizados.nombre}" actualizado correctamente.`);
+      this.usuarioEditando = null;
+      this.cargarUsuarios();
+    },
+    error: err => {
+      console.error('Error al editar usuario:', err);
+      alert(err.error?.message || 'No se pudo editar el usuario');
+    }
+  });
+}
 }

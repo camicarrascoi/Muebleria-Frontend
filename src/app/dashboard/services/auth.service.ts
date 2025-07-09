@@ -74,19 +74,18 @@ eliminarUsuario(id: number) {
   return this.http.delete(`${this.API}/${id}`, headers ? { headers } : {});
 }
 
-// Actualizar rol de un usuario
- editarUsuario(usuario: { id: number; nombre: string; password: string; rol: string }) {
-    const token = this.getToken();
-    const headers = token
-      ? new HttpHeaders().set('Authorization', `Bearer ${token}`)
-      : undefined;
+editarUsuario(usuario: { id: number; nombre: string; password: string; rol: string }) {
+  const token = this.getToken();
+  const headers = token
+    ? new HttpHeaders().set('Authorization', `Bearer ${token}`)
+    : undefined;
 
-    return this.http.put(
-      `${this.API}`,      // PUT http://localhost:8080/api/v1/usuario
-      usuario,           // objeto completo con id,nombre,password,rol
-      headers ? { headers } : {}
-    );
-  }
+  return this.http.put(
+    `${this.API}/${usuario.id}`,
+    usuario,
+    headers ? { headers } : {}
+  );
+}
 
 
 }
